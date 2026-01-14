@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  course_name: Philosophy of Science
+  deadline_date: 2026-02-01
+  deadline_type: report
+  description: First report submission
+
+two:
+  course_name: Japanese Literature
+  deadline_date: 2026-03-15
+  deadline_type: exam
+  description: Midterm examination

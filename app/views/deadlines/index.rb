@@ -5,6 +5,7 @@ module Views
     class Index < Views::Base
       include Phlex::Rails::Helpers::Flash
       include Phlex::Rails::Helpers::FormAuthenticityToken
+      include Phlex::Rails::Helpers::LinkTo
 
       def initialize(deadlines:, upcoming:, past:)
         @deadlines = deadlines
@@ -19,14 +20,26 @@ module Views
             render_flash_messages
 
             # Header
-            div(class: "mb-8 flex justify-between items-center") do
-              h1(class: "text-3xl font-bold text-gray-900") { "Keio Tsushin - Deadlines Calendar" }
-              a(
-                href: new_deadline_path,
-                class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              ) do
-                plain "+"
-                span(class: "ml-2") { "Add Deadline" }
+            div(class: "mb-8") do
+              # Back to home link
+              div(class: "mb-4") do
+                link_to(
+                  "← Home",
+                  root_path,
+                  class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                )
+              end
+
+              # Title and Add button
+              div(class: "flex justify-between items-center") do
+                h1(class: "text-3xl font-bold text-gray-900") { "Deadlines Calendar" }
+                a(
+                  href: new_deadline_path,
+                  class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                ) do
+                  plain "+"
+                  span(class: "ml-2") { "Add Deadline" }
+                end
               end
             end
 

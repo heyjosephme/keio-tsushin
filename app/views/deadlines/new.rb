@@ -15,6 +15,14 @@ module Views
           div(class: "max-w-2xl mx-auto px-4 sm:px-6 lg:px-8") do
             # Header
             div(class: "mb-8") do
+              # Back link
+              div(class: "mb-4") do
+                link_to(
+                  "← Back to Deadlines",
+                  deadlines_path,
+                  class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                )
+              end
               h1(class: "text-3xl font-bold text-gray-900") { "Add New Deadline" }
             end
 

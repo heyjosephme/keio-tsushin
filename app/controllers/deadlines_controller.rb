@@ -1,13 +1,19 @@
 class DeadlinesController < ApplicationController
   def index
-    @deadlines = Deadline.all.order(:deadline_date)
-    @upcoming_deadlines = Deadline.upcoming
-    @past_deadlines = Deadline.past
+    @year = (params[:year] || Date.today.year).to_i
+    @month = (params[:month] || Date.today.month).to_i
+    @current_date = Date.new(@year, @month, 1)
+
+    @deadlines = Deadline.where(
+      deadline_date: @current_date.beginning_of_month..@current_date.end_of_month
+    ).order(:deadline_date)
+
+    @upcoming_deadlines = Deadline.upcoming.limit(5)
 
     render Views::Deadlines::Index.new(
+      current_date: @current_date,
       deadlines: @deadlines,
-      upcoming: @upcoming_deadlines,
-      past: @past_deadlines
+      upcoming: @upcoming_deadlines
     )
   end
 

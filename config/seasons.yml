@@ -1,0 +1,59 @@
+# Keio Tsushin Exam Seasons
+# Each season has:
+#   - report_deadline: Last day to submit reports
+#   - application_deadline: Last day to apply for exams
+#   - exam_start / exam_end: Exam period dates
+#
+# These dates are the same for all students.
+# Update yearly based on official Keio calendar.
+
+seasons:
+  # 2026
+  2026_01:
+    name: "January 2026"
+    short_name: "Jan '26"
+    report_deadline: "2026-01-10"
+    application_deadline: "2026-01-15"
+    exam_start: "2026-01-25"
+    exam_end: "2026-01-26"
+
+  2026_04:
+    name: "April 2026"
+    short_name: "Apr '26"
+    report_deadline: "2026-04-10"
+    application_deadline: "2026-04-15"
+    exam_start: "2026-04-19"
+    exam_end: "2026-04-20"
+
+  2026_07:
+    name: "July 2026"
+    short_name: "Jul '26"
+    report_deadline: "2026-07-10"
+    application_deadline: "2026-07-15"
+    exam_start: "2026-07-18"
+    exam_end: "2026-07-19"
+
+  2026_10:
+    name: "October 2026"
+    short_name: "Oct '26"
+    report_deadline: "2026-10-10"
+    application_deadline: "2026-10-15"
+    exam_start: "2026-10-17"
+    exam_end: "2026-10-18"
+
+  # 2027
+  2027_01:
+    name: "January 2027"
+    short_name: "Jan '27"
+    report_deadline: "2027-01-10"
+    application_deadline: "2027-01-15"
+    exam_start: "2027-01-23"
+    exam_end: "2027-01-24"
+
+  2027_04:
+    name: "April 2027"
+    short_name: "Apr '27"
+    report_deadline: "2027-04-10"
+    application_deadline: "2027-04-15"
+    exam_start: "2027-04-17"
+    exam_end: "2027-04-18"

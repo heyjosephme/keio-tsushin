@@ -96,10 +96,10 @@ module Views
       def render_upcoming_item(deadline)
         days_until = (deadline.deadline_date - Date.today).to_i
         urgency_color = case days_until
-                        when 0..3 then "border-l-red-500"
-                        when 4..7 then "border-l-yellow-500"
-                        else "border-l-gray-300"
-                        end
+        when 0..3 then "border-l-red-500"
+        when 4..7 then "border-l-yellow-500"
+        else "border-l-gray-300"
+        end
 
         div(class: "border-l-4 #{urgency_color} pl-3 py-2") do
           div(class: "flex justify-between items-start") do

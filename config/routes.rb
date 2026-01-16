@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :enrollments, only: [ :index, :new, :create, :update, :destroy ], path: "courses"
+  resources :enrollments, only: [ :index, :new, :create, :update, :destroy ], path: "courses" do
+    collection do
+      get :dashboard
+    end
+  end
   resources :deadlines, only: [ :index, :new, :create, :destroy ]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

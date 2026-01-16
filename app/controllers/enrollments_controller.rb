@@ -11,6 +11,16 @@ class EnrollmentsController < ApplicationController
     )
   end
 
+  def dashboard
+    @credit_stats = Enrollment.credit_stats
+    @credits_by_category = Enrollment.credits_by_category
+
+    render Views::Enrollments::Dashboard.new(
+      credit_stats: @credit_stats,
+      credits_by_category: @credits_by_category
+    )
+  end
+
   def new
     @enrollment = Enrollment.new(season_key: params[:season_key])
     @seasons = Season.upcoming(4)

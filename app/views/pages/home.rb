@@ -29,6 +29,11 @@ module Views
                   class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-lg transition-colors"
                 )
                 link_to(
+                  "📊 Credit Dashboard",
+                  dashboard_enrollments_path,
+                  class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-lg transition-colors"
+                )
+                link_to(
                   "📚 Course Planner",
                   enrollments_path,
                   class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-indigo-600 bg-white hover:bg-indigo-50 rounded-lg shadow-lg transition-colors border-2 border-indigo-600"

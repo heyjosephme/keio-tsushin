@@ -1,13 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: Philosophy of Science
+  course_key: phil101
   season_key: 2026_04
   status: planned
-  credits: 2
 
 two:
-  name: Japanese Literature
+  course_key: lit101
   season_key: 2026_04
   status: report_submitted
-  credits: 4

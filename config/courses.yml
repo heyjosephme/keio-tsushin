@@ -1,0 +1,138 @@
+# Keio Tsushin Course Catalog
+# Add courses from the official study guide here.
+#
+# Categories:
+#   - required: 必修科目 (compulsory)
+#   - elective: 選択科目 (elective)
+#   - foreign_language: 外国語科目
+#   - physical_education: 体育科目
+#
+# Types:
+#   - distance: 通信授業 (correspondence/distance)
+#   - on_campus: スクーリング (on-campus)
+#   - both: 両方
+
+courses:
+  # Required Courses (必修科目)
+  phil101:
+    name: "Philosophy"
+    name_ja: "哲学"
+    credits: 2
+    category: required
+    type: distance
+
+  logic101:
+    name: "Logic"
+    name_ja: "論理学"
+    credits: 2
+    category: required
+    type: distance
+
+  # Humanities (人文科学)
+  lit101:
+    name: "Japanese Literature"
+    name_ja: "国文学"
+    credits: 4
+    category: elective
+    type: distance
+
+  hist101:
+    name: "Japanese History"
+    name_ja: "日本史"
+    credits: 2
+    category: elective
+    type: distance
+
+  hist102:
+    name: "Western History"
+    name_ja: "西洋史"
+    credits: 2
+    category: elective
+    type: distance
+
+  art101:
+    name: "Art History"
+    name_ja: "美術史"
+    credits: 2
+    category: elective
+    type: distance
+
+  # Social Sciences (社会科学)
+  law101:
+    name: "Constitutional Law"
+    name_ja: "憲法"
+    credits: 4
+    category: elective
+    type: distance
+
+  law102:
+    name: "Civil Law"
+    name_ja: "民法"
+    credits: 4
+    category: elective
+    type: distance
+
+  econ101:
+    name: "Economics"
+    name_ja: "経済学"
+    credits: 4
+    category: elective
+    type: distance
+
+  pol101:
+    name: "Political Science"
+    name_ja: "政治学"
+    credits: 2
+    category: elective
+    type: distance
+
+  # Natural Sciences (自然科学)
+  math101:
+    name: "Mathematics"
+    name_ja: "数学"
+    credits: 2
+    category: elective
+    type: distance
+
+  stat101:
+    name: "Statistics"
+    name_ja: "統計学"
+    credits: 2
+    category: elective
+    type: distance
+
+  sci101:
+    name: "Science of Science"
+    name_ja: "科学哲学"
+    credits: 2
+    category: elective
+    type: distance
+
+  # Foreign Languages (外国語科目)
+  eng101:
+    name: "English I"
+    name_ja: "英語I"
+    credits: 2
+    category: foreign_language
+    type: distance
+
+  eng102:
+    name: "English II"
+    name_ja: "英語II"
+    credits: 2
+    category: foreign_language
+    type: distance
+
+  ger101:
+    name: "German I"
+    name_ja: "ドイツ語I"
+    credits: 2
+    category: foreign_language
+    type: distance
+
+  fra101:
+    name: "French I"
+    name_ja: "フランス語I"
+    credits: 2
+    category: foreign_language
+    type: distance

@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 module Views
-  module Courses
+  module Enrollments
     class Index < Views::Base
       include Phlex::Rails::Helpers::Flash
       include Phlex::Rails::Helpers::LinkTo
       include Phlex::Rails::Helpers::FormWith
 
-      def initialize(seasons:, courses_by_season:)
+      def initialize(seasons:, enrollments_by_season:, courses:)
         @seasons = seasons
-        @courses_by_season = courses_by_season
+        @enrollments_by_season = enrollments_by_season
+        @courses = courses
       end
 
       def view_template
@@ -44,7 +45,7 @@ module Views
             h1(class: "text-3xl font-bold text-gray-900") { "Course Planner" }
             link_to(
               "+ Add Course",
-              new_course_path,
+              new_enrollment_path,
               class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             )
           end
@@ -66,7 +67,7 @@ module Views
       end
 
       def render_season_column(season)
-        courses = @courses_by_season[season.key] || []
+        enrollments = @enrollments_by_season[season.key] || []
 
         div(class: "bg-white rounded-lg shadow") do
           # Season header
@@ -75,10 +76,10 @@ module Views
             render_season_dates(season)
           end
 
-          # Courses list
+          # Enrollments list
           div(class: "p-4 space-y-3 min-h-[200px]") do
-            if courses.any?
-              courses.each { |course| render_course_card(course) }
+            if enrollments.any?
+              enrollments.each { |enrollment| render_enrollment_card(enrollment) }
             else
               p(class: "text-gray-400 text-sm text-center py-8") { "No courses" }
             end
@@ -86,7 +87,7 @@ module Views
             # Add course to this season
             link_to(
               "+ Add",
-              new_course_path(season_key: season.key),
+              new_enrollment_path(season_key: season.key),
               class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
             )
           end
@@ -125,24 +126,23 @@ module Views
         end
       end
 
-      def render_course_card(course)
+      def render_enrollment_card(enrollment)
         div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200") do
           div(class: "flex justify-between items-start") do
             div do
-              p(class: "font-medium text-gray-900 text-sm") { course.name }
+              p(class: "font-medium text-gray-900 text-sm") { enrollment.name }
+              p(class: "text-xs text-gray-500") { enrollment.name_ja } if enrollment.name_ja
               p(class: "text-xs text-gray-500 mt-1") do
-                render_status_badge(course.status)
-                if course.credits
-                  span(class: "ml-2") { "#{course.credits} credits" }
-                end
+                render_status_badge(enrollment.status)
+                span(class: "ml-2") { "#{enrollment.credits}単位" } if enrollment.credits
               end
             end
           end
 
           # Move to another season dropdown
           div(class: "mt-3 flex items-center justify-between") do
-            render_move_dropdown(course)
-            render_delete_button(course)
+            render_move_dropdown(enrollment)
+            render_delete_button(enrollment)
           end
         end
       end
@@ -160,20 +160,20 @@ module Views
         end
       end
 
-      def render_move_dropdown(course)
-        form_with(model: course, method: :patch, class: "inline") do |f|
+      def render_move_dropdown(enrollment)
+        form_with(model: enrollment, method: :patch, class: "inline") do |f|
           f.select(
             :season_key,
             @seasons.map { |s| [ s.short_name, s.key ] },
-            { selected: course.season_key },
+            { selected: enrollment.season_key },
             class: "text-xs border-gray-300 rounded py-1 pr-8",
             onchange: "this.form.submit()"
           )
         end
       end
 
-      def render_delete_button(course)
-        form_with(url: course_path(course), method: :delete, class: "inline") do
+      def render_delete_button(enrollment)
+        form_with(url: enrollment_path(enrollment), method: :delete, class: "inline") do
           button(
             type: "submit",
             class: "text-xs text-red-600 hover:text-red-800",

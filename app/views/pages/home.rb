@@ -30,7 +30,7 @@ module Views
                 )
                 link_to(
                   "📚 Course Planner",
-                  courses_path,
+                  enrollments_path,
                   class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-indigo-600 bg-white hover:bg-indigo-50 rounded-lg shadow-lg transition-colors border-2 border-indigo-600"
                 )
               end

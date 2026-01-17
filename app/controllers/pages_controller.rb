@@ -4,4 +4,8 @@ class PagesController < ApplicationController
   def home
     render Views::Pages::Home.new
   end
+
+  def about
+    render Views::Pages::About.new
+  end
 end

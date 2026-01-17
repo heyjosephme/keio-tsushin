@@ -14,14 +14,16 @@ module Views
       end
 
       def view_template
-        div(class: "min-h-screen bg-gray-50 py-8") do
-          div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
-            render_flash_messages
-            render_header
-            render_overall_progress
-            render_status_cards
-            render_category_breakdown
-            render_quick_actions
+        render Components::Layout.new do
+          div(class: "py-8") do
+            div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
+              render_flash_messages
+              render_header
+              render_overall_progress
+              render_status_cards
+              render_category_breakdown
+              render_quick_actions
+            end
           end
         end
       end
@@ -30,14 +32,6 @@ module Views
 
       def render_header
         div(class: "mb-8") do
-          div(class: "mb-4") do
-            link_to(
-              "← Home",
-              root_path,
-              class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-            )
-          end
-
           h1(class: "text-3xl font-bold text-gray-900") { "Credit Dashboard" }
         end
       end

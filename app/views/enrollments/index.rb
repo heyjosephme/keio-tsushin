@@ -14,15 +14,17 @@ module Views
       end
 
       def view_template
-        div(class: "min-h-screen bg-gray-50 py-8") do
-          div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
-            render_flash_messages
-            render_header
+        render Components::Layout.new do
+          div(class: "py-8") do
+            div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
+              render_flash_messages
+              render_header
 
-            # Kanban board
-            div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
-              @seasons.each do |season|
-                render_season_column(season)
+              # Kanban board
+              div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
+                @seasons.each do |season|
+                  render_season_column(season)
+                end
               end
             end
           end
@@ -32,23 +34,13 @@ module Views
       private
 
       def render_header
-        div(class: "mb-8") do
-          div(class: "mb-4") do
-            link_to(
-              "← Home",
-              root_path,
-              class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-            )
-          end
-
-          div(class: "flex justify-between items-center") do
-            h1(class: "text-3xl font-bold text-gray-900") { "Course Planner" }
-            link_to(
-              "+ Add Course",
-              new_enrollment_path,
-              class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-            )
-          end
+        div(class: "mb-8 flex justify-between items-center") do
+          h1(class: "text-3xl font-bold text-gray-900") { "Course Planner" }
+          link_to(
+            "+ Add Course",
+            new_enrollment_path,
+            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+          )
         end
       end
 

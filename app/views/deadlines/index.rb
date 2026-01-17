@@ -14,24 +14,26 @@ module Views
       end
 
       def view_template
-        div(class: "min-h-screen bg-gray-50 py-8") do
-          div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
-            render_flash_messages
-            render_header
+        render Components::Layout.new do
+          div(class: "py-8") do
+            div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
+              render_flash_messages
+              render_header
 
-            # Two-column layout: Calendar + Upcoming sidebar
-            div(class: "grid grid-cols-1 lg:grid-cols-3 gap-8") do
-              # Calendar (2/3 width on large screens)
-              div(class: "lg:col-span-2") do
-                render Components::Calendar.new(
-                  current_date: @current_date,
-                  deadlines: @deadlines
-                )
-              end
+              # Two-column layout: Calendar + Upcoming sidebar
+              div(class: "grid grid-cols-1 lg:grid-cols-3 gap-8") do
+                # Calendar (2/3 width on large screens)
+                div(class: "lg:col-span-2") do
+                  render Components::Calendar.new(
+                    current_date: @current_date,
+                    deadlines: @deadlines
+                  )
+                end
 
-              # Upcoming deadlines sidebar (1/3 width)
-              div(class: "lg:col-span-1") do
-                render_upcoming_sidebar
+                # Upcoming deadlines sidebar (1/3 width)
+                div(class: "lg:col-span-1") do
+                  render_upcoming_sidebar
+                end
               end
             end
           end
@@ -41,24 +43,14 @@ module Views
       private
 
       def render_header
-        div(class: "mb-8") do
-          div(class: "mb-4") do
-            link_to(
-              "← Home",
-              root_path,
-              class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-            )
-          end
-
-          div(class: "flex justify-between items-center") do
-            h1(class: "text-3xl font-bold text-gray-900") { "Deadlines Calendar" }
-            a(
-              href: new_deadline_path,
-              class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-            ) do
-              plain "+"
-              span(class: "ml-2") { "Add Deadline" }
-            end
+        div(class: "mb-8 flex justify-between items-center") do
+          h1(class: "text-3xl font-bold text-gray-900") { "Deadlines Calendar" }
+          a(
+            href: new_deadline_path,
+            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+          ) do
+            plain "+"
+            span(class: "ml-2") { "Add Deadline" }
           end
         end
       end

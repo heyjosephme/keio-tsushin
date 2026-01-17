@@ -38,7 +38,11 @@ class Components::NavBar < Components::Base
   def render_auth_section
     div(class: "flex items-center gap-4") do
       if helpers.authenticated?
-        span(class: "hidden sm:block text-sm text-gray-600") { Current.user.email_address }
+        link_to(
+          Current.user.name.presence || Current.user.email_address,
+          profile_path,
+          class: "hidden sm:block text-sm text-gray-600 hover:text-gray-900"
+        )
         button_to(
           "Sign out",
           session_path,

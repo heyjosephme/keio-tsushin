@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resource :session
+  resource :profile, only: [ :show, :edit, :update ]
   resources :passwords, param: :token
   resources :enrollments, only: [ :index, :new, :create, :update, :destroy ], path: "courses" do
     collection do

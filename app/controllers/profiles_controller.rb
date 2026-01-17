@@ -18,6 +18,6 @@ class ProfilesController < ApplicationController
   private
 
   def profile_params
-    params.require(:user).permit(:name, :enrolled_year, :enrolled_semester, :expected_graduation_year, :credits_goal_per_year)
+    params.require(:user).permit(:name, :major, :enrolled_year, :enrolled_semester, :expected_graduation_year, :credits_goal_per_year)
   end
 end

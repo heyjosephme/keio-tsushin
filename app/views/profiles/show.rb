@@ -66,6 +66,7 @@ module Views
           h2(class: "text-xl font-semibold text-gray-900 mb-4") { "Study Plan" }
 
           dl(class: "space-y-4") do
+            render_field("Major", format_major(@user.major))
             render_field("Enrolled", format_enrollment(@user.enrolled_year, @user.enrolled_semester))
             render_field("Expected Graduation", format_year(@user.expected_graduation_year))
             render_field("Credit Goal per Year", format_credits(@user.credits_goal_per_year))
@@ -119,6 +120,16 @@ module Views
             end
           end
         end
+      end
+
+      def format_major(major)
+        return "Not set" unless major.present?
+
+        {
+          "economics" => "Economics (経済学部)",
+          "law" => "Law (法学部)",
+          "literature" => "Literature (文学部)"
+        }[major] || major
       end
 
       def format_enrollment(year, semester)

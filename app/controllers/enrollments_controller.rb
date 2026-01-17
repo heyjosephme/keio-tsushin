@@ -2,7 +2,7 @@ class EnrollmentsController < ApplicationController
   def index
     @seasons = Season.upcoming(4)
     @enrollments_by_season = current_user_enrollments.group_by(&:season_key)
-    @courses = Course.all
+    @courses = courses_for_current_user
 
     render Views::Enrollments::Index.new(
       seasons: @seasons,
@@ -24,7 +24,7 @@ class EnrollmentsController < ApplicationController
   def new
     @enrollment = current_user_enrollments.new(season_key: params[:season_key])
     @seasons = Season.upcoming(4)
-    @courses = Course.all
+    @courses = courses_for_current_user
 
     render Views::Enrollments::New.new(
       enrollment: @enrollment,
@@ -41,7 +41,7 @@ class EnrollmentsController < ApplicationController
       redirect_to enrollments_path, notice: "Course added to your plan!"
     else
       @seasons = Season.upcoming(4)
-      @courses = Course.all
+      @courses = courses_for_current_user
       render Views::Enrollments::New.new(
         enrollment: @enrollment,
         seasons: @seasons,
@@ -70,6 +70,10 @@ class EnrollmentsController < ApplicationController
 
   def current_user_enrollments
     Current.user.enrollments
+  end
+
+  def courses_for_current_user
+    Course.for_major(Current.user.major)
   end
 
   def enrollment_params

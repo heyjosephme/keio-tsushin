@@ -3,10 +3,11 @@
 # Course represents a Keio Tsushin course from the catalog.
 # Data is loaded from config/courses.yml (not database).
 class Course
-  attr_reader :key, :name, :name_ja, :credits, :category, :type
+  attr_reader :key, :name, :name_ja, :credits, :category, :type, :majors
 
   CATEGORIES = %w[required elective foreign_language physical_education].freeze
   TYPES = %w[distance on_campus both].freeze
+  MAJORS = %w[economics law literature].freeze
 
   def initialize(key:, data:)
     @key = key
@@ -15,6 +16,7 @@ class Course
     @credits = data["credits"]
     @category = data["category"]
     @type = data["type"]
+    @majors = data["majors"] || [ "all" ]
   end
 
   class << self
@@ -40,6 +42,12 @@ class Course
 
     def foreign_language
       by_category("foreign_language")
+    end
+
+    def for_major(major)
+      return all if major.blank?
+
+      all.select { |c| c.available_for_major?(major) }
     end
 
     def for_select
@@ -86,5 +94,13 @@ class Course
       "foreign_language" => "外国語",
       "physical_education" => "体育"
     }[category] || category
+  end
+
+  def available_for_major?(major)
+    majors.include?("all") || majors.include?(major)
+  end
+
+  def common?
+    majors.include?("all")
   end
 end

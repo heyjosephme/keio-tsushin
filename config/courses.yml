@@ -11,15 +11,22 @@
 #   - distance: 通信授業 (correspondence/distance)
 #   - on_campus: スクーリング (on-campus)
 #   - both: 両方
+#
+# Majors:
+#   - all: Common courses for all majors
+#   - economics: 経済学部
+#   - law: 法学部
+#   - literature: 文学部
 
 courses:
-  # Required Courses (必修科目)
+  # Required Courses (必修科目) - Common for all majors
   phil101:
     name: "Philosophy"
     name_ja: "哲学"
     credits: 2
     category: required
     type: distance
+    majors: [all]
 
   logic101:
     name: "Logic"
@@ -27,14 +34,16 @@ courses:
     credits: 2
     category: required
     type: distance
+    majors: [all]
 
-  # Humanities (人文科学)
+  # Humanities (人文科学) - Common electives
   lit101:
     name: "Japanese Literature"
     name_ja: "国文学"
     credits: 4
     category: elective
     type: distance
+    majors: [all]
 
   hist101:
     name: "Japanese History"
@@ -42,6 +51,7 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [all]
 
   hist102:
     name: "Western History"
@@ -49,6 +59,7 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [all]
 
   art101:
     name: "Art History"
@@ -56,6 +67,7 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [all]
 
   # Social Sciences (社会科学)
   law101:
@@ -64,6 +76,7 @@ courses:
     credits: 4
     category: elective
     type: distance
+    majors: [all]
 
   law102:
     name: "Civil Law"
@@ -71,6 +84,7 @@ courses:
     credits: 4
     category: elective
     type: distance
+    majors: [law, economics]
 
   econ101:
     name: "Economics"
@@ -78,6 +92,7 @@ courses:
     credits: 4
     category: elective
     type: distance
+    majors: [economics]
 
   pol101:
     name: "Political Science"
@@ -85,6 +100,7 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [all]
 
   # Natural Sciences (自然科学)
   math101:
@@ -93,6 +109,7 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [all]
 
   stat101:
     name: "Statistics"
@@ -100,6 +117,7 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [economics]
 
   sci101:
     name: "Science of Science"
@@ -107,14 +125,16 @@ courses:
     credits: 2
     category: elective
     type: distance
+    majors: [all]
 
-  # Foreign Languages (外国語科目)
+  # Foreign Languages (外国語科目) - Common for all
   eng101:
     name: "English I"
     name_ja: "英語I"
     credits: 2
     category: foreign_language
     type: distance
+    majors: [all]
 
   eng102:
     name: "English II"
@@ -122,6 +142,7 @@ courses:
     credits: 2
     category: foreign_language
     type: distance
+    majors: [all]
 
   ger101:
     name: "German I"
@@ -129,6 +150,7 @@ courses:
     credits: 2
     category: foreign_language
     type: distance
+    majors: [all]
 
   fra101:
     name: "French I"
@@ -136,3 +158,4 @@ courses:
     credits: 2
     category: foreign_language
     type: distance
+    majors: [all]

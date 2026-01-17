@@ -47,7 +47,8 @@ class Components::NavBar < Components::Base
           "Sign out",
           session_path,
           method: :delete,
-          class: "text-sm text-gray-600 hover:text-gray-900"
+          class: "text-sm text-gray-600 hover:text-gray-900",
+          form: { data: { turbo_confirm: "Are you sure you want to sign out?" } }
         )
       else
         link_to(

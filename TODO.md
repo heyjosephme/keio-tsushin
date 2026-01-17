@@ -12,8 +12,11 @@ search UI
 
 # Account Registration
 
-# Auth
+## Auth
 authentication
+
+### logout
+confirmation(mis-operation prevent)
 
 # User Site
 

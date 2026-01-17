@@ -1,6 +1,8 @@
 class Enrollment < ApplicationRecord
   STATUSES = %w[planned report_submitted exam_applied completed].freeze
 
+  belongs_to :user, optional: true
+
   validates :course_key, presence: true
   validates :season_key, presence: true
   validates :status, presence: true, inclusion: { in: STATUSES }

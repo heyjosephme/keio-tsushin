@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resource :session
+  resources :passwords, param: :token
   resources :enrollments, only: [ :index, :new, :create, :update, :destroy ], path: "courses" do
     collection do
       get :dashboard

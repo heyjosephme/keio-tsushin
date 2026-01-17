@@ -1,4 +1,6 @@
 class Deadline < ApplicationRecord
+  belongs_to :user, optional: true
+
   validates :course_name, presence: true
   validates :deadline_date, presence: true
   validates :deadline_type, presence: true, inclusion: { in: %w[report exam] }

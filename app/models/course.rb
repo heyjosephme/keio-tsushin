@@ -43,12 +43,12 @@ class Course
     end
 
     def for_select
-      all.map { |c| ["#{c.name} (#{c.credits} credits)", c.key] }
+      all.map { |c| [ "#{c.name} (#{c.credits} credits)", c.key ] }
     end
 
     def grouped_for_select
       all.group_by(&:category).transform_values do |courses|
-        courses.map { |c| ["#{c.name} (#{c.credits}単位)", c.key] }
+        courses.map { |c| [ "#{c.name} (#{c.credits}単位)", c.key ] }
       end
     end
 

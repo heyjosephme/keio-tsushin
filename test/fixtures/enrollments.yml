@@ -4,8 +4,10 @@ one:
   course_key: phil101
   season_key: 2026_04
   status: planned
+  user: one
 
 two:
   course_key: lit101
   season_key: 2026_04
   status: report_submitted
+  user: one

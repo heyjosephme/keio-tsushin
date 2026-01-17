@@ -73,7 +73,7 @@ module Views
           div(class: "w-full bg-gray-200 rounded-full h-4 mb-2") do
             div(
               class: "bg-indigo-600 h-4 rounded-full transition-all duration-300",
-              style: "width: #{[percentage, 100].min}%"
+              style: "width: #{[ percentage, 100 ].min}%"
             )
           end
 

@@ -4,11 +4,11 @@ class DeadlinesController < ApplicationController
     @month = (params[:month] || Date.today.month).to_i
     @current_date = Date.new(@year, @month, 1)
 
-    @deadlines = Deadline.where(
+    @deadlines = current_user_deadlines.where(
       deadline_date: @current_date.beginning_of_month..@current_date.end_of_month
     ).order(:deadline_date)
 
-    @upcoming_deadlines = Deadline.upcoming.limit(5)
+    @upcoming_deadlines = current_user_deadlines.upcoming.limit(5)
 
     render Views::Deadlines::Index.new(
       current_date: @current_date,
@@ -18,12 +18,12 @@ class DeadlinesController < ApplicationController
   end
 
   def new
-    @deadline = Deadline.new
+    @deadline = current_user_deadlines.new
     render Views::Deadlines::New.new(deadline: @deadline)
   end
 
   def create
-    @deadline = Deadline.new(deadline_params)
+    @deadline = current_user_deadlines.new(deadline_params)
 
     if @deadline.save
       redirect_to deadlines_path, notice: "Deadline created successfully!"
@@ -33,12 +33,16 @@ class DeadlinesController < ApplicationController
   end
 
   def destroy
-    @deadline = Deadline.find(params[:id])
+    @deadline = current_user_deadlines.find(params[:id])
     @deadline.destroy
     redirect_to deadlines_path, notice: "Deadline deleted."
   end
 
   private
+
+  def current_user_deadlines
+    Current.user.deadlines
+  end
 
   def deadline_params
     params.require(:deadline).permit(:course_name, :deadline_date, :deadline_type, :description)

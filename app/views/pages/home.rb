@@ -4,9 +4,12 @@ module Views
   module Pages
     class Home < Views::Base
       include Phlex::Rails::Helpers::LinkTo
+      include Phlex::Rails::Helpers::ButtonTo
 
       def view_template
         div(class: "min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50") do
+          render_nav_bar
+
           # Hero Section
           div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20") do
             div(class: "text-center") do
@@ -76,6 +79,36 @@ module Views
       end
 
       private
+
+      def render_nav_bar
+        nav(class: "bg-white shadow-sm") do
+          div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
+            div(class: "flex justify-between h-16 items-center") do
+              div(class: "flex-shrink-0") do
+                span(class: "text-xl font-bold text-indigo-600") { "Keio Tsushin" }
+              end
+
+              div(class: "flex items-center gap-4") do
+                if helpers.authenticated?
+                  span(class: "text-sm text-gray-600") { Current.user.email_address }
+                  button_to(
+                    "Sign out",
+                    session_path,
+                    method: :delete,
+                    class: "text-sm text-gray-600 hover:text-gray-900"
+                  )
+                else
+                  link_to(
+                    "Sign in",
+                    new_session_path,
+                    class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                  )
+                end
+              end
+            end
+          end
+        end
+      end
 
       def render_feature_card(icon:, title:, description:)
         div(class: "bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow") do

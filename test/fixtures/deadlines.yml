@@ -5,9 +5,11 @@ one:
   deadline_date: 2026-02-01
   deadline_type: report
   description: First report submission
+  user: one
 
 two:
   course_name: Japanese Literature
   deadline_date: 2026-03-15
   deadline_type: exam
   description: Midterm examination
+  user: one

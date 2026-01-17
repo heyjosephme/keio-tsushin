@@ -95,7 +95,7 @@ module Views
                 end
                 div do
                   form.select :enrolled_semester,
-                    [["Spring (April)", "spring"], ["Autumn (October)", "autumn"]],
+                    [ [ "Spring (April)", "spring" ], [ "Autumn (October)", "autumn" ] ],
                     { include_blank: "Semester" },
                     class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
                 end
@@ -126,11 +126,11 @@ module Views
       end
 
       def enrollment_year_options
-        (2015..Date.today.year).to_a.reverse.map { |year| [year.to_s, year] }
+        (2015..Date.today.year).to_a.reverse.map { |year| [ year.to_s, year ] }
       end
 
       def graduation_year_options
-        (Date.today.year..(Date.today.year + 10)).to_a.map { |year| [year.to_s, year] }
+        (Date.today.year..(Date.today.year + 10)).to_a.map { |year| [ year.to_s, year ] }
       end
 
       def render_submit_button(form)

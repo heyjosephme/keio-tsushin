@@ -30,15 +30,15 @@ class Components::Footer < Components::Base
   def render_links_section
     div(class: "grid grid-cols-2 gap-8 sm:grid-cols-3") do
       render_link_group("Navigation", [
-        ["Home", root_path],
-        ["Deadlines", deadlines_path],
-        ["Courses", enrollments_path],
-        ["Dashboard", dashboard_enrollments_path]
+        [ "Home", root_path ],
+        [ "Deadlines", deadlines_path ],
+        [ "Courses", enrollments_path ],
+        [ "Dashboard", dashboard_enrollments_path ]
       ])
 
       render_link_group("Resources", [
-        ["About", about_path],
-        ["Keio Tsushin", "https://www.tsushin.keio.ac.jp/"]
+        [ "About", about_path ],
+        [ "Keio Tsushin", "https://www.tsushin.keio.ac.jp/" ]
       ])
     end
   end

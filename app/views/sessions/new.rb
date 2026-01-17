@@ -13,6 +13,7 @@ module Views
             render_header
             render_flash_messages
             render_form
+            render_registration_notice
           end
         end
       end
@@ -70,6 +71,27 @@ module Views
               link_to "Forgot password?",
                 new_password_path,
                 class: "text-sm text-indigo-600 hover:text-indigo-500"
+            end
+          end
+        end
+      end
+
+      def render_registration_notice
+        div(class: "bg-amber-50 border border-amber-200 rounded-lg p-4") do
+          h3(class: "text-sm font-medium text-amber-800 mb-2") { "Registration Not Available" }
+          p(class: "text-sm text-amber-700 mb-3") do
+            "This is a personal project. Public registration is not currently available."
+          end
+
+          div(class: "text-sm text-amber-700 space-y-2") do
+            div do
+              span(class: "font-medium") { "For demo/testing: " }
+              span { "student@example.com / password123" }
+            end
+
+            div do
+              span(class: "font-medium") { "Need an account? " }
+              span { "Please contact the administrator." }
             end
           end
         end

@@ -10,7 +10,7 @@ db.version(1).stores({
 })
 
 export default class extends Controller {
-  static targets = ["fileInput", "modal", "canvas", "uploadStatus", "viewButton", "pageInfo"]
+  static targets = ["fileInput", "modal", "canvas", "uploadStatus", "viewButton", "pageInfo", "container"]
   static values = { key: String, page: { type: Number, default: 1 } }
 
   pdfDoc = null
@@ -81,7 +81,14 @@ export default class extends Controller {
     }
 
     try {
-      this.pdfDoc = await window.pdfjsLib.getDocument({ data: record.data }).promise
+      // Configure cMaps and fonts for Japanese text rendering
+      // Using jsdelivr CDN (has proper CORS headers)
+      this.pdfDoc = await window.pdfjsLib.getDocument({
+        data: record.data,
+        cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/",
+        cMapPacked: true,
+        standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/standard_fonts/"
+      }).promise
       this.currentPage = this.pageValue || 1
       this.modalTarget.classList.remove("hidden")
       await this.renderPage(this.currentPage)
@@ -98,7 +105,14 @@ export default class extends Controller {
     const canvas = this.canvasTarget
     const context = canvas.getContext("2d")
 
-    const viewport = page.getViewport({ scale: 1.5 })
+    // Calculate scale to fit container width (with padding)
+    const containerWidth = this.hasContainerTarget
+      ? this.containerTarget.clientWidth - 32  // 32px for padding
+      : 800
+    const naturalViewport = page.getViewport({ scale: 1 })
+    const scale = Math.min(containerWidth / naturalViewport.width, 2)  // Max 2x scale
+
+    const viewport = page.getViewport({ scale })
     canvas.height = viewport.height
     canvas.width = viewport.width
 

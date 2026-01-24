@@ -113,9 +113,12 @@ class Components::PdfViewer < Components::Base
   end
 
   def render_modal_body
-    div(class: "flex-1 overflow-auto p-4 flex justify-center bg-gray-100") do
+    div(
+      class: "flex-1 overflow-auto p-4 flex justify-center items-start bg-gray-100",
+      data: { pdf_viewer_target: "container" }
+    ) do
       canvas(
-        class: "shadow-lg",
+        class: "shadow-lg max-w-full",
         data: { pdf_viewer_target: "canvas" }
       )
     end

@@ -31,6 +31,7 @@ class Components::NavBar < Components::Base
       nav_link("Deadlines", deadlines_path)
       nav_link("Courses", enrollments_path)
       nav_link("Dashboard", dashboard_enrollments_path)
+      nav_link("Documents", documents_path)
       nav_link("About", about_path)
     end
   end

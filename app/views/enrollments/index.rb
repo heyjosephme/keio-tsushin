@@ -119,6 +119,8 @@ module Views
       end
 
       def render_enrollment_card(enrollment)
+        course = enrollment.course
+
         div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200") do
           div(class: "flex justify-between items-start") do
             div do
@@ -131,10 +133,33 @@ module Views
             end
           end
 
+          # Reference links
+          render_reference_links(course) if course&.has_references?
+
           # Move to another season dropdown
           div(class: "mt-3 flex items-center justify-between") do
             render_move_dropdown(enrollment)
             render_delete_button(enrollment)
+          end
+        end
+      end
+
+      def render_reference_links(course)
+        div(class: "mt-2 flex gap-2 text-xs") do
+          if course.syllabus_page
+            link_to(
+              "📄 Syllabus p.#{course.syllabus_page}",
+              documents_path(pdf: "syllabus", page: course.syllabus_page),
+              class: "text-indigo-600 hover:text-indigo-800"
+            )
+          end
+
+          if course.report_page
+            link_to(
+              "📝 Report p.#{course.report_page}",
+              documents_path(pdf: "reports", page: course.report_page),
+              class: "text-indigo-600 hover:text-indigo-800"
+            )
           end
         end
       end

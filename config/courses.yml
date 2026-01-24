@@ -27,6 +27,9 @@ courses:
     category: required
     type: distance
     majors: [all]
+    references:
+      syllabus_page: 45
+      report_page: 12
 
   logic101:
     name: "Logic"
@@ -93,6 +96,9 @@ courses:
     category: elective
     type: distance
     majors: [economics]
+    references:
+      syllabus_page: 78
+      report_page: 34
 
   pol101:
     name: "Political Science"

@@ -8,4 +8,8 @@ class PagesController < ApplicationController
   def about
     render Views::Pages::About.new
   end
+
+  def documents
+    render Views::Pages::Documents.new
+  end
 end

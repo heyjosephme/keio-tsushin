@@ -7,7 +7,7 @@ class Season
               :application_deadline, :exam_start, :exam_end
 
   def initialize(key:, data:)
-    @key = key
+    @key = key.to_s  # YAML parses 2026_01 as integer, ensure string
     @name = data["name"]
     @short_name = data["short_name"]
     @report_deadline = Date.parse(data["report_deadline"])

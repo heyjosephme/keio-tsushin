@@ -3,7 +3,7 @@ class Enrollment < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  validates :course_key, presence: true
+  validates :course_key, presence: true, uniqueness: { scope: :user_id, message: "already enrolled" }
   validates :season_key, presence: true
   validates :status, presence: true, inclusion: { in: STATUSES }
 

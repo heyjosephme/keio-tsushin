@@ -12,8 +12,8 @@ seasons:
   2026_01:
     name: "January 2026"
     short_name: "Jan '26"
-    report_deadline: "2026-01-10"
-    application_deadline: "2026-01-15"
+    report_deadline: "2026-02-26"
+    application_deadline: "2026-03-05"
     exam_start: "2026-01-25"
     exam_end: "2026-01-26"
 

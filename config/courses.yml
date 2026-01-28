@@ -150,6 +150,21 @@ courses:
     type: distance
     majors: [all]
 
+  eng103:
+    name: "English III"
+    name_ja: "英語III"
+    credits: 2
+    category: foreign_language
+    type: distance
+    majors: [all]
+
+  eng107:
+    name: "English VII"
+    name_ja: "英語VII"
+    credits: 2
+    category: foreign_language
+    type: distance
+    majors: [all]
   ger101:
     name: "German I"
     name_ja: "ドイツ語I"

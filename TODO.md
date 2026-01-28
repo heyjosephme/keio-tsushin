@@ -7,6 +7,8 @@
 ## Courses
 search UI
 
+### add new courses
+auto remove applied courses ?
 ## reports
 quick go to each courses' report
 

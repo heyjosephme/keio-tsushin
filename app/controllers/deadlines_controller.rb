@@ -4,10 +4,15 @@ class DeadlinesController < ApplicationController
     @month = (params[:month] || Date.today.month).to_i
     @current_date = Date.new(@year, @month, 1)
 
-    @deadlines = current_user_deadlines.where(
+    # User's custom deadlines
+    user_deadlines = current_user_deadlines.where(
       deadline_date: @current_date.beginning_of_month..@current_date.end_of_month
-    ).order(:deadline_date)
+    )
 
+    # Season deadlines (report, application, exam)
+    season_deadlines = build_season_deadlines(@current_date)
+
+    @deadlines = (user_deadlines.to_a + season_deadlines).sort_by(&:deadline_date)
     @upcoming_deadlines = current_user_deadlines.upcoming.limit(5)
 
     render Views::Deadlines::Index.new(
@@ -43,6 +48,45 @@ class DeadlinesController < ApplicationController
   def current_user_deadlines
     Current.user.deadlines
   end
+
+  def build_season_deadlines(current_date)
+    month_range = current_date.beginning_of_month..current_date.end_of_month
+    deadlines = []
+
+    Season.all.each do |season|
+      if month_range.cover?(season.report_deadline)
+        deadlines << SeasonDeadline.new(
+          deadline_date: season.report_deadline,
+          deadline_type: "report",
+          course_name: "All Courses",
+          description: "#{season.short_name} - Report submission deadline"
+        )
+      end
+
+      if month_range.cover?(season.application_deadline)
+        deadlines << SeasonDeadline.new(
+          deadline_date: season.application_deadline,
+          deadline_type: "application",
+          course_name: "All Courses",
+          description: "#{season.short_name} - Exam application deadline"
+        )
+      end
+
+      if month_range.cover?(season.exam_start)
+        deadlines << SeasonDeadline.new(
+          deadline_date: season.exam_start,
+          deadline_type: "exam",
+          course_name: "All Courses",
+          description: "#{season.short_name} - Exam period (#{season.exam_start.strftime('%b %d')}-#{season.exam_end.strftime('%d')})"
+        )
+      end
+    end
+
+    deadlines
+  end
+
+  # Simple struct for season deadlines (duck-types with Deadline model)
+  SeasonDeadline = Struct.new(:deadline_date, :deadline_type, :course_name, :description, keyword_init: true)
 
   def deadline_params
     params.require(:deadline).permit(:course_name, :deadline_date, :deadline_type, :description)

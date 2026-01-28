@@ -62,17 +62,19 @@ class Components::Calendar < Components::Base
     date = Date.new(@current_date.year, @current_date.month, day)
     is_today = date == Date.today
     day_deadlines = @deadlines_by_date[date] || []
+    has_deadlines = day_deadlines.any?
 
     div(
-      class: "h-24 border border-gray-100 rounded-lg p-1 #{is_today ? 'bg-indigo-50 border-indigo-300' : 'hover:bg-gray-50'}"
+      class: "relative h-24 border border-gray-100 rounded-lg p-1 #{is_today ? 'bg-indigo-50 border-indigo-300' : 'hover:bg-gray-50'} #{has_deadlines ? 'cursor-pointer' : ''}",
+      data: has_deadlines ? { controller: "calendar-cell", action: "click->calendar-cell#toggle" } : {}
     ) do
       # Day number
       span(
         class: "text-sm font-medium #{is_today ? 'text-indigo-600' : 'text-gray-700'}"
       ) { day.to_s }
 
-      # Deadline indicators
-      if day_deadlines.any?
+      # Deadline indicators (summary)
+      if has_deadlines
         div(class: "mt-1 space-y-1") do
           day_deadlines.first(2).each do |deadline|
             render_deadline_pill(deadline)
@@ -81,7 +83,38 @@ class Components::Calendar < Components::Base
             span(class: "text-xs text-gray-500") { "+#{day_deadlines.size - 2} more" }
           end
         end
+
+        # Hidden details panel (shown on click)
+        render_day_details(date, day_deadlines)
       end
+    end
+  end
+
+  def render_day_details(date, deadlines)
+    div(
+      class: "hidden absolute z-10 left-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-3",
+      data: { calendar_cell_target: "details" }
+    ) do
+      h4(class: "font-medium text-gray-900 mb-2") { date.strftime("%B %d, %Y") }
+      div(class: "space-y-2") do
+        deadlines.each do |deadline|
+          render_deadline_detail(deadline)
+        end
+      end
+    end
+  end
+
+  def render_deadline_detail(deadline)
+    color = case deadline.deadline_type
+    when "exam" then "border-red-300 bg-red-50"
+    when "application" then "border-yellow-300 bg-yellow-50"
+    else "border-blue-300 bg-blue-50"
+    end
+
+    div(class: "border-l-2 pl-2 py-1 #{color}") do
+      p(class: "text-sm font-medium text-gray-900") { deadline.course_name }
+      p(class: "text-xs text-gray-600") { deadline.description }
+      span(class: "text-xs text-gray-500 capitalize") { deadline.deadline_type }
     end
   end
 

@@ -19,7 +19,7 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
   test "should create enrollment" do
     assert_difference("Enrollment.count") do
       post enrollments_url, params: { enrollment: {
-        course_key: "phil101",
+        course_key: "eng101",
         season_key: "2026_04",
         status: "planned"
       } }
@@ -31,7 +31,7 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
   test "should update enrollment" do
     enrollment = enrollments(:one)
     patch enrollment_url(enrollment), params: { enrollment: { season_key: "2026_07" } }
-    assert_redirected_to enrollments_url
+    assert_redirected_to enrollment_url(enrollment)
   end
 
   test "should destroy enrollment" do

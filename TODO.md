@@ -15,6 +15,9 @@ quick go to each courses' report
 ## Profile
 - [ ] which roadmap / program ? 4 years /  2 years / other speicial program?
 
+## credit dashbaord
+how to track the correct progress
+
 ## Profit
 - [ ] alliate books links
 

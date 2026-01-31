@@ -11,6 +11,18 @@ class EnrollmentsController < ApplicationController
     )
   end
 
+  def show
+    @enrollment = current_user_enrollments.find(params[:id])
+    @seasons = Season.upcoming(4)
+    @deadlines = Current.user.deadlines.where(course_name: @enrollment.name).upcoming
+
+    render Views::Enrollments::Show.new(
+      enrollment: @enrollment,
+      seasons: @seasons,
+      deadlines: @deadlines
+    )
+  end
+
   def dashboard
     @credit_stats = current_user_enrollments.credit_stats
     @credits_by_category = current_user_enrollments.credits_by_category
@@ -54,9 +66,9 @@ class EnrollmentsController < ApplicationController
     @enrollment = current_user_enrollments.find(params[:id])
 
     if @enrollment.update(enrollment_params)
-      redirect_to enrollments_path, notice: "Course updated!"
+      redirect_back(fallback_location: enrollment_path(@enrollment), notice: "Course updated!")
     else
-      redirect_to enrollments_path, alert: "Failed to update."
+      redirect_back(fallback_location: enrollment_path(@enrollment), alert: "Failed to update.")
     end
   end
 

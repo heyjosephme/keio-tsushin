@@ -121,14 +121,19 @@ module Views
       def render_enrollment_card(enrollment)
         course = enrollment.course
 
-        div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200") do
-          div(class: "flex justify-between items-start") do
-            div do
-              p(class: "font-medium text-gray-900 text-sm") { enrollment.name }
-              p(class: "text-xs text-gray-500") { enrollment.name_ja } if enrollment.name_ja
-              p(class: "text-xs text-gray-500 mt-1") do
-                render_status_badge(enrollment.status)
-                span(class: "ml-2") { "#{enrollment.credits}単位" } if enrollment.credits
+        div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200 hover:border-indigo-300 transition") do
+          link_to(
+            enrollment_path(enrollment),
+            class: "block"
+          ) do
+            div(class: "flex justify-between items-start") do
+              div do
+                p(class: "font-medium text-gray-900 text-sm hover:text-indigo-600") { enrollment.name }
+                p(class: "text-xs text-gray-500") { enrollment.name_ja } if enrollment.name_ja
+                p(class: "text-xs text-gray-500 mt-1") do
+                  render_status_badge(enrollment.status)
+                  span(class: "ml-2") { "#{enrollment.credits}単位" } if enrollment.credits
+                end
               end
             end
           end

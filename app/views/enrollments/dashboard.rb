@@ -51,16 +51,16 @@ module Views
       end
 
       def render_overall_progress
-        total = @credit_stats[:total]
-        percentage = ((total.to_f / TOTAL_CREDITS_REQUIRED) * 100).round(1)
+        completed = @credit_stats[:completed]
+        percentage = ((completed.to_f / TOTAL_CREDITS_REQUIRED) * 100).round(1)
 
         div(class: "mb-8 bg-white rounded-lg shadow-lg p-8") do
           div(class: "text-center mb-4") do
             p(class: "text-5xl font-bold text-gray-900") do
-              span { total.to_s }
+              span { completed.to_s }
               span(class: "text-2xl text-gray-500") { " / #{TOTAL_CREDITS_REQUIRED}" }
             end
-            p(class: "text-sm text-gray-600 mt-2") { "Total Credits" }
+            p(class: "text-sm text-gray-600 mt-2") { "Completed Credits" }
           end
 
           # Progress bar
@@ -75,13 +75,13 @@ module Views
             "#{percentage}% Complete"
           end
 
-          if total >= TOTAL_CREDITS_REQUIRED
+          if completed >= TOTAL_CREDITS_REQUIRED
             p(class: "text-center text-sm text-green-600 font-semibold mt-4") do
-              "🎉 Graduation requirement met!"
+              "Graduation requirement met!"
             end
           else
             p(class: "text-center text-sm text-gray-600 mt-4") do
-              "#{TOTAL_CREDITS_REQUIRED - total} credits remaining"
+              "#{TOTAL_CREDITS_REQUIRED - completed} credits remaining"
             end
           end
         end

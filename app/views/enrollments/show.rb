@@ -92,7 +92,7 @@ module Views
             div(class: "flex items-center gap-3") do
               f.select(
                 :status,
-                Enrollment::STATUSES.map { |s| [s.titleize, s] },
+                Enrollment::STATUSES.map { |s| [ s.titleize, s ] },
                 { selected: @enrollment.status },
                 class: "border-gray-300 rounded-md shadow-sm text-sm"
               )
@@ -153,7 +153,7 @@ module Views
               label(class: "text-sm text-gray-600") { "Move to:" }
               f.select(
                 :season_key,
-                @seasons.map { |s| [s.short_name, s.key] },
+                @seasons.map { |s| [ s.short_name, s.key ] },
                 { selected: @enrollment.season_key },
                 class: "border-gray-300 rounded-md shadow-sm text-sm"
               )

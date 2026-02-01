@@ -13,10 +13,8 @@ class Components::PdfViewer < Components::Base
         controller: "pdf-viewer",
         pdf_viewer_key_value: @key,
         pdf_viewer_page_value: @page
-      },
-      class: "space-y-2"
+      }
     ) do
-      render_label
       render_upload_section
       render_modal
     end
@@ -24,45 +22,59 @@ class Components::PdfViewer < Components::Base
 
   private
 
-  def render_label
-    label(class: "block text-sm font-medium text-gray-700") { @label }
-  end
-
   def render_upload_section
-    div(class: "flex items-center gap-3") do
-      # File input
-      input(
-        type: "file",
-        accept: "application/pdf",
-        class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100",
-        data: {
-          pdf_viewer_target: "fileInput",
-          action: "change->pdf-viewer#upload"
-        }
-      )
+    # Hidden file input
+    input(
+      type: "file",
+      accept: "application/pdf",
+      class: "hidden",
+      data: {
+        pdf_viewer_target: "fileInput",
+        action: "change->pdf-viewer#upload"
+      }
+    )
 
-      # Upload status
-      span(
-        class: "hidden text-sm text-green-600",
-        data: { pdf_viewer_target: "uploadStatus" }
-      )
+    # Empty state
+    button(
+      type: "button",
+      class: "w-full flex flex-col items-center justify-center gap-1 py-3 rounded-lg border-2 border-dashed border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition cursor-pointer",
+      data: {
+        pdf_viewer_target: "emptyState",
+        action: "click->pdf-viewer#triggerUpload"
+      }
+    ) do
+      span(class: "text-xl") { "📤" }
+      span(class: "text-xs") { "Upload" }
+    end
 
-      # View button
+    # Uploaded state
+    div(
+      class: "hidden flex items-center justify-center gap-3",
+      data: { pdf_viewer_target: "uploadedState" }
+    ) do
+      # View PDF
       button(
         type: "button",
-        class: "hidden px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-md hover:bg-indigo-100",
-        data: {
-          pdf_viewer_target: "viewButton",
-          action: "click->pdf-viewer#view"
-        }
-      ) { "View" }
+        class: "text-2xl hover:scale-110 transition cursor-pointer",
+        title: "View PDF",
+        data: { action: "click->pdf-viewer#view" }
+      ) { "📄" }
 
-      # Remove button
+      # Replace PDF
       button(
         type: "button",
-        class: "text-sm text-red-600 hover:text-red-800",
+        class: "text-sm text-gray-400 hover:text-indigo-500 transition cursor-pointer",
+        title: "Replace PDF",
+        data: { action: "click->pdf-viewer#triggerUpload" }
+      ) { "📤" }
+
+      # Remove PDF
+      button(
+        type: "button",
+        class: "text-sm text-gray-400 hover:text-red-500 transition cursor-pointer",
+        title: "Remove PDF",
         data: { action: "click->pdf-viewer#remove" }
-      ) { "Remove" }
+      ) { "✕" }
     end
   end
 

@@ -10,7 +10,7 @@ db.version(1).stores({
 })
 
 export default class extends Controller {
-  static targets = ["fileInput", "modal", "canvas", "uploadStatus", "viewButton", "pageInfo", "container"]
+  static targets = ["fileInput", "modal", "canvas", "emptyState", "uploadedState", "pageInfo", "container"]
   static values = { key: String, page: { type: Number, default: 1 } }
 
   pdfDoc = null
@@ -63,13 +63,16 @@ export default class extends Controller {
     }
   }
 
+  triggerUpload() {
+    this.fileInputTarget.click()
+  }
+
   showUploadedState() {
-    if (this.hasUploadStatusTarget) {
-      this.uploadStatusTarget.textContent = "PDF saved"
-      this.uploadStatusTarget.classList.remove("hidden")
+    if (this.hasEmptyStateTarget) {
+      this.emptyStateTarget.classList.add("hidden")
     }
-    if (this.hasViewButtonTarget) {
-      this.viewButtonTarget.classList.remove("hidden")
+    if (this.hasUploadedStateTarget) {
+      this.uploadedStateTarget.classList.remove("hidden")
     }
   }
 
@@ -155,11 +158,11 @@ export default class extends Controller {
     if (!confirm("Remove this PDF from local storage?")) return
 
     await db.pdfs.delete(this.keyValue)
-    if (this.hasUploadStatusTarget) {
-      this.uploadStatusTarget.classList.add("hidden")
+    if (this.hasUploadedStateTarget) {
+      this.uploadedStateTarget.classList.add("hidden")
     }
-    if (this.hasViewButtonTarget) {
-      this.viewButtonTarget.classList.add("hidden")
+    if (this.hasEmptyStateTarget) {
+      this.emptyStateTarget.classList.remove("hidden")
     }
     if (this.hasFileInputTarget) {
       this.fileInputTarget.value = ""

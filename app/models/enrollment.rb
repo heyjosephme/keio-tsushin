@@ -12,7 +12,7 @@ class Enrollment < ApplicationRecord
   scope :planned, -> { where(status: "planned") }
   scope :completed, -> { where(status: "completed") }
   scope :in_progress, -> { where(status: %w[report_submitted exam_applied]) }
-  scope :by_category, ->(category) { where("1=1") } # Filtering happens in Ruby since category is from Course
+  scope :by_field, ->(field) { where("1=1") } # Filtering happens in Ruby since field is from Course
 
   # Class methods for credit calculations
   def self.total_credits_by_status(status_scope)
@@ -29,17 +29,16 @@ class Enrollment < ApplicationRecord
     }
   end
 
-  def self.credits_by_category
+  def self.credits_by_field
     all_enrollments = all.to_a
-    categories = %w[required elective foreign_language physical_education]
 
-    categories.each_with_object({}) do |category, hash|
-      enrollments_in_category = all_enrollments.select { |e| e.category == category }
-      hash[category] = {
-        completed: total_credits_by_status(enrollments_in_category.select { |e| e.status == "completed" }),
-        in_progress: total_credits_by_status(enrollments_in_category.select { |e| %w[report_submitted exam_applied].include?(e.status) }),
-        planned: total_credits_by_status(enrollments_in_category.select { |e| e.status == "planned" }),
-        total: total_credits_by_status(enrollments_in_category)
+    Course::FIELDS.each_with_object({}) do |field, hash|
+      enrollments_in_field = all_enrollments.select { |e| e.field == field }
+      hash[field] = {
+        completed: total_credits_by_status(enrollments_in_field.select { |e| e.status == "completed" }),
+        in_progress: total_credits_by_status(enrollments_in_field.select { |e| %w[report_submitted exam_applied].include?(e.status) }),
+        planned: total_credits_by_status(enrollments_in_field.select { |e| e.status == "planned" }),
+        total: total_credits_by_status(enrollments_in_field)
       }
     end
   end
@@ -61,5 +60,5 @@ class Enrollment < ApplicationRecord
   end
 
   # Delegate to course for convenience
-  delegate :name, :name_ja, :credits, :category, to: :course, allow_nil: true
+  delegate :name, :name_ja, :credits, :field, to: :course, allow_nil: true
 end

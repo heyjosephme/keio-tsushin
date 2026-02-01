@@ -53,7 +53,7 @@ module Views
             )
             feature_card(
               "Credit Dashboard",
-              "Monitor progress toward the 124 credit graduation requirement. See credits by category and status."
+              "Monitor progress toward the 124 credit graduation requirement. See credits by field and status."
             )
             feature_card(
               "Deadline Calendar",

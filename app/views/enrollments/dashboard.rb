@@ -8,9 +8,9 @@ module Views
 
       TOTAL_CREDITS_REQUIRED = 124
 
-      def initialize(credit_stats:, credits_by_category:)
+      def initialize(credit_stats:, credits_by_field:)
         @credit_stats = credit_stats
-        @credits_by_category = credits_by_category
+        @credits_by_field = credits_by_field
       end
 
       def view_template
@@ -21,7 +21,7 @@ module Views
               render_header
               render_overall_progress
               render_status_cards
-              render_category_breakdown
+              render_field_breakdown
               render_quick_actions
             end
           end
@@ -144,10 +144,10 @@ module Views
         end
       end
 
-      def render_category_breakdown
+      def render_field_breakdown
         div(class: "bg-white rounded-lg shadow mb-8") do
           div(class: "px-6 py-4 border-b border-gray-200") do
-            h2(class: "text-xl font-semibold text-gray-900") { "Credits by Category" }
+            h2(class: "text-xl font-semibold text-gray-900") { "Credits by Field" }
           end
 
           div(class: "overflow-x-auto") do
@@ -155,7 +155,7 @@ module Views
               thead(class: "bg-gray-50") do
                 tr do
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
-                    "Category"
+                    "Field"
                   end
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
                     "Completed"
@@ -173,15 +173,16 @@ module Views
               end
 
               tbody(class: "bg-white divide-y divide-gray-200") do
-                render_category_row("Required", "required")
-                render_category_row("Elective", "elective")
-                render_category_row("Foreign Language", "foreign_language")
-                render_category_row("Physical Education", "physical_education")
+                render_field_row("人文科学", "humanities")
+                render_field_row("社会科学", "social")
+                render_field_row("自然科学", "natural")
+                render_field_row("外国語", "foreign_language")
+                render_field_row("経済学", "economics")
               end
             end
           end
 
-          if @credits_by_category.values.all? { |stats| stats[:total] == 0 }
+          if @credits_by_field.values.all? { |stats| stats[:total] == 0 }
             div(class: "px-6 py-8 text-center") do
               p(class: "text-gray-500 text-sm") do
                 "No courses enrolled yet. Add courses to see breakdown."
@@ -191,8 +192,8 @@ module Views
         end
       end
 
-      def render_category_row(label, category_key)
-        stats = @credits_by_category[category_key]
+      def render_field_row(label, field_key)
+        stats = @credits_by_field[field_key]
         return unless stats
 
         tr do

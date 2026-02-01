@@ -25,11 +25,11 @@ class EnrollmentsController < ApplicationController
 
   def dashboard
     @credit_stats = current_user_enrollments.credit_stats
-    @credits_by_category = current_user_enrollments.credits_by_category
+    @credits_by_field = current_user_enrollments.credits_by_field
 
     render Views::Enrollments::Dashboard.new(
       credit_stats: @credit_stats,
-      credits_by_category: @credits_by_category
+      credits_by_field: @credits_by_field
     )
   end
 

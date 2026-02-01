@@ -3,9 +3,9 @@
 # Course represents a Keio Tsushin course from the catalog.
 # Data is loaded from config/courses.yml (not database).
 class Course
-  attr_reader :key, :name, :name_ja, :credits, :category, :type, :majors, :references
+  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references
 
-  CATEGORIES = %w[required elective foreign_language physical_education].freeze
+  FIELDS = %w[humanities social natural foreign_language economics].freeze
   TYPES = %w[distance on_campus both].freeze
   MAJORS = %w[economics law literature].freeze
 
@@ -14,7 +14,7 @@ class Course
     @name = data["name"]
     @name_ja = data["name_ja"]
     @credits = data["credits"]
-    @category = data["category"]
+    @field = data["field"]
     @type = data["type"]
     @majors = data["majors"] || [ "all" ]
     @references = data["references"] || {}
@@ -29,20 +29,8 @@ class Course
       all.find { |c| c.key == key }
     end
 
-    def by_category(category)
-      all.select { |c| c.category == category }
-    end
-
-    def required
-      by_category("required")
-    end
-
-    def elective
-      by_category("elective")
-    end
-
-    def foreign_language
-      by_category("foreign_language")
+    def by_field(field)
+      all.select { |c| c.field == field }
     end
 
     def for_major(major)
@@ -56,7 +44,7 @@ class Course
     end
 
     def grouped_for_select
-      all.group_by(&:category).transform_values do |courses|
+      all.group_by(&:field).transform_values do |courses|
         courses.map { |c| [ "#{c.name} (#{c.credits}単位)", c.key ] }
       end
     end
@@ -76,10 +64,6 @@ class Course
     end
   end
 
-  def required?
-    category == "required"
-  end
-
   def distance?
     type == "distance"
   end
@@ -88,13 +72,18 @@ class Course
     "#{name} (#{name_ja})"
   end
 
-  def category_label
+  def field_label
     {
-      "required" => "必修",
-      "elective" => "選択",
+      "humanities" => "人文科学",
+      "social" => "社会科学",
+      "natural" => "自然科学",
       "foreign_language" => "外国語",
-      "physical_education" => "体育"
-    }[category] || category
+      "economics" => "経済学"
+    }[field] || field
+  end
+
+  def report_pdf
+    "reports_#{field}" if field
   end
 
   def available_for_major?(major)

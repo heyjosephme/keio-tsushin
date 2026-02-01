@@ -77,8 +77,8 @@ module Views
             )
           end
 
-          # Category tabs
-          render_category_tabs
+          # Field tabs
+          render_field_tabs
 
           # Course cards grid
           render_course_cards
@@ -87,17 +87,18 @@ module Views
         end
       end
 
-      def render_category_tabs
+      def render_field_tabs
         div(class: "flex flex-wrap gap-2 mb-4") do
           tab("All", "all", selected: true)
-          tab("必修 Required", "required")
-          tab("選択 Elective", "elective")
-          tab("外国語 Language", "foreign_language")
-          tab("体育 PE", "physical_education")
+          tab("人文科学", "humanities")
+          tab("社会科学", "social")
+          tab("自然科学", "natural")
+          tab("外国語", "foreign_language")
+          tab("経済学", "economics")
         end
       end
 
-      def tab(label, category, selected: false)
+      def tab(label, field, selected: false)
         base_classes = "px-3 py-1.5 text-sm font-medium rounded-full cursor-pointer transition-colors border"
         active_classes = selected ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
 
@@ -106,8 +107,8 @@ module Views
           class: "#{base_classes} #{active_classes}",
           data: {
             course_selector_target: "tab",
-            category: category,
-            action: "click->course-selector#selectCategory"
+            field: field,
+            action: "click->course-selector#selectField"
           }
         ) { label }
       end
@@ -129,7 +130,7 @@ module Views
             course_name: course.display_name,
             name: course.name,
             name_ja: course.name_ja,
-            category: course.category,
+            field: course.field,
             action: "click->course-selector#selectCourse"
           }
         ) do
@@ -137,28 +138,30 @@ module Views
           div(class: "font-medium text-gray-900 text-sm") { course.name }
           div(class: "text-gray-500 text-xs") { course.name_ja }
 
-          # Credits and category badges
+          # Credits and field badges
           div(class: "mt-2 flex items-center gap-2") do
             span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700") do
               "#{course.credits}単位"
             end
-            span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{category_badge_classes(course.category)}") do
-              course.category_label
+            span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{field_badge_classes(course.field)}") do
+              course.field_label
             end
           end
         end
       end
 
-      def category_badge_classes(category)
-        case category
-        when "required"
+      def field_badge_classes(field)
+        case field
+        when "humanities"
           "bg-red-100 text-red-700"
-        when "elective"
-          "bg-blue-100 text-blue-700"
+        when "social"
+          "bg-purple-100 text-purple-700"
+        when "natural"
+          "bg-teal-100 text-teal-700"
         when "foreign_language"
           "bg-green-100 text-green-700"
-        when "physical_education"
-          "bg-yellow-100 text-yellow-700"
+        when "economics"
+          "bg-orange-100 text-orange-700"
         else
           "bg-gray-100 text-gray-700"
         end

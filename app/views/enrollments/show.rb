@@ -70,7 +70,7 @@ module Views
 
           div(class: "mt-4 flex flex-wrap gap-3") do
             render_tag("#{@enrollment.credits} credits", "bg-indigo-50 text-indigo-700")
-            render_tag(@course.category_label, category_color(@course.category))
+            render_tag(@course.field_label, field_color(@course.field))
             render_tag(@course.type.titleize, "bg-gray-50 text-gray-700") if @course.type
           end
         end
@@ -208,7 +208,7 @@ module Views
 
             if @course.report_page
               link_to(
-                helpers.documents_path(pdf: "reports", page: @course.report_page),
+                helpers.documents_path(pdf: @course.report_pdf, page: @course.report_page),
                 class: "flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
               ) do
                 span(class: "text-lg") { "📝" }
@@ -279,13 +279,14 @@ module Views
         span(class: "px-2 py-1 rounded text-xs font-medium #{color}") { type.titleize }
       end
 
-      def category_color(category)
+      def field_color(field)
         {
-          "required" => "bg-red-50 text-red-700",
-          "elective" => "bg-purple-50 text-purple-700",
-          "foreign_language" => "bg-teal-50 text-teal-700",
-          "physical_education" => "bg-orange-50 text-orange-700"
-        }[category] || "bg-gray-50 text-gray-700"
+          "humanities" => "bg-red-50 text-red-700",
+          "social" => "bg-purple-50 text-purple-700",
+          "natural" => "bg-teal-50 text-teal-700",
+          "foreign_language" => "bg-green-50 text-green-700",
+          "economics" => "bg-orange-50 text-orange-700"
+        }[field] || "bg-gray-50 text-gray-700"
       end
     end
   end

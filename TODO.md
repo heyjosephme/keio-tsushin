@@ -7,6 +7,9 @@
 ## Courses
 search UI
 
+## type
+compulsary or selective
+
 ### add new courses
 auto remove applied courses ?
 ## reports

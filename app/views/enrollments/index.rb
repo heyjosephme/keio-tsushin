@@ -162,7 +162,7 @@ module Views
           if course.report_page
             link_to(
               "📝 Report p.#{course.report_page}",
-              documents_path(pdf: "reports", page: course.report_page),
+              documents_path(pdf: course.report_pdf, page: course.report_page),
               class: "text-indigo-600 hover:text-indigo-800"
             )
           end

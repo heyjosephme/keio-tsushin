@@ -1,11 +1,12 @@
 # Keio Tsushin Course Catalog
 # Add courses from the official study guide here.
 #
-# Categories:
-#   - required: 必修科目 (compulsory)
-#   - elective: 選択科目 (elective)
+# Fields (academic field / 分野):
+#   - humanities: 人文科学分野
+#   - social: 社会科学分野
+#   - natural: 自然科学分野
 #   - foreign_language: 外国語科目
-#   - physical_education: 体育科目
+#   - economics: 経済学部専門教育科目
 #
 # Types:
 #   - distance: 通信授業 (correspondence/distance)
@@ -19,12 +20,12 @@
 #   - literature: 文学部
 
 courses:
-  # Required Courses (必修科目) - Common for all majors
+  # Humanities (人文科学分野)
   phil101:
     name: "Philosophy"
     name_ja: "哲学"
     credits: 2
-    category: required
+    field: humanities
     type: distance
     majors: [all]
     references:
@@ -35,16 +36,15 @@ courses:
     name: "Logic"
     name_ja: "論理学"
     credits: 2
-    category: required
+    field: humanities
     type: distance
     majors: [all]
 
-  # Humanities (人文科学) - Common electives
   lit101:
     name: "Japanese Literature"
     name_ja: "国文学"
     credits: 4
-    category: elective
+    field: humanities
     type: distance
     majors: [all]
 
@@ -52,7 +52,7 @@ courses:
     name: "Japanese History"
     name_ja: "日本史"
     credits: 2
-    category: elective
+    field: humanities
     type: distance
     majors: [all]
 
@@ -60,7 +60,7 @@ courses:
     name: "Western History"
     name_ja: "西洋史"
     credits: 2
-    category: elective
+    field: humanities
     type: distance
     majors: [all]
 
@@ -68,16 +68,16 @@ courses:
     name: "Art History"
     name_ja: "美術史"
     credits: 2
-    category: elective
+    field: humanities
     type: distance
     majors: [all]
 
-  # Social Sciences (社会科学)
+  # Social Sciences (社会科学分野)
   law101:
     name: "Constitutional Law"
     name_ja: "憲法"
     credits: 4
-    category: elective
+    field: social
     type: distance
     majors: [all]
 
@@ -85,7 +85,7 @@ courses:
     name: "Civil Law"
     name_ja: "民法"
     credits: 4
-    category: elective
+    field: social
     type: distance
     majors: [law, economics]
 
@@ -93,7 +93,7 @@ courses:
     name: "Economics"
     name_ja: "経済学"
     credits: 4
-    category: elective
+    field: economics
     type: distance
     majors: [economics]
     references:
@@ -104,16 +104,16 @@ courses:
     name: "Political Science"
     name_ja: "政治学"
     credits: 2
-    category: elective
+    field: social
     type: distance
     majors: [all]
 
-  # Natural Sciences (自然科学)
+  # Natural Sciences (自然科学分野)
   math101:
     name: "Mathematics"
     name_ja: "数学"
     credits: 2
-    category: elective
+    field: natural
     type: distance
     majors: [all]
 
@@ -121,7 +121,7 @@ courses:
     name: "Statistics"
     name_ja: "統計学"
     credits: 2
-    category: elective
+    field: economics
     type: distance
     majors: [economics]
 
@@ -129,16 +129,16 @@ courses:
     name: "Science of Science"
     name_ja: "科学哲学"
     credits: 2
-    category: elective
+    field: natural
     type: distance
     majors: [all]
 
-  # Foreign Languages (外国語科目) - Common for all
+  # Foreign Languages (外国語科目)
   eng101:
     name: "English I"
     name_ja: "英語I"
     credits: 2
-    category: foreign_language
+    field: foreign_language
     type: distance
     majors: [all]
 
@@ -146,7 +146,7 @@ courses:
     name: "English II"
     name_ja: "英語II"
     credits: 2
-    category: foreign_language
+    field: foreign_language
     type: distance
     majors: [all]
 
@@ -154,7 +154,7 @@ courses:
     name: "English III"
     name_ja: "英語III"
     credits: 2
-    category: foreign_language
+    field: foreign_language
     type: distance
     majors: [all]
 
@@ -162,14 +162,15 @@ courses:
     name: "English VII"
     name_ja: "英語VII"
     credits: 2
-    category: foreign_language
+    field: foreign_language
     type: distance
     majors: [all]
+
   ger101:
     name: "German I"
     name_ja: "ドイツ語I"
     credits: 2
-    category: foreign_language
+    field: foreign_language
     type: distance
     majors: [all]
 
@@ -177,6 +178,6 @@ courses:
     name: "French I"
     name_ja: "フランス語I"
     credits: 2
-    category: foreign_language
+    field: foreign_language
     type: distance
     majors: [all]

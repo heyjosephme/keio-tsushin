@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["search", "tab", "card", "input", "selectedDisplay"]
-  static values = { category: { type: String, default: "all" } }
+  static values = { field: { type: String, default: "all" } }
 
   connect() {
     this.filter()
@@ -12,9 +12,9 @@ export default class extends Controller {
     this.filter()
   }
 
-  selectCategory(event) {
+  selectField(event) {
     event.preventDefault()
-    this.categoryValue = event.currentTarget.dataset.category
+    this.fieldValue = event.currentTarget.dataset.field
     this.updateTabs()
     this.filter()
   }
@@ -44,17 +44,17 @@ export default class extends Controller {
 
   filter() {
     const query = this.hasSearchTarget ? this.searchTarget.value.toLowerCase() : ""
-    const category = this.categoryValue
+    const field = this.fieldValue
 
     this.cardTargets.forEach(card => {
       const name = card.dataset.name.toLowerCase()
       const nameJa = card.dataset.nameJa.toLowerCase()
-      const cardCategory = card.dataset.category
+      const cardField = card.dataset.field
 
       const matchesSearch = query === "" || name.includes(query) || nameJa.includes(query)
-      const matchesCategory = category === "all" || cardCategory === category
+      const matchesField = field === "all" || cardField === field
 
-      if (matchesSearch && matchesCategory) {
+      if (matchesSearch && matchesField) {
         card.classList.remove("hidden")
       } else {
         card.classList.add("hidden")
@@ -64,7 +64,7 @@ export default class extends Controller {
 
   updateTabs() {
     this.tabTargets.forEach(tab => {
-      if (tab.dataset.category === this.categoryValue) {
+      if (tab.dataset.field === this.fieldValue) {
         tab.classList.remove("bg-white", "text-gray-600")
         tab.classList.add("bg-indigo-600", "text-white")
       } else {

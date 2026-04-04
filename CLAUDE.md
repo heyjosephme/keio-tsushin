@@ -11,7 +11,7 @@ The application uses modern Hotwire/Turbo stack with Tailwind CSS and **Phlex-Ra
 **Tech Stack:**
 - Ruby 4.0.0
 - Rails 8.1.2
-- Phlex-Rails 2.3.1 (Ruby-based view components, no ERB)
+- Phlex-Rails 2.4.0 (Ruby-based view components, no ERB)
 - Hotwire (Turbo + Stimulus)
 - Tailwind CSS 4.4.0
 - SQLite3 (using Solid adapters in production)
@@ -73,14 +73,14 @@ bin/kamal dbc                # Open database console on production
 ### Frontend Architecture
 - **View Layer:** Phlex-Rails (Ruby-based components, NO ERB templates)
   - Views: `app/views/` (Phlex components, not traditional ERB)
-  - Reusable components: `app/components/` (e.g., `Components::Calendar`)
+  - Reusable components: `app/components/` (Calendar, Footer, Layout, NavBar, PdfViewer)
   - Base classes: `Views::Base` and `Components::Base`
   - Production eager loading workaround configured in `config/initializers/phlex.rb`
 - **Asset Pipeline:** Propshaft (not Sprockets)
 - **JavaScript:** Import maps (no build step required for JS)
 - **CSS:** Tailwind CSS 4.4.0 with live reloading in development
 - **Hotwire:** Turbo for SPA-like navigation, Stimulus for JavaScript controllers
-- Stimulus controllers in `app/javascript/controllers/` (minimal usage currently)
+- Stimulus controllers in `app/javascript/controllers/` (calendar_cell, course_selector, pdf_viewer)
 
 ### Database Architecture (Production)
 Uses Rails 8's Solid adapters for production deployment on a single server:
@@ -98,7 +98,7 @@ The application uses a **hybrid data model** combining YAML-based catalog data w
 #### YAML-Based Models (Static Catalog Data)
 - **Course Model** (`app/models/course.rb`)
   - Data source: `config/courses.yml`
-  - 17 courses across 4 categories: required, elective, foreign_language, physical_education
+  - 19 courses across 5 fields: humanities, social, natural, foreign_language, economics
   - Types: distance, on_campus, both
   - Plain Ruby Object (not ActiveRecord)
 
@@ -109,6 +109,16 @@ The application uses a **hybrid data model** combining YAML-based catalog data w
   - Plain Ruby Object (not ActiveRecord)
 
 #### ActiveRecord Models (User Data)
+- **User** - Student accounts
+  - Fields: email_address, password_digest, major, enrolled_year, expected_graduation_year
+  - Has many enrollments, deadlines, and sessions
+  - Authentication via `has_secure_password`
+
+- **Session** - User login sessions
+  - Fields: user_id, ip_address, user_agent
+
+- **Current** - `ActiveSupport::CurrentAttributes` for request-scoped user/session
+
 - **Enrollment** - Student course enrollments
   - References Course and Season via keys
   - Status tracking: planned → report_submitted → exam_applied → completed
@@ -138,7 +148,7 @@ Local CI can be run with `bin/ci` which executes the same checks defined in `con
 - `config/deploy.yml` - Kamal deployment configuration
 - `config/importmap.rb` - JavaScript dependencies
 - `config/ci.rb` - Local CI pipeline steps (includes seed testing)
-- `config/courses.yml` - Course catalog data (17 courses)
+- `config/courses.yml` - Course catalog data (19 courses)
 - `config/seasons.yml` - Exam season schedules (2026-2027)
 - `config/initializers/phlex.rb` - Phlex-Rails configuration and eager loading workaround
 - `Procfile.dev` - Development processes (web + CSS watch)
@@ -168,20 +178,32 @@ This application uses **Phlex-Rails** instead of traditional ERB templates:
 - Stimulus controllers auto-load from `app/javascript/controllers/`
 - No build step required - importmap serves JS directly
 - Pin new JS packages with `bin/importmap pin <package-name>`
-- Minimal JavaScript usage currently (Turbo handles most interactivity)
+- Active Stimulus controllers: `calendar_cell` (deadline day-cell interaction), `course_selector` (course filtering), `pdf_viewer` (PDF document viewer with local storage)
 
 ## Application Features
 
+### Authentication & Profiles
+- Session-based authentication (`SessionsController`, `PasswordsController`)
+- User profile management (`ProfilesController`) with major selection
+
 ### Course Planner (`/courses`)
 - Kanban-style board organizing courses by exam season
-- Drag-and-drop between seasons (future enhancement)
+- Course detail page with syllabus/report page references
 - Status tracking: planned → report_submitted → exam_applied → completed
 - Days-until-deadline badges with color coding
+- Credit dashboard with completed courses tracked by field
+- Major-based course filtering
 
 ### Deadline Calendar (`/deadlines`)
 - Monthly calendar view showing report and exam deadlines
+- Clickable day cells for deadline interaction
 - Previous/next month navigation
 - Add custom deadlines for courses
+
+### PDF Viewer (`/courses/documents`)
+- Upload and view multiple subject report PDFs
+- Client-side PDF rendering with local storage
+- Stimulus-powered viewer component (`Components::PdfViewer`)
 
 ### Data Management
 - Courses defined in `config/courses.yml` (static catalog)

@@ -12,7 +12,10 @@ class Components::PdfViewer < Components::Base
       data: {
         controller: "pdf-viewer",
         pdf_viewer_key_value: @key,
-        pdf_viewer_page_value: @page
+        pdf_viewer_page_value: @page,
+        pdf_viewer_storage_mode_value: storage_mode,
+        pdf_viewer_upload_url_value: helpers.document_file_path(@key),
+        pdf_viewer_check_url_value: helpers.check_document_path(@key)
       }
     ) do
       render_upload_section
@@ -21,6 +24,10 @@ class Components::PdfViewer < Components::Base
   end
 
   private
+
+  def storage_mode
+    ENV.fetch("DOCUMENT_STORAGE", "browser")
+  end
 
   def render_upload_section
     # Hidden file input

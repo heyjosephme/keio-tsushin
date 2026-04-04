@@ -23,4 +23,10 @@ Rails.application.routes.draw do
   root "pages#home"
   get "about" => "pages#about"
   get "documents" => "pages#documents"
+
+  # Document storage API (server mode)
+  get "documents/check/:key" => "documents#check", as: :check_document
+  get "documents/file/:key" => "documents#show", as: :document_file
+  post "documents/file/:key" => "documents#create"
+  delete "documents/file/:key" => "documents#destroy"
 end

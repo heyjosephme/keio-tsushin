@@ -3,7 +3,7 @@ import Dexie from "dexie"
 
 // window.pdfjsLib is loaded globally from CDN in application layout
 
-// Initialize IndexedDB
+// Initialize IndexedDB (used only in browser mode)
 const db = new Dexie("KeioTsushinPDFs")
 db.version(1).stores({
   pdfs: "key"
@@ -11,10 +11,20 @@ db.version(1).stores({
 
 export default class extends Controller {
   static targets = ["fileInput", "modal", "canvas", "emptyState", "uploadedState", "pageInfo", "container"]
-  static values = { key: String, page: { type: Number, default: 1 } }
+  static values = {
+    key: String,
+    page: { type: Number, default: 1 },
+    storageMode: { type: String, default: "browser" },
+    uploadUrl: String,
+    checkUrl: String
+  }
 
   pdfDoc = null
   currentPage = 1
+
+  get isServerMode() {
+    return this.storageModeValue === "server"
+  }
 
   connect() {
     this.checkExistingPdf()
@@ -35,9 +45,13 @@ export default class extends Controller {
   }
 
   async checkExistingPdf() {
-    const pdf = await db.pdfs.get(this.keyValue)
-    if (pdf) {
-      this.showUploadedState()
+    if (this.isServerMode) {
+      const response = await fetch(this.checkUrlValue)
+      const { exists } = await response.json()
+      if (exists) this.showUploadedState()
+    } else {
+      const pdf = await db.pdfs.get(this.keyValue)
+      if (pdf) this.showUploadedState()
     }
   }
 
@@ -49,18 +63,40 @@ export default class extends Controller {
     }
 
     try {
-      const arrayBuffer = await file.arrayBuffer()
-      await db.pdfs.put({
-        key: this.keyValue,
-        data: arrayBuffer,
-        name: file.name,
-        uploadedAt: new Date().toISOString()
-      })
+      if (this.isServerMode) {
+        await this.uploadToServer(file)
+      } else {
+        await this.uploadToBrowser(file)
+      }
       this.showUploadedState()
     } catch (error) {
       console.error("Failed to save PDF:", error)
       alert("Failed to save PDF")
     }
+  }
+
+  async uploadToServer(file) {
+    const formData = new FormData()
+    formData.append("file", file)
+
+    const csrfToken = document.querySelector("meta[name='csrf-token']")?.content
+    const response = await fetch(this.uploadUrlValue, {
+      method: "POST",
+      headers: { "X-CSRF-Token": csrfToken },
+      body: formData
+    })
+
+    if (!response.ok) throw new Error(`Upload failed: ${response.status}`)
+  }
+
+  async uploadToBrowser(file) {
+    const arrayBuffer = await file.arrayBuffer()
+    await db.pdfs.put({
+      key: this.keyValue,
+      data: arrayBuffer,
+      name: file.name,
+      uploadedAt: new Date().toISOString()
+    })
   }
 
   triggerUpload() {
@@ -77,17 +113,19 @@ export default class extends Controller {
   }
 
   async view() {
-    const record = await db.pdfs.get(this.keyValue)
-    if (!record) {
-      alert("PDF not found. Please upload first.")
-      return
-    }
-
     try {
+      const pdfData = this.isServerMode
+        ? await this.loadFromServer()
+        : await this.loadFromBrowser()
+
+      if (!pdfData) {
+        alert("PDF not found. Please upload first.")
+        return
+      }
+
       // Configure cMaps and fonts for Japanese text rendering
-      // Using jsdelivr CDN (has proper CORS headers)
       this.pdfDoc = await window.pdfjsLib.getDocument({
-        data: record.data,
+        data: pdfData,
         cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/",
         cMapPacked: true,
         standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/standard_fonts/"
@@ -99,6 +137,17 @@ export default class extends Controller {
       console.error("Failed to load PDF:", error)
       alert("Failed to load PDF")
     }
+  }
+
+  async loadFromServer() {
+    const response = await fetch(this.uploadUrlValue)
+    if (!response.ok) return null
+    return await response.arrayBuffer()
+  }
+
+  async loadFromBrowser() {
+    const record = await db.pdfs.get(this.keyValue)
+    return record?.data || null
   }
 
   async renderPage(pageNum) {
@@ -155,17 +204,35 @@ export default class extends Controller {
   }
 
   async remove() {
-    if (!confirm("Remove this PDF from local storage?")) return
+    const message = this.isServerMode
+      ? "Remove this PDF from the server?"
+      : "Remove this PDF from local storage?"
 
-    await db.pdfs.delete(this.keyValue)
-    if (this.hasUploadedStateTarget) {
-      this.uploadedStateTarget.classList.add("hidden")
-    }
-    if (this.hasEmptyStateTarget) {
-      this.emptyStateTarget.classList.remove("hidden")
-    }
-    if (this.hasFileInputTarget) {
-      this.fileInputTarget.value = ""
+    if (!confirm(message)) return
+
+    try {
+      if (this.isServerMode) {
+        const csrfToken = document.querySelector("meta[name='csrf-token']")?.content
+        await fetch(this.uploadUrlValue, {
+          method: "DELETE",
+          headers: { "X-CSRF-Token": csrfToken }
+        })
+      } else {
+        await db.pdfs.delete(this.keyValue)
+      }
+
+      if (this.hasUploadedStateTarget) {
+        this.uploadedStateTarget.classList.add("hidden")
+      }
+      if (this.hasEmptyStateTarget) {
+        this.emptyStateTarget.classList.remove("hidden")
+      }
+      if (this.hasFileInputTarget) {
+        this.fileInputTarget.value = ""
+      }
+    } catch (error) {
+      console.error("Failed to remove PDF:", error)
+      alert("Failed to remove PDF")
     }
   }
 }

@@ -1,0 +1,50 @@
+# Keio Tsushin Exam Timetable
+#
+# Exams are held over Saturday and Sunday of the exam period.
+# Each course belongs to an exam group (A-F), and the group
+# determines the day and time slot.
+#
+# Season types:
+#   apr_jul: April and July exam sessions
+#   oct_jan: October and January exam sessions
+#
+# Groups rotate between season types (A-F for apr_jul, F-A for oct_jan).
+
+exam_groups:
+  - A
+  - B
+  - C
+  - D
+  - E
+  - F
+
+time_slots:
+  - day: saturday
+    time: "13:00-14:00"
+  - day: saturday
+    time: "14:45-15:45"
+  - day: saturday
+    time: "16:30-17:30"
+  - day: sunday
+    time: "9:30-10:30"
+  - day: sunday
+    time: "11:15-12:15"
+  - day: sunday
+    time: "13:00-14:00"
+
+# Maps group to time slot index for each season type
+schedule:
+  apr_jul:
+    A: 0  # Sat 13:00-14:00
+    B: 1  # Sat 14:45-15:45
+    C: 2  # Sat 16:30-17:30
+    D: 3  # Sun 9:30-10:30
+    E: 4  # Sun 11:15-12:15
+    F: 5  # Sun 13:00-14:00
+  oct_jan:
+    F: 0  # Sat 13:00-14:00
+    E: 1  # Sat 14:45-15:45
+    D: 2  # Sat 16:30-17:30
+    C: 3  # Sun 9:30-10:30
+    B: 4  # Sun 11:15-12:15
+    A: 5  # Sun 13:00-14:00

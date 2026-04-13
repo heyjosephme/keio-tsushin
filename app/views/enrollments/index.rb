@@ -83,6 +83,9 @@ module Views
               class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
             )
           end
+
+          # Exam schedule preview
+          render_exam_schedule(season, enrollments) if enrollments.any?
         end
       end
 
@@ -201,6 +204,74 @@ module Views
             class: "text-xs text-red-600 hover:text-red-800",
             data: { turbo_confirm: "Remove this course?" }
           ) { "Remove" }
+        end
+      end
+
+      def render_exam_schedule(season, enrollments)
+        schedule = ExamTimetable.schedule_for(enrollments: enrollments, season: season)
+        conflicts = ExamTimetable.conflicts_for(enrollments: enrollments)
+
+        # Only show if at least one course has an exam group assigned
+        return if schedule.empty? && conflicts.empty?
+
+        div(class: "px-4 pb-4 border-t border-gray-200") do
+          h3(class: "text-xs font-semibold text-gray-500 uppercase tracking-wide pt-3 pb-2") { "Exam Schedule" }
+
+          # Conflict warnings
+          render_exam_conflicts(conflicts, season) if conflicts.any?
+
+          # Schedule table
+          if schedule.any?
+            div(class: "space-y-1.5") do
+              current_day = nil
+
+              schedule.each do |entry|
+                slot = entry[:slot]
+
+                # Day separator
+                if slot.day != current_day
+                  current_day = slot.day
+                  div(class: "flex items-center gap-1.5 mt-2 first:mt-0") do
+                    span(class: "text-xs font-medium text-gray-700") do
+                      slot.day_label
+                    end
+                    span(class: "text-xs text-gray-400") do
+                      slot.day == "saturday" ? season.exam_start.strftime("%-m/%-d") : season.exam_end.strftime("%-m/%-d")
+                    end
+                  end
+                end
+
+                # Time slot with courses
+                div(class: "flex items-start gap-2 pl-2") do
+                  span(class: "text-xs text-gray-500 whitespace-nowrap w-20 shrink-0") { slot.time }
+                  div(class: "text-xs") do
+                    entry[:courses].each_with_index do |course, i|
+                      span(class: "text-gray-400") { ", " } if i > 0
+                      span(class: "text-gray-800") { course.name }
+                      span(class: "text-gray-400 ml-0.5") { "(#{slot.group}群)" }
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+
+      def render_exam_conflicts(conflicts, season)
+        conflicts.each do |group, group_enrollments|
+          slot = ExamTimetable.slot_for(group: group, season: season)
+          course_names = group_enrollments.map { |e| e.course&.name }.compact.join(", ")
+
+          div(class: "mb-2 rounded-md bg-amber-50 border border-amber-200 p-2") do
+            p(class: "text-xs text-amber-800") do
+              strong { "Conflict: " }
+              plain "#{course_names} are both in #{group}群"
+              if slot
+                plain " (#{slot.day_label} #{slot.time})"
+              end
+            end
+          end
         end
       end
     end

@@ -64,4 +64,9 @@ class Season
   def days_until_application_deadline
     (application_deadline - Date.today).to_i
   end
+
+  # April/July exams follow A→F order, October/January follow F→A order
+  def season_type
+    %w[4 7].include?(exam_start.month.to_s) ? "apr_jul" : "oct_jan"
+  end
 end

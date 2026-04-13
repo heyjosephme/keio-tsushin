@@ -3,7 +3,7 @@
 # Course represents a Keio Tsushin course from the catalog.
 # Data is loaded from config/courses.yml (not database).
 class Course
-  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references
+  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references, :exam_group
 
   FIELDS = %w[humanities social natural foreign_language economics].freeze
   TYPES = %w[distance on_campus both].freeze
@@ -18,6 +18,7 @@ class Course
     @type = data["type"]
     @majors = data["majors"] || [ "all" ]
     @references = data["references"] || {}
+    @exam_group = data["exam_group"]
   end
 
   class << self

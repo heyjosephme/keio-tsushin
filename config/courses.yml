@@ -13,6 +13,10 @@
 #   - on_campus: スクーリング (on-campus)
 #   - both: 両方
 #
+# Exam Groups (試験群):
+#   A-F groups determine exam day/time slot per season.
+#   See config/exam_timetable.yml for the schedule.
+#
 # Majors:
 #   - all: Common courses for all majors
 #   - economics: 経済学部
@@ -27,6 +31,7 @@ courses:
     credits: 2
     field: humanities
     type: distance
+    exam_group: E
     majors: [all]
     references:
       syllabus_page: 45
@@ -38,6 +43,7 @@ courses:
     credits: 2
     field: humanities
     type: distance
+    exam_group: B
     majors: [all]
 
   lit101:
@@ -54,6 +60,7 @@ courses:
     credits: 2
     field: humanities
     type: distance
+    exam_group: A
     majors: [all]
 
   hist102:
@@ -62,6 +69,7 @@ courses:
     credits: 2
     field: humanities
     type: distance
+    exam_group: E
     majors: [all]
 
   art101:
@@ -79,6 +87,7 @@ courses:
     credits: 4
     field: social
     type: distance
+    exam_group: A
     majors: [all]
 
   law102:
@@ -87,6 +96,7 @@ courses:
     credits: 4
     field: social
     type: distance
+    exam_group: D
     majors: [law, economics]
 
   econ101:
@@ -95,6 +105,7 @@ courses:
     credits: 4
     field: economics
     type: distance
+    exam_group: A
     majors: [economics]
     references:
       syllabus_page: 78
@@ -106,6 +117,7 @@ courses:
     credits: 2
     field: social
     type: distance
+    exam_group: E
     majors: [all]
 
   # Natural Sciences (自然科学分野)
@@ -115,6 +127,7 @@ courses:
     credits: 2
     field: natural
     type: distance
+    exam_group: D
     majors: [all]
 
   stat101:
@@ -123,6 +136,7 @@ courses:
     credits: 2
     field: economics
     type: distance
+    exam_group: D
     majors: [economics]
 
   sci101:
@@ -140,6 +154,7 @@ courses:
     credits: 2
     field: foreign_language
     type: distance
+    exam_group: D
     majors: [all]
 
   eng102:
@@ -148,6 +163,7 @@ courses:
     credits: 2
     field: foreign_language
     type: distance
+    exam_group: B
     majors: [all]
 
   eng103:
@@ -156,6 +172,7 @@ courses:
     credits: 2
     field: foreign_language
     type: distance
+    exam_group: F
     majors: [all]
 
   eng107:
@@ -164,6 +181,7 @@ courses:
     credits: 2
     field: foreign_language
     type: distance
+    exam_group: E
     majors: [all]
 
   ger101:
@@ -172,6 +190,7 @@ courses:
     credits: 2
     field: foreign_language
     type: distance
+    exam_group: B
     majors: [all]
 
   fra101:
@@ -180,4 +199,5 @@ courses:
     credits: 2
     field: foreign_language
     type: distance
+    exam_group: B
     majors: [all]

@@ -37,8 +37,8 @@ module Views
         div(class: "mb-8 flex justify-between items-center") do
           h1(class: "text-3xl font-bold text-gray-900") { "Course Planner" }
           link_to(
-            "+ Add Course",
-            new_enrollment_path,
+            "Browse Catalog",
+            catalog_path,
             class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
           )
         end
@@ -79,7 +79,7 @@ module Views
             # Add course to this season
             link_to(
               "+ Add",
-              new_enrollment_path(season_key: season.key),
+              catalog_path,
               class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
             )
           end

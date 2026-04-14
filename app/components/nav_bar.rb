@@ -29,7 +29,8 @@ class Components::NavBar < Components::Base
   def render_nav_links
     div(class: "hidden sm:flex sm:items-center sm:space-x-4") do
       nav_link("Deadlines", deadlines_path)
-      nav_link("Courses", enrollments_path)
+      nav_link("Catalog", catalog_path)
+      nav_link("My Plan", enrollments_path)
       nav_link("Dashboard", dashboard_enrollments_path)
       nav_link("Documents", documents_path)
       nav_link("About", about_path)

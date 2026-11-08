@@ -29,7 +29,7 @@ A Rails 8.1 application for managing Keio University distance learning course en
 
 - Ruby 4.0.0
 - SQLite3
-- Bundler 4.0.3
+- Bundler 4.0.24
 - [mkcert](https://github.com/FiloSottile/mkcert) for local HTTPS (optional): `brew install mkcert && mkcert -install`
 
 ### Initial Setup

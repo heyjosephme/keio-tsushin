@@ -8,13 +8,17 @@ A Rails 8.1 application for managing Keio University distance learning course en
 - **Deadline Calendar**: Monthly calendar view for tracking report and exam deadlines
 - **Status Tracking**: Monitor progress from planning through completion (planned → report submitted → exam applied → completed)
 - **Exam Season Management**: Track application and report deadlines across multiple exam periods
+- **Course Catalog**: Browse courses by field, filtered to your major, and add them to your plan
+- **Exam Timetable**: Preview each season's exam schedule for your courses, with a warning when two of them share an exam slot
+- **Credit Dashboard**: Completed, in-progress, and planned credits, broken down by field
+- **Study Documents**: Upload the syllabus, study handbook, and report-topic PDFs and read them in the app; courses with page references link straight to the right page
 
 ## Tech Stack
 
 - **Ruby**: 4.0.0
-- **Rails**: 8.1.2
-- **View Layer**: Phlex-Rails 2.3.1 (Ruby-based components, no ERB)
-- **Frontend**: Hotwire (Turbo + Stimulus), Tailwind CSS 4.4.0
+- **Rails**: 8.1
+- **View Layer**: Phlex-Rails 2.4 (Ruby-based views and components; ERB only for the HTML layout and mailers)
+- **Frontend**: Hotwire (Turbo + Stimulus), Tailwind CSS 4
 - **Database**: SQLite3 with Solid adapters (Cache, Queue, Cable)
 - **JavaScript**: Import maps (no Node.js/npm required)
 - **Deployment**: Kamal with Docker containers
@@ -40,7 +44,7 @@ Visit http://localhost:3000
 
 ```bash
 bin/rails db:migrate              # Run migrations
-bin/rails db:seed                 # Load sample data
+bin/rails db:seed                 # Replace all users and their data with a demo account (student@example.com / password123)
 bin/rails db:seed:replant         # Reset and reseed database
 ```
 
@@ -76,7 +80,7 @@ bin/importmap audit  # Check JS dependencies for vulnerabilities
 
 ### View Layer - Phlex Components
 
-This application uses **Phlex-Rails** for all views (no ERB templates):
+This application uses **Phlex-Rails** for all page views and components (ERB remains only for the outer HTML layout and mailer templates):
 
 - **Views**: `app/views/` - Page-level Phlex components
 - **Components**: `app/components/` - Reusable Phlex components
@@ -85,8 +89,8 @@ This application uses **Phlex-Rails** for all views (no ERB templates):
 Example view rendering:
 ```ruby
 # Controller
-def index
-  render Views::Enrollments::Index.new(enrollments: @enrollments)
+def new
+  render Views::Deadlines::New.new(deadline: @deadline)
 end
 ```
 
@@ -95,13 +99,16 @@ end
 The application uses a hybrid data model:
 
 #### YAML-Based Catalog Data (Static)
-- **Courses** (`config/courses.yml`): 17 courses across 4 categories
-  - Categories: required, elective, foreign_language, physical_education
+- **Courses** (`config/courses.yml`): Course catalog, grouped by field
+  - Fields: humanities, social, natural, foreign_language, economics
   - Types: distance, on_campus, both
+  - Optional: exam group (A–F), eligible majors, syllabus/report page references
 - **Seasons** (`config/seasons.yml`): Exam seasons 2026-2027
   - Tracks: report_deadline, application_deadline, exam_start, exam_end
+- **Exam Timetable** (`config/exam_timetable.yml`): Maps exam groups to Saturday/Sunday time slots
 
 #### Database Models (User Data)
+- **User** / **Session**: Accounts and sign-in sessions (Rails 8 built-in authentication)
 - **Enrollment**: Student course enrollments with status tracking
 - **Deadline**: Custom deadlines for reports and exams
 
@@ -109,7 +116,7 @@ The application uses a hybrid data model:
 
 - **Hotwire Turbo**: SPA-like navigation without page reloads
 - **Stimulus**: Minimal JavaScript controllers (in `app/javascript/controllers/`)
-- **Tailwind CSS 4.4.0**: Utility-first CSS with live reloading
+- **Tailwind CSS 4**: Utility-first CSS with live reloading
 - **Propshaft**: Asset pipeline (not Sprockets)
 - **Import Maps**: JavaScript dependencies without build step
 
@@ -135,7 +142,7 @@ bin/kamal dbc          # Open database console on production
 
 ### Production Architecture
 
-- **Web Server**: Thruster 0.1.17 (wraps Puma, handles HTTP/2, caching, compression)
+- **Web Server**: Thruster (wraps Puma, handles HTTP/2, caching, compression)
 - **Background Jobs**: Solid Queue (runs in Puma process via `SOLID_QUEUE_IN_PUMA=true`)
 - **Caching**: Solid Cache (database-backed)
 - **WebSockets**: Solid Cable (database-backed)
@@ -144,11 +151,14 @@ bin/kamal dbc          # Open database console on production
 ## Configuration Files
 
 - `config/deploy.yml` - Kamal deployment configuration
-- `config/courses.yml` - Course catalog (17 courses)
+- `config/courses.yml` - Course catalog
 - `config/seasons.yml` - Exam season schedules
+- `config/exam_timetable.yml` - Exam group time slots
 - `config/importmap.rb` - JavaScript dependencies
 - `config/initializers/phlex.rb` - Phlex configuration with eager loading workaround
 - `config/ci.rb` - Local CI pipeline steps
+
+The `DOCUMENT_STORAGE` environment variable sets where uploaded PDFs are kept: `browser` (IndexedDB, the default) or `server` (Active Storage).
 
 ## CI/CD Pipeline
 

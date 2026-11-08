@@ -15,7 +15,7 @@ A Rails 8.1 application for managing Keio University distance learning course en
 
 ## Tech Stack
 
-- **Ruby**: 4.0.0
+- **Ruby**: 4.0.9
 - **Rails**: 8.1
 - **View Layer**: Phlex-Rails 2.4 (Ruby-based views and components; ERB only for the HTML layout and mailers)
 - **Frontend**: Hotwire (Turbo + Stimulus), Tailwind CSS 4
@@ -27,7 +27,7 @@ A Rails 8.1 application for managing Keio University distance learning course en
 
 ### Prerequisites
 
-- Ruby 4.0.0
+- Ruby 4.0.9
 - SQLite3
 - Bundler 4.0.24
 - [mkcert](https://github.com/FiloSottile/mkcert) for local HTTPS (optional): `brew install mkcert && mkcert -install`

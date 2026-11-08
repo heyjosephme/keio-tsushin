@@ -41,7 +41,9 @@ gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.2"
-gem "ruby-vips" # image_processing 2 no longer installs it; Active Storage processes variants with vips
+# image_processing 2 no longer installs ruby-vips. Active Storage loads it only when processing
+# images, so don't require it at boot: machines without libvips (like CI runners) couldn't boot.
+gem "ruby-vips", require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

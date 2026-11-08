@@ -30,6 +30,7 @@ A Rails 8.1 application for managing Keio University distance learning course en
 - Ruby 4.0.0
 - SQLite3
 - Bundler 4.0.3
+- [mkcert](https://github.com/FiloSottile/mkcert) for local HTTPS (optional): `brew install mkcert && mkcert -install`
 
 ### Initial Setup
 
@@ -38,7 +39,7 @@ bin/setup              # Install dependencies and prepare database
 bin/dev                # Start development server with Tailwind watch
 ```
 
-Visit http://localhost:3000
+Visit https://keio-tsushin.localhost:3000 (plain `http://` if mkcert isn't installed). You're signed in automatically as the seeded demo user, `student@example.com`; run `AUTO_LOGIN_EMAIL= bin/dev` to see the sign-in form instead.
 
 ### Database Setup
 
@@ -53,7 +54,7 @@ bin/rails db:seed:replant         # Reset and reseed database
 ### Running the Application
 
 ```bash
-bin/dev                # Start server with Tailwind CSS watch (recommended)
+bin/dev                # HTTPS server + Tailwind CSS watch, signed in as the demo user (recommended)
 bin/rails server       # Start Rails server only
 bin/rails console      # Open Rails console
 ```

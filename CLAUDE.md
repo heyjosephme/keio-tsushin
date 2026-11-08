@@ -12,7 +12,7 @@ Stack: Ruby 4.0, Rails 8.1, Phlex-Rails 2.4 (all page views and components), Hot
 
 ```bash
 bin/setup                  # bundle, db:prepare, then exec bin/dev (--skip-server to stop before; --reset adds db:reset)
-bin/dev                    # Rails server + Tailwind watcher (Procfile.dev)
+bin/dev                    # https://keio-tsushin.localhost:3000 + Tailwind watcher, signed in as the demo user
 bin/rails test             # all tests except system tests
 bin/rails test test/controllers/enrollments_controller_test.rb      # one file
 bin/rails test test/controllers/enrollments_controller_test.rb:19   # one test, by line
@@ -36,6 +36,8 @@ bin/kamal deploy           # deploy; aliases: bin/kamal console | shell | logs |
 8. `RAILS_ENV=test bin/rails db:seed:replant`
 
 GitHub Actions (`.github/workflows/ci.yml`) runs the same checks as five parallel jobs, minus the seed step.
+
+`bin/dev` gets its certificate from mkcert (issued into `tmp/certs/` on first run) and hands it to Puma through the `BINDING` env var, which `bin/rails server` reads. Without mkcert it serves plain HTTP on the same host. It stays on port 3000 because macOS lets non-root processes bind 443 only on all interfaces, which would expose the dev server to the LAN.
 
 ## Architecture
 
@@ -81,6 +83,8 @@ Two or more enrolled courses in the same group in one season are a conflict (`Ex
 ### Authentication and data scoping
 
 The app uses Rails 8's generated authentication (`app/controllers/concerns/authentication.rb`, `Current.session` / `Current.user`). Every controller requires login unless it calls `allow_unauthenticated_access`, and `PagesController` is fully public. Always reach user data through `Current.user.enrollments`, `.deadlines`, or `.documents`. That scoping is the only authorization layer.
+
+In development, `start_auto_login_session` signs local requests in as `ENV["AUTO_LOGIN_EMAIL"]`, which `bin/dev` sets to `student@example.com` by default. Signing out therefore doesn't stick; run `AUTO_LOGIN_EMAIL= bin/dev` when working on the sign-in flow. It never activates outside development (`test/integration/auto_login_test.rb`).
 
 ### Document storage (two modes)
 

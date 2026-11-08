@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+cd "$(dirname "$0")/.."
+
 if ! gem list foreman -i --silent; then
   echo "Installing foreman..."
   gem install foreman
@@ -7,6 +9,32 @@ fi
 
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
+
+# Serve https://keio-tsushin.localhost:$PORT with a locally trusted mkcert certificate.
+# *.localhost always resolves to this machine, and Rails allows it in development.
+# (On macOS, port 443 would need root or binding every network interface.)
+host="keio-tsushin.localhost"
+if command -v mkcert >/dev/null 2>&1; then
+  cert="tmp/certs/$host.pem"
+  key="tmp/certs/$host-key.pem"
+  # Issue the certificate if it's missing or expires within a day
+  if ! openssl x509 -checkend 86400 -noout -in "$cert" >/dev/null 2>&1; then
+    mkdir -p tmp/certs
+    mkcert -cert-file "$cert" -key-file "$key" "$host" localhost 127.0.0.1 ::1
+  fi
+  # bin/rails server reads BINDING; Puma binds "localhost" to 127.0.0.1 and ::1 only
+  export BINDING="ssl://localhost:$PORT?key=$key&cert=$cert"
+  url="https://$host:$PORT"
+else
+  echo "Serving plain HTTP. For HTTPS, run once: brew install mkcert && mkcert -install"
+  url="http://$host:$PORT"
+fi
+
+# Sign local requests in as the seeded demo user (development only; see
+# Authentication#start_auto_login_session). Run `AUTO_LOGIN_EMAIL= bin/dev` for the sign-in form.
+export AUTO_LOGIN_EMAIL="${AUTO_LOGIN_EMAIL-student@example.com}"
+
+echo "==> $url${AUTO_LOGIN_EMAIL:+ (signed in as $AUTO_LOGIN_EMAIL)}"
 
 # Let the debug gem allow remote connections,
 # but avoid loading until `debugger` is called

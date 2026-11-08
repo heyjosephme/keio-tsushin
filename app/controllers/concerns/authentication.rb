@@ -22,11 +22,24 @@ module Authentication
     end
 
     def resume_session
-      Current.session ||= find_session_by_cookie
+      Current.session ||= find_session_by_cookie || start_auto_login_session
     end
 
     def find_session_by_cookie
       Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    end
+
+    # Development only: bin/dev sets AUTO_LOGIN_EMAIL so local requests skip the sign-in form.
+    def start_auto_login_session
+      email = ENV["AUTO_LOGIN_EMAIL"].presence
+      return unless email && Rails.env.development? && request.local?
+
+      if (user = User.find_by(email_address: email))
+        start_new_session_for(user)
+      else
+        Rails.logger.warn("Auto-login skipped: no user with email #{email}")
+        nil
+      end
     end
 
     def request_authentication

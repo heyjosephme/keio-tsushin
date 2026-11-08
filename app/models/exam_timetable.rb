@@ -57,7 +57,7 @@ class ExamTimetable
         next unless slot
 
         { slot: slot, courses: group_enrollments.map(&:course).compact }
-      end.compact.sort_by { |entry| [entry[:slot].day == "saturday" ? 0 : 1, entry[:slot].time] }
+      end.compact.sort_by { |entry| [ entry[:slot].day == "saturday" ? 0 : 1, entry[:slot].time ] }
     end
 
     # Detect conflicts: multiple courses in the same exam group

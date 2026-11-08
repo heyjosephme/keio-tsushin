@@ -50,15 +50,17 @@ user.deadlines.create!([
 ])
 puts "Created #{Deadline.count} sample deadlines"
 
-# Sample enrollments
+# Sample enrollments (keys must exist in config/courses.yml). Fewer than three
+# upcoming seasons may be left in config/seasons.yml, so wrap around.
 seasons = Season.upcoming(4).map(&:key)
 if seasons.any? && Course.all.any?
+  first, second, third = seasons.cycle.first(3)
   user.enrollments.create!([
-    { course_key: "philosophy", season_key: seasons[0], status: "planned" },
-    { course_key: "logic", season_key: seasons[0], status: "report_submitted" },
-    { course_key: "english_i", season_key: seasons[1], status: "planned" },
-    { course_key: "economics", season_key: seasons[1], status: "exam_applied" },
-    { course_key: "constitutional_law", season_key: seasons[2], status: "completed" }
+    { course_key: "phil101", season_key: first, status: "planned" },
+    { course_key: "logic101", season_key: first, status: "report_submitted" },
+    { course_key: "eng101", season_key: second, status: "planned" },
+    { course_key: "econ101", season_key: second, status: "exam_applied" },
+    { course_key: "law101", season_key: third, status: "completed" }
   ])
   puts "Created #{Enrollment.count} sample enrollments"
 end

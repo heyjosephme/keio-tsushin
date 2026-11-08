@@ -3,6 +3,7 @@
 module Views
   module Catalog
     class Index < Views::Base
+      include Phlex::Rails::Helpers::Flash
       include Phlex::Rails::Helpers::LinkTo
 
       def initialize(courses:, field:, exclude_enrolled:, enrolled_keys:)
@@ -16,6 +17,7 @@ module Views
         render Components::Layout.new do
           div(class: "py-8") do
             div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
+              render_flash_messages
               render_header
               render_filters
               render_course_grid
@@ -25,6 +27,20 @@ module Views
       end
 
       private
+
+      def render_flash_messages
+        if flash[:notice]
+          div(class: "mb-4 rounded-md bg-green-50 p-4") do
+            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          end
+        end
+
+        if flash[:alert]
+          div(class: "mb-4 rounded-md bg-red-50 p-4") do
+            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          end
+        end
+      end
 
       def render_header
         div(class: "mb-6") do

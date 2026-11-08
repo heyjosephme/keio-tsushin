@@ -4,6 +4,8 @@ class Components::NavBar < Components::Base
   include Phlex::Rails::Helpers::LinkTo
   include Phlex::Rails::Helpers::ButtonTo
 
+  register_value_helper :authenticated?
+
   def view_template
     nav(class: "bg-white shadow-sm") do
       div(class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8") do
@@ -39,7 +41,7 @@ class Components::NavBar < Components::Base
 
   def render_auth_section
     div(class: "flex items-center gap-4") do
-      if helpers.authenticated?
+      if authenticated?
         link_to(
           Current.user.name.presence || Current.user.email_address,
           profile_path,

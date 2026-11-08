@@ -131,7 +131,7 @@ module Views
           div(class: "space-y-3") do
             if @course.syllabus_page
               link_to(
-                helpers.documents_path(pdf: "syllabus", page: @course.syllabus_page),
+                documents_path(pdf: "syllabus", page: @course.syllabus_page),
                 class: "flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
               ) do
                 span(class: "text-lg") { "📄" }
@@ -144,7 +144,7 @@ module Views
 
             if @course.report_page
               link_to(
-                helpers.documents_path(pdf: @course.report_pdf, page: @course.report_page),
+                documents_path(pdf: @course.report_pdf, page: @course.report_page),
                 class: "flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
               ) do
                 span(class: "text-lg") { "📝" }

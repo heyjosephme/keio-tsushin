@@ -9,6 +9,16 @@ class Course
   TYPES = %w[distance on_campus both].freeze
   MAJORS = %w[economics law literature].freeze
 
+  # Report-topic PDF slots on the Documents page (Views::Pages::Documents). Not derived
+  # from the field name: foreign-language PDFs are stored under "reports_foreign_lang".
+  REPORT_PDF_KEYS = {
+    "humanities" => "reports_humanities",
+    "social" => "reports_social",
+    "natural" => "reports_natural",
+    "foreign_language" => "reports_foreign_lang",
+    "economics" => "reports_economics"
+  }.freeze
+
   def initialize(key:, data:)
     @key = key
     @name = data["name"]
@@ -84,7 +94,7 @@ class Course
   end
 
   def report_pdf
-    "reports_#{field}" if field
+    REPORT_PDF_KEYS[field]
   end
 
   def available_for_major?(major)

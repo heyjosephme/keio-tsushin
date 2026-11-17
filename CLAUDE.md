@@ -49,7 +49,7 @@ Controller names don't match the URLs. Check this table before editing a page:
 |---|---|---|
 | `/courses`, `/courses/:id`, `/courses/new`, `/courses/dashboard` | `EnrollmentsController` → `Views::Enrollments::*` (`resources :enrollments, path: "courses"`) | The user's plan: kanban board by season, enrollment detail (`:id` is an Enrollment id), credit dashboard |
 | `/catalog`, `/catalog/:key` | `CoursesController` → `Views::Catalog::*` | Browse the YAML course catalog; `:key` is a course key like `phil101` |
-| `/deadlines` | `DeadlinesController` | Monthly calendar (`Components::Calendar`) |
+| `/deadlines` | `DeadlinesController` (index only) | Read-only monthly calendar (`Components::Calendar`) of season dates |
 | `/documents` | `PagesController#documents` | PDF upload/viewer page |
 | `/documents/check/:key`, `/documents/file/:key` | `DocumentsController` | JSON/file API the PDF viewer uses in server mode |
 
@@ -57,7 +57,7 @@ Route helpers follow the resource names, not the URLs. For example, `enrollments
 
 ### Hybrid data model: YAML catalogs + ActiveRecord user data
 
-- `Course` (`config/courses.yml`), `Season` (`config/seasons.yml`), and `ExamTimetable` (`config/exam_timetable.yml`) are plain Ruby classes loaded from YAML. Each file's header comment documents its schema. ActiveRecord holds only per-user data: `User`, `Session`, `Enrollment`, `Deadline`, and Active Storage attachments.
+- `Course` (`config/courses.yml`), `Season` (`config/seasons.yml`), and `ExamTimetable` (`config/exam_timetable.yml`) are plain Ruby classes loaded from YAML. Each file's header comment documents its schema. ActiveRecord holds only per-user data: `User`, `Session`, `Enrollment`, and Active Storage attachments.
 - `Enrollment` stores `course_key`, `season_key`, and `status` (`planned → report_submitted → exam_applied → completed`). It finds its course and season (`#course`, `#season`) by YAML lookup and delegates `name`, `credits`, and `field` to the course.
   - The keys aren't validated against the catalogs. An unknown key saves fine, and then `enrollment.course` and the delegated methods return `nil`, so use `&.`.
   - Credit totals (`Enrollment.credit_stats`, `.credits_by_field`) are computed in Ruby because credits and field live in YAML. They can't be done in SQL, and the `by_field` scope does nothing.
@@ -78,11 +78,11 @@ Two or more enrolled courses in the same group in one season are a conflict (`Ex
 
 ### Deadlines calendar
 
-`DeadlinesController#index` merges the user's `Deadline` records with `SeasonDeadline` structs built from `seasons.yml`, which mimic the `Deadline` interface. These generated entries can have `deadline_type: "application"`, which the `Deadline` model itself rejects (it allows only `report`/`exam`).
+Deadlines are static and the same for every student: there is no `Deadline` model and no way for users to add or delete them. Everything comes from `config/seasons.yml` through `Season::Event` (`type` is `report`, `application`, or `exam`, with one `exam` event per day from `exam_start` to `exam_end`). `Season.events_in(range)` feeds the calendar, and `Season.next_event(type)` feeds `Components::NextDeadlines`, the widget on `/deadlines` and the planner board that shows the next report and exam application deadlines. To change or add a date, edit `seasons.yml`.
 
 ### Authentication and data scoping
 
-The app uses Rails 8's generated authentication (`app/controllers/concerns/authentication.rb`, `Current.session` / `Current.user`). Every controller requires login unless it calls `allow_unauthenticated_access`, and `PagesController` is fully public. Always reach user data through `Current.user.enrollments`, `.deadlines`, or `.documents`. That scoping is the only authorization layer.
+The app uses Rails 8's generated authentication (`app/controllers/concerns/authentication.rb`, `Current.session` / `Current.user`). Every controller requires login unless it calls `allow_unauthenticated_access`, and `PagesController` is fully public. Always reach user data through `Current.user.enrollments` or `.documents`. That scoping is the only authorization layer.
 
 In development, `start_auto_login_session` signs local requests in as `ENV["AUTO_LOGIN_EMAIL"]`, which `bin/dev` sets to `student@example.com` by default. Signing out therefore doesn't stick; run `AUTO_LOGIN_EMAIL= bin/dev` when working on the sign-in flow. It never activates outside development (`test/integration/auto_login_test.rb`).
 
@@ -116,7 +116,7 @@ pdf.js is **not** in the importmap. `app/views/layouts/application.html.erb` loa
 
 ## Seeds
 
-`db/seeds.rb` **deletes all users, sessions, enrollments, and deadlines**, then creates a demo account: `student@example.com` / `password123` (also printed on the sign-in page). Never run it against data you care about. With `DOCUMENT_STORAGE=server`, it also attaches any `db/seed_documents/<key>.pdf` files.
+`db/seeds.rb` **deletes all users, sessions, and enrollments**, then creates a demo account: `student@example.com` / `password123` (also printed on the sign-in page). Never run it against data you care about. With `DOCUMENT_STORAGE=server`, it also attaches any `db/seed_documents/<key>.pdf` files.
 
 ## Style
 

@@ -3,10 +3,21 @@
 class Components::Calendar < Components::Base
   DAYS_OF_WEEK = %w[Mon Tue Wed Thu Fri Sat Sun].freeze
 
-  def initialize(current_date:, deadlines:)
+  PILL_COLORS = {
+    "report" => "bg-blue-100 text-blue-700",
+    "application" => "bg-yellow-100 text-yellow-700",
+    "exam" => "bg-red-100 text-red-700"
+  }.freeze
+  DETAIL_COLORS = {
+    "report" => "border-blue-300 bg-blue-50",
+    "application" => "border-yellow-300 bg-yellow-50",
+    "exam" => "border-red-300 bg-red-50"
+  }.freeze
+
+  # events: Season::Event objects for the displayed month
+  def initialize(current_date:, events:)
     @current_date = current_date
-    @deadlines = deadlines
-    @deadlines_by_date = deadlines.group_by(&:deadline_date)
+    @events_by_date = events.group_by(&:date)
   end
 
   def view_template
@@ -61,67 +72,49 @@ class Components::Calendar < Components::Base
   def render_day(day)
     date = Date.new(@current_date.year, @current_date.month, day)
     is_today = date == Date.today
-    day_deadlines = @deadlines_by_date[date] || []
-    has_deadlines = day_deadlines.any?
+    day_events = @events_by_date[date] || []
+    has_events = day_events.any?
 
     div(
-      class: "relative h-24 border border-gray-100 rounded-lg p-1 #{is_today ? 'bg-indigo-50 border-indigo-300' : 'hover:bg-gray-50'} #{has_deadlines ? 'cursor-pointer' : ''}",
-      data: has_deadlines ? { controller: "calendar-cell", action: "click->calendar-cell#toggle" } : {}
+      class: "relative h-24 border border-gray-100 rounded-lg p-1 #{is_today ? 'bg-indigo-50 border-indigo-300' : 'hover:bg-gray-50'} #{has_events ? 'cursor-pointer' : ''}",
+      data: has_events ? { controller: "calendar-cell", action: "click->calendar-cell#toggle" } : {}
     ) do
       # Day number
       span(
         class: "text-sm font-medium #{is_today ? 'text-indigo-600' : 'text-gray-700'}"
       ) { day.to_s }
 
-      # Deadline indicators (summary)
-      if has_deadlines
+      if has_events
         div(class: "mt-1 space-y-1") do
-          day_deadlines.first(2).each do |deadline|
-            render_deadline_pill(deadline)
-          end
-          if day_deadlines.size > 2
-            span(class: "text-xs text-gray-500") { "+#{day_deadlines.size - 2} more" }
-          end
+          day_events.each { |event| render_event_pill(event) }
         end
 
         # Hidden details panel (shown on click)
-        render_day_details(date, day_deadlines)
+        render_day_details(date, day_events)
       end
     end
   end
 
-  def render_day_details(date, deadlines)
+  def render_day_details(date, events)
     div(
       class: "hidden absolute z-10 left-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-3",
       data: { calendar_cell_target: "details" }
     ) do
       h4(class: "font-medium text-gray-900 mb-2") { date.strftime("%B %d, %Y") }
       div(class: "space-y-2") do
-        deadlines.each do |deadline|
-          render_deadline_detail(deadline)
+        events.each do |event|
+          div(class: "border-l-2 pl-2 py-1 #{DETAIL_COLORS.fetch(event.type)}") do
+            p(class: "text-sm font-medium text-gray-900") { event.title }
+            p(class: "text-xs text-gray-600") { "#{event.season.name} exams" }
+          end
         end
       end
     end
   end
 
-  def render_deadline_detail(deadline)
-    color = case deadline.deadline_type
-    when "exam" then "border-red-300 bg-red-50"
-    when "application" then "border-yellow-300 bg-yellow-50"
-    else "border-blue-300 bg-blue-50"
-    end
-
-    div(class: "border-l-2 pl-2 py-1 #{color}") do
-      p(class: "text-sm font-medium text-gray-900") { deadline.course_name }
-      p(class: "text-xs text-gray-600") { deadline.description }
-      span(class: "text-xs text-gray-500 capitalize") { deadline.deadline_type }
-    end
-  end
-
-  def render_deadline_pill(deadline)
-    color = deadline.deadline_type == "exam" ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
-    div(class: "text-xs px-1 py-0.5 rounded truncate #{color}") do
-      deadline.course_name.truncate(15)
+  def render_event_pill(event)
+    div(class: "text-xs px-1 py-0.5 rounded truncate #{PILL_COLORS.fetch(event.type)}") do
+      event.short_title
     end
   end
 

@@ -20,6 +20,8 @@ module Views
               render_flash_messages
               render_header
 
+              div(class: "mb-6") { render Components::NextDeadlines.new }
+
               # Kanban board
               div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
                 @seasons.each do |season|

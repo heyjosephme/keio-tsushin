@@ -1,94 +1,20 @@
 class DeadlinesController < ApplicationController
+  # The calendar is read-only: every date comes from config/seasons.yml (see Season.events).
   def index
-    @year = (params[:year] || Date.today.year).to_i
-    @month = (params[:month] || Date.today.month).to_i
-    @current_date = Date.new(@year, @month, 1)
-
-    # User's custom deadlines
-    user_deadlines = current_user_deadlines.where(
-      deadline_date: @current_date.beginning_of_month..@current_date.end_of_month
-    )
-
-    # Season deadlines (report, application, exam)
-    season_deadlines = build_season_deadlines(@current_date)
-
-    @deadlines = (user_deadlines.to_a + season_deadlines).sort_by(&:deadline_date)
-    @upcoming_deadlines = current_user_deadlines.upcoming.limit(5)
+    @current_date = requested_month
 
     render Views::Deadlines::Index.new(
       current_date: @current_date,
-      deadlines: @deadlines,
-      upcoming: @upcoming_deadlines
+      events: Season.events_in(@current_date.all_month)
     )
-  end
-
-  def new
-    @deadline = current_user_deadlines.new
-    render Views::Deadlines::New.new(deadline: @deadline)
-  end
-
-  def create
-    @deadline = current_user_deadlines.new(deadline_params)
-
-    if @deadline.save
-      redirect_to deadlines_path, notice: "Deadline created successfully!"
-    else
-      render Views::Deadlines::New.new(deadline: @deadline), status: :unprocessable_entity
-    end
-  end
-
-  def destroy
-    @deadline = current_user_deadlines.find(params[:id])
-    @deadline.destroy
-    redirect_to deadlines_path, notice: "Deadline deleted."
   end
 
   private
 
-  def current_user_deadlines
-    Current.user.deadlines
-  end
-
-  def build_season_deadlines(current_date)
-    month_range = current_date.beginning_of_month..current_date.end_of_month
-    deadlines = []
-
-    Season.all.each do |season|
-      if month_range.cover?(season.report_deadline)
-        deadlines << SeasonDeadline.new(
-          deadline_date: season.report_deadline,
-          deadline_type: "report",
-          course_name: "All Courses",
-          description: "#{season.short_name} - Report submission deadline"
-        )
-      end
-
-      if month_range.cover?(season.application_deadline)
-        deadlines << SeasonDeadline.new(
-          deadline_date: season.application_deadline,
-          deadline_type: "application",
-          course_name: "All Courses",
-          description: "#{season.short_name} - Exam application deadline"
-        )
-      end
-
-      if month_range.cover?(season.exam_start)
-        deadlines << SeasonDeadline.new(
-          deadline_date: season.exam_start,
-          deadline_type: "exam",
-          course_name: "All Courses",
-          description: "#{season.short_name} - Exam period (#{season.exam_start.strftime('%b %d')}-#{season.exam_end.strftime('%d')})"
-        )
-      end
-    end
-
-    deadlines
-  end
-
-  # Simple struct for season deadlines (duck-types with Deadline model)
-  SeasonDeadline = Struct.new(:deadline_date, :deadline_type, :course_name, :description, keyword_init: true)
-
-  def deadline_params
-    params.require(:deadline).permit(:course_name, :deadline_date, :deadline_type, :description)
+  def requested_month
+    today = Date.today
+    Date.new((params[:year] || today.year).to_i, (params[:month] || today.month).to_i, 1)
+  rescue Date::Error
+    today.beginning_of_month
   end
 end

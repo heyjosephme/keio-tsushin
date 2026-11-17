@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       get :dashboard
     end
   end
-  resources :deadlines, only: [ :index, :new, :create, :destroy ]
+  resources :deadlines, only: :index
 
   # Course catalog (browse all courses before adding to plan)
   get "catalog" => "courses#index", as: :catalog

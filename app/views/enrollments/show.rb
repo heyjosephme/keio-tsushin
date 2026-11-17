@@ -7,12 +7,11 @@ module Views
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::Flash
 
-      def initialize(enrollment:, seasons:, deadlines:)
+      def initialize(enrollment:, seasons:)
         @enrollment = enrollment
         @course = enrollment.course
         @season = enrollment.season
         @seasons = seasons
-        @deadlines = deadlines
       end
 
       def view_template
@@ -25,7 +24,6 @@ module Views
               render_status_section
               render_season_section
               render_reference_links if @course&.has_references?
-              render_deadlines if @deadlines.any?
               render_danger_zone
             end
           end
@@ -222,24 +220,6 @@ module Views
         end
       end
 
-      def render_deadlines
-        div(class: "bg-white rounded-lg shadow p-6 mb-6") do
-          h2(class: "text-lg font-semibold text-gray-900 mb-4") { "Upcoming Deadlines" }
-
-          div(class: "space-y-3") do
-            @deadlines.each do |deadline|
-              div(class: "flex items-center justify-between p-3 bg-gray-50 rounded-lg") do
-                div do
-                  p(class: "text-sm font-medium text-gray-900") { deadline.description || deadline.deadline_type.titleize }
-                  p(class: "text-xs text-gray-500") { deadline.deadline_date.strftime("%B %d, %Y") }
-                end
-                render_deadline_type_badge(deadline.deadline_type)
-              end
-            end
-          end
-        end
-      end
-
       def render_danger_zone
         div(class: "bg-white rounded-lg shadow p-6 border border-red-100") do
           h2(class: "text-lg font-semibold text-gray-900 mb-2") { "Danger Zone" }
@@ -272,11 +252,6 @@ module Views
 
       def render_tag(text, color_class)
         span(class: "px-3 py-1 rounded-full text-sm font-medium #{color_class}") { text }
-      end
-
-      def render_deadline_type_badge(type)
-        color = type == "report" ? "bg-blue-100 text-blue-700" : "bg-red-100 text-red-700"
-        span(class: "px-2 py-1 rounded text-xs font-medium #{color}") { type.titleize }
       end
 
       def field_color(field)

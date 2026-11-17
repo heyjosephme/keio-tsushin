@@ -6,6 +6,22 @@ class Season
   attr_reader :key, :name, :short_name, :report_deadline,
               :application_deadline, :exam_start, :exam_end
 
+  # A dated entry on the deadlines calendar. Every event comes from config/seasons.yml
+  # and is the same for all students.
+  Event = Data.define(:season, :type, :date) do
+    def title
+      { "report" => "Report submission deadline", "application" => "Exam application deadline", "exam" => "Exam day" }.fetch(type)
+    end
+
+    def short_title
+      { "report" => "Report", "application" => "Apply", "exam" => "Exam" }.fetch(type)
+    end
+
+    def days_left(today = Date.today)
+      (date - today).to_i
+    end
+  end
+
   def initialize(key:, data:)
     @key = key.to_s  # YAML parses 2026_01 as integer, ensure string
     @name = data["name"]
@@ -39,6 +55,20 @@ class Season
       all.map { |s| [ s.name, s.key ] }
     end
 
+    # All events of all seasons, in date order
+    def events
+      all.flat_map(&:events).sort_by(&:date)
+    end
+
+    def events_in(date_range)
+      events.select { |event| date_range.cover?(event.date) }
+    end
+
+    # The next event of a type ("report", "application" or "exam") on or after the given day
+    def next_event(type, from: Date.today)
+      events.find { |event| event.type == type && event.date >= from }
+    end
+
     private
 
     def load_seasons
@@ -47,6 +77,15 @@ class Season
         new(key: key, data: data)
       end.sort_by(&:exam_start)
     end
+  end
+
+  # Report deadline, application deadline, and one event per exam day
+  def events
+    [
+      Event.new(season: self, type: "report", date: report_deadline),
+      Event.new(season: self, type: "application", date: application_deadline),
+      *(exam_start..exam_end).map { |day| Event.new(season: self, type: "exam", date: day) }
+    ]
   end
 
   def past?

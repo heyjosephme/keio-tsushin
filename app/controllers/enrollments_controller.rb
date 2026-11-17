@@ -14,12 +14,10 @@ class EnrollmentsController < ApplicationController
   def show
     @enrollment = current_user_enrollments.find(params[:id])
     @seasons = Season.upcoming(4)
-    @deadlines = Current.user.deadlines.where(course_name: @enrollment.name).upcoming
 
     render Views::Enrollments::Show.new(
       enrollment: @enrollment,
-      seasons: @seasons,
-      deadlines: @deadlines
+      seasons: @seasons
     )
   end
 

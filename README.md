@@ -5,7 +5,7 @@ A Rails 8.1 application for managing Keio University distance learning course en
 ## Features
 
 - **Course Planner**: Kanban-style board to organize courses by exam season
-- **Deadline Calendar**: Monthly calendar view for tracking report and exam deadlines
+- **Deadline Calendar**: Monthly calendar of report deadlines, exam application deadlines, and exam days, plus a widget showing the next report and application deadlines
 - **Status Tracking**: Monitor progress from planning through completion (planned → report submitted → exam applied → completed)
 - **Exam Season Management**: Track application and report deadlines across multiple exam periods
 - **Course Catalog**: Browse courses by field, filtered to your major, and add them to your plan
@@ -90,8 +90,8 @@ This application uses **Phlex-Rails** for all page views and components (ERB rem
 Example view rendering:
 ```ruby
 # Controller
-def new
-  render Views::Deadlines::New.new(deadline: @deadline)
+def show
+  render Views::Profiles::Show.new(user: Current.user)
 end
 ```
 
@@ -106,12 +106,12 @@ The application uses a hybrid data model:
   - Optional: exam group (A–F), eligible majors, syllabus/report page references
 - **Seasons** (`config/seasons.yml`): Exam seasons 2026-2027
   - Tracks: report_deadline, application_deadline, exam_start, exam_end
+  - The only source of deadlines and exam dates; they are the same for all students and can't be edited in the app
 - **Exam Timetable** (`config/exam_timetable.yml`): Maps exam groups to Saturday/Sunday time slots
 
 #### Database Models (User Data)
 - **User** / **Session**: Accounts and sign-in sessions (Rails 8 built-in authentication)
 - **Enrollment**: Student course enrollments with status tracking
-- **Deadline**: Custom deadlines for reports and exams
 
 ### Frontend Stack
 

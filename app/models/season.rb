@@ -3,18 +3,18 @@
 # Season represents a Keio Tsushin exam period.
 # Data is loaded from config/seasons.yml (not database).
 class Season
-  attr_reader :key, :name, :short_name, :report_deadline,
+  attr_reader :key, :report_deadline,
               :application_deadline, :exam_start, :exam_end
 
   # A dated entry on the deadlines calendar. Every event comes from config/seasons.yml
   # and is the same for all students.
   Event = Data.define(:season, :type, :date) do
     def title
-      { "report" => "Report submission deadline", "application" => "Exam application deadline", "exam" => "Exam day" }.fetch(type)
+      I18n.t("season_events.#{type}.title")
     end
 
     def short_title
-      { "report" => "Report", "application" => "Apply", "exam" => "Exam" }.fetch(type)
+      I18n.t("season_events.#{type}.short")
     end
 
     def days_left(today = Date.today)
@@ -24,8 +24,6 @@ class Season
 
   def initialize(key:, data:)
     @key = key.to_s  # YAML parses 2026_01 as integer, ensure string
-    @name = data["name"]
-    @short_name = data["short_name"]
     @report_deadline = Date.parse(data["report_deadline"])
     @application_deadline = Date.parse(data["application_deadline"])
     @exam_start = Date.parse(data["exam_start"])
@@ -77,6 +75,16 @@ class Season
         new(key: key, data: data)
       end.sort_by(&:exam_start)
     end
+  end
+
+  # "January 2027" / "2027年1月", in the current locale
+  def name
+    I18n.l(exam_start, format: :month_year)
+  end
+
+  # "Jan '27" / "2027年1月"
+  def short_name
+    I18n.l(exam_start, format: :season_short)
   end
 
   # Report deadline, application deadline, and one event per exam day

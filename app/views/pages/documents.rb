@@ -17,9 +17,9 @@ module Views
 
       def render_header
         div(class: "mb-8") do
-          h1(class: "text-3xl font-bold text-gray-900 mb-2") { "Study Documents" }
+          h1(class: "text-3xl font-bold text-gray-900 mb-2") { t(".title") }
           p(class: "text-gray-600") do
-            "Upload your course documents here. Files are stored locally in your browser, not on our servers."
+            t(".intro")
           end
         end
       end
@@ -34,9 +34,9 @@ module Views
 
       def render_pdf_sections
         div(class: "space-y-8") do
-          render_pdf_card("syllabus", "履修案内 (Course Syllabus)", "The main course catalog and requirements guide")
+          render_pdf_card("syllabus", t(".syllabus_title"), t(".syllabus_text"))
           render_reports_section
-          render_pdf_card("handbook", "学習のしおり (Study Handbook)", "Guide for distance learning procedures")
+          render_pdf_card("handbook", t(".handbook_title"), t(".handbook_text"))
         end
       end
 
@@ -50,8 +50,8 @@ module Views
 
       def render_reports_section
         div do
-          h2(class: "text-xl font-semibold text-gray-900 mb-1") { "レポート課題集 (Report Topics)" }
-          p(class: "text-sm text-gray-600 mb-4") { "Upload each report collection by subject category." }
+          h2(class: "text-xl font-semibold text-gray-900 mb-1") { t(".reports_title") }
+          p(class: "text-sm text-gray-600 mb-4") { t(".reports_text") }
 
           div(class: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4") do
             REPORT_CATEGORIES.each do |cat|
@@ -71,9 +71,9 @@ module Views
 
       def render_info
         div(class: "mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4") do
-          h3(class: "font-medium text-blue-900 mb-2") { "About local storage" }
+          h3(class: "font-medium text-blue-900 mb-2") { t(".info_title") }
           p(class: "text-sm text-blue-800") do
-            "Your PDFs are stored in your browser's IndexedDB. They never leave your device. If you clear browser data, you'll need to re-upload."
+            t(".info_text")
           end
         end
       end

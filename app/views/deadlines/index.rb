@@ -12,7 +12,7 @@ module Views
         render Components::Layout.new do
           div(class: "py-8") do
             div(class: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8") do
-              h1(class: "text-3xl font-bold text-gray-900 mb-6") { "Deadlines Calendar" }
+              h1(class: "text-3xl font-bold text-gray-900 mb-6") { t(".title") }
 
               div(class: "mb-6") { render Components::NextDeadlines.new }
 

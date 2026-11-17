@@ -6,7 +6,12 @@ class ExamTimetable
   GROUPS = %w[A B C D E F].freeze
   SEASON_TYPES = %w[apr_jul oct_jan].freeze
 
-  Slot = Data.define(:group, :day, :time, :day_label)
+  Slot = Data.define(:group, :day, :time) do
+    # "Saturday" / "土曜日", in the current locale
+    def day_label
+      I18n.t("date.day_names")[day == "saturday" ? 6 : 0]
+    end
+  end
 
   class << self
     def config
@@ -25,8 +30,7 @@ class ExamTimetable
       Slot.new(
         group: group,
         day: slot_data["day"],
-        time: slot_data["time"],
-        day_label: slot_data["day"] == "saturday" ? "土曜日" : "日曜日"
+        time: slot_data["time"]
       )
     end
 
@@ -40,8 +44,7 @@ class ExamTimetable
         Slot.new(
           group: group,
           day: slot_data["day"],
-          time: slot_data["time"],
-          day_label: slot_data["day"] == "saturday" ? "土曜日" : "日曜日"
+          time: slot_data["time"]
         )
       end.sort_by { |s| config["time_slots"].index { |ts| ts["day"] == s.day && ts["time"] == s.time } }
     end

@@ -11,6 +11,7 @@ A Rails 8.1 application for managing Keio University distance learning course en
 - **Course Catalog**: Browse courses by field, filtered to your major, and add them to your plan
 - **Exam Timetable**: Preview each season's exam schedule for your courses, with a warning when two of them share an exam slot
 - **Credit Dashboard**: Completed, in-progress, and planned credits, broken down by field
+- **English and Japanese**: The whole interface is available in both languages; switch from the nav bar (defaults to your browser's language)
 - **Study Documents**: Upload the syllabus, study handbook, and report-topic PDFs and read them in the app; courses with page references link straight to the right page
 
 ## Tech Stack
@@ -155,6 +156,7 @@ bin/kamal dbc          # Open database console on production
 - `config/courses.yml` - Course catalog
 - `config/seasons.yml` - Exam season schedules
 - `config/exam_timetable.yml` - Exam group time slots
+- `config/locales/en.yml`, `config/locales/ja.yml` - All interface text (English and Japanese)
 - `config/importmap.rb` - JavaScript dependencies
 - `config/initializers/phlex.rb` - Phlex configuration with eager loading workaround
 - `config/ci.rb` - Local CI pipeline steps

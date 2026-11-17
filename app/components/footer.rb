@@ -22,23 +22,23 @@ class Components::Footer < Components::Base
     div(class: "mb-6 md:mb-0") do
       span(class: "text-lg font-bold text-indigo-600") { "Keio Tsushin" }
       p(class: "mt-2 text-sm text-gray-500 max-w-xs") do
-        "A personal credit management system for Keio University distance learning students."
+        t(".tagline")
       end
     end
   end
 
   def render_links_section
     div(class: "grid grid-cols-2 gap-8 sm:grid-cols-3") do
-      render_link_group("Navigation", [
-        [ "Home", root_path ],
-        [ "Deadlines", deadlines_path ],
-        [ "Courses", enrollments_path ],
-        [ "Dashboard", dashboard_enrollments_path ]
+      render_link_group(t(".navigation"), [
+        [ t(".home"), root_path ],
+        [ t(".deadlines"), deadlines_path ],
+        [ t(".courses"), enrollments_path ],
+        [ t(".dashboard"), dashboard_enrollments_path ]
       ])
 
-      render_link_group("Resources", [
-        [ "About", about_path ],
-        [ "Keio Tsushin", "https://www.tsushin.keio.ac.jp/" ]
+      render_link_group(t(".resources"), [
+        [ t(".about"), about_path ],
+        [ t(".official_site"), "https://www.tsushin.keio.ac.jp/" ]
       ])
     end
   end
@@ -64,7 +64,7 @@ class Components::Footer < Components::Base
   def render_copyright
     div(class: "mt-8 pt-8 border-t border-gray-200") do
       p(class: "text-sm text-gray-400 text-center") do
-        "Built for Keio University Distance Learning Students"
+        t(".built_for")
       end
     end
   end

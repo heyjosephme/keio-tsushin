@@ -71,3 +71,6 @@ group :test do
 end
 
 gem "phlex-rails", "~> 2.3"
+
+# Japanese translations for Rails' built-in messages (validation errors, date names)
+gem "rails-i18n", "~> 8.1"

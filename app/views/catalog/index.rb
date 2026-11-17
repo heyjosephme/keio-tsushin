@@ -44,9 +44,9 @@ module Views
 
       def render_header
         div(class: "mb-6") do
-          h1(class: "text-3xl font-bold text-gray-900") { "Course Catalog" }
+          h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
           p(class: "text-sm text-gray-500 mt-1") do
-            "Browse all courses available for your major. Click a course for details and to add it to your plan."
+            t(".intro")
           end
         end
       end
@@ -55,12 +55,8 @@ module Views
         div(class: "mb-6 bg-white rounded-lg shadow-sm p-4 space-y-4") do
           # Field tabs
           div(class: "flex flex-wrap gap-2") do
-            field_tab("All", nil)
-            field_tab("人文科学", "humanities")
-            field_tab("社会科学", "social")
-            field_tab("自然科学", "natural")
-            field_tab("外国語", "foreign_language")
-            field_tab("経済学", "economics")
+            field_tab(t("shared.all"), nil)
+            Course::FIELDS.each { |field| field_tab(t("shared.fields.#{field}"), field) }
           end
 
           # Exclude-enrolled toggle
@@ -72,7 +68,7 @@ module Views
               span(class: "inline-flex items-center justify-center w-4 h-4 rounded border border-gray-300 #{@exclude_enrolled ? 'bg-indigo-600 border-indigo-600' : 'bg-white'}") do
                 span(class: "text-white text-xs") { "✓" } if @exclude_enrolled
               end
-              plain "Hide courses already in my plan"
+              plain t(".hide_enrolled")
             end
           end
         end
@@ -95,7 +91,7 @@ module Views
       def render_course_grid
         if @courses.empty?
           div(class: "bg-white rounded-lg shadow-sm p-12 text-center") do
-            p(class: "text-gray-500") { "No courses match your filters." }
+            p(class: "text-gray-500") { t(".no_match") }
           end
         else
           div(class: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4") do
@@ -113,20 +109,20 @@ module Views
         ) do
           div(class: "flex justify-between items-start mb-2") do
             div do
-              h3(class: "font-semibold text-gray-900") { course.name }
-              p(class: "text-sm text-gray-500") { course.name_ja } if course.name_ja
+              h3(class: "font-semibold text-gray-900") { course.localized_name }
+              p(class: "text-sm text-gray-500") { course.secondary_name } if course.secondary_name
             end
             if enrolled
               span(class: "px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700 whitespace-nowrap") do
-                "In plan"
+                t(".in_plan")
               end
             end
           end
 
           div(class: "mt-3 flex flex-wrap gap-1.5") do
-            badge("#{course.credits}単位", "bg-gray-100 text-gray-700")
+            badge(t("shared.credits", count: course.credits), "bg-gray-100 text-gray-700")
             badge(course.field_label, field_color(course.field))
-            badge("#{course.exam_group}群", "bg-indigo-50 text-indigo-700") if course.exam_group
+            badge(t("shared.exam_group", group: course.exam_group), "bg-indigo-50 text-indigo-700") if course.exam_group
           end
         end
       end

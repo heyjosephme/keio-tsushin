@@ -15,7 +15,8 @@ class Components::PdfViewer < Components::Base
         pdf_viewer_page_value: @page,
         pdf_viewer_storage_mode_value: storage_mode,
         pdf_viewer_upload_url_value: document_file_path(@key),
-        pdf_viewer_check_url_value: check_document_path(@key)
+        pdf_viewer_check_url_value: check_document_path(@key),
+        pdf_viewer_messages_value: messages.to_json
       }
     ) do
       render_upload_section
@@ -24,6 +25,14 @@ class Components::PdfViewer < Components::Base
   end
 
   private
+
+  # Text for the Stimulus controller's alerts, confirmations and page counter.
+  # "{page}" and "{total}" are filled in by JavaScript.
+  def messages
+    %w[select_pdf save_failed not_found load_failed remove_failed confirm_remove_server confirm_remove_browser].to_h { |key|
+      [ key, t(".messages.#{key}") ]
+    }.merge("page_info" => t(".messages.page_info", page: "{page}", total: "{total}"))
+  end
 
   def storage_mode
     ENV.fetch("DOCUMENT_STORAGE", "browser")
@@ -51,7 +60,7 @@ class Components::PdfViewer < Components::Base
       }
     ) do
       span(class: "text-xl") { "📤" }
-      span(class: "text-xs") { "Upload" }
+      span(class: "text-xs") { t(".upload") }
     end
 
     # Uploaded state
@@ -63,7 +72,7 @@ class Components::PdfViewer < Components::Base
       button(
         type: "button",
         class: "text-2xl hover:scale-110 transition cursor-pointer",
-        title: "View PDF",
+        title: t(".view"),
         data: { action: "click->pdf-viewer#view" }
       ) { "📄" }
 
@@ -71,7 +80,7 @@ class Components::PdfViewer < Components::Base
       button(
         type: "button",
         class: "text-sm text-gray-400 hover:text-indigo-500 transition cursor-pointer",
-        title: "Replace PDF",
+        title: t(".replace"),
         data: { action: "click->pdf-viewer#triggerUpload" }
       ) { "📤" }
 
@@ -79,7 +88,7 @@ class Components::PdfViewer < Components::Base
       button(
         type: "button",
         class: "text-sm text-gray-400 hover:text-red-500 transition cursor-pointer",
-        title: "Remove PDF",
+        title: t(".remove"),
         data: { action: "click->pdf-viewer#remove" }
       ) { "✕" }
     end
@@ -108,18 +117,18 @@ class Components::PdfViewer < Components::Base
           type: "button",
           class: "p-1 rounded hover:bg-gray-100",
           data: { action: "click->pdf-viewer#prevPage" }
-        ) { "← Prev" }
+        ) { t(".prev") }
 
         span(
           class: "text-sm text-gray-600",
           data: { pdf_viewer_target: "pageInfo" }
-        ) { "Page 1" }
+        ) { "" }
 
         button(
           type: "button",
           class: "p-1 rounded hover:bg-gray-100",
           data: { action: "click->pdf-viewer#nextPage" }
-        ) { "Next →" }
+        ) { t(".next") }
       end
 
       # Close button
@@ -127,7 +136,7 @@ class Components::PdfViewer < Components::Base
         type: "button",
         class: "p-2 rounded hover:bg-gray-100",
         data: { action: "click->pdf-viewer#closeModal" }
-      ) { "✕ Close" }
+      ) { t(".close") }
     end
   end
 

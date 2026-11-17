@@ -49,7 +49,7 @@ module Views
       def render_back_link
         div(class: "mb-6") do
           link_to(
-            "← Back to Course Planner",
+            t(".back"),
             enrollments_path,
             class: "text-sm text-indigo-600 hover:text-indigo-800"
           )
@@ -60,23 +60,23 @@ module Views
         div(class: "bg-white rounded-lg shadow p-6 mb-6") do
           div(class: "flex items-start justify-between") do
             div do
-              h1(class: "text-2xl font-bold text-gray-900") { @enrollment.name }
-              p(class: "text-lg text-gray-500 mt-1") { @enrollment.name_ja } if @enrollment.name_ja
+              h1(class: "text-2xl font-bold text-gray-900") { @enrollment.localized_name }
+              p(class: "text-lg text-gray-500 mt-1") { @enrollment.secondary_name } if @enrollment.secondary_name
             end
             render_status_badge(@enrollment.status)
           end
 
           div(class: "mt-4 flex flex-wrap gap-3") do
-            render_tag("#{@enrollment.credits} credits", "bg-indigo-50 text-indigo-700")
+            render_tag(t("shared.credits", count: @enrollment.credits), "bg-indigo-50 text-indigo-700")
             render_tag(@course.field_label, field_color(@course.field))
-            render_tag(@course.type.titleize, "bg-gray-50 text-gray-700") if @course.type
+            render_tag(@course.type_label, "bg-gray-50 text-gray-700") if @course.type
           end
         end
       end
 
       def render_status_section
         div(class: "bg-white rounded-lg shadow p-6 mb-6") do
-          h2(class: "text-lg font-semibold text-gray-900 mb-4") { "Status" }
+          h2(class: "text-lg font-semibold text-gray-900 mb-4") { t(".status") }
 
           # Status progression
           div(class: "flex items-center gap-2 mb-4") do
@@ -90,11 +90,11 @@ module Views
             div(class: "flex items-center gap-3") do
               f.select(
                 :status,
-                Enrollment::STATUSES.map { |s| [ s.titleize, s ] },
+                Enrollment::STATUSES.map { |s| [ t("shared.statuses.#{s}"), s ] },
                 { selected: @enrollment.status },
                 class: "border-gray-300 rounded-md shadow-sm text-sm"
               )
-              f.submit("Update Status",
+              f.submit(t(".update_status"),
                 class: "px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 cursor-pointer")
             end
           end
@@ -128,34 +128,34 @@ module Views
             is_done && !is_current ? plain("✓") : plain((index + 1).to_s)
           end
           p(class: "text-xs mt-1 #{is_current ? 'text-indigo-600 font-medium' : 'text-gray-500'} whitespace-nowrap") do
-            status.titleize
+            t("shared.statuses.#{status}")
           end
         end
       end
 
       def render_season_section
         div(class: "bg-white rounded-lg shadow p-6 mb-6") do
-          h2(class: "text-lg font-semibold text-gray-900 mb-4") { "Exam Season" }
+          h2(class: "text-lg font-semibold text-gray-900 mb-4") { t(".exam_season") }
 
           if @season
             div(class: "grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4") do
-              render_date_card("Report Deadline", @season.report_deadline, @season.days_until_report_deadline)
-              render_date_card("Application Deadline", @season.application_deadline, @season.days_until_application_deadline)
-              render_date_card("Exam Period", @season.exam_start, nil, @season.exam_end)
+              render_date_card(t(".report_deadline"), @season.report_deadline, @season.days_until_report_deadline)
+              render_date_card(t(".application_deadline"), @season.application_deadline, @season.days_until_application_deadline)
+              render_date_card(t(".exam_period"), @season.exam_start, nil, @season.exam_end)
             end
           end
 
           # Season change form
           form_with(model: @enrollment, method: :patch, class: "mt-4") do |f|
             div(class: "flex items-center gap-3") do
-              label(class: "text-sm text-gray-600") { "Move to:" }
+              label(class: "text-sm text-gray-600") { t(".move_to") }
               f.select(
                 :season_key,
                 @seasons.map { |s| [ s.short_name, s.key ] },
                 { selected: @enrollment.season_key },
                 class: "border-gray-300 rounded-md shadow-sm text-sm"
               )
-              f.submit("Move",
+              f.submit(t(".move"),
                 class: "px-4 py-2 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700 cursor-pointer")
             end
           end
@@ -167,9 +167,9 @@ module Views
           p(class: "text-xs font-medium text-gray-500 uppercase tracking-wide") { label }
           p(class: "text-sm font-semibold text-gray-900 mt-1") do
             if end_date
-              plain "#{date.strftime('%b %d')} - #{end_date.strftime('%b %d, %Y')}"
+              plain t("shared.date_range", from: l(date, format: :month_day), to: l(end_date, format: :full))
             else
-              plain date.strftime("%b %d, %Y")
+              plain l(date, format: :full)
             end
           end
 
@@ -180,7 +180,7 @@ module Views
             else "text-gray-500"
             end
             p(class: "text-xs mt-1 #{color}") do
-              days_until == 0 ? "Today!" : "#{days_until} days left"
+              days_until == 0 ? t(".today") : t(".days_left", count: days_until)
             end
           end
         end
@@ -188,7 +188,7 @@ module Views
 
       def render_reference_links
         div(class: "bg-white rounded-lg shadow p-6 mb-6") do
-          h2(class: "text-lg font-semibold text-gray-900 mb-4") { "Study References" }
+          h2(class: "text-lg font-semibold text-gray-900 mb-4") { t("shared.references.title") }
 
           div(class: "space-y-3") do
             if @course.syllabus_page
@@ -198,8 +198,8 @@ module Views
               ) do
                 span(class: "text-lg") { "📄" }
                 div do
-                  p(class: "text-sm font-medium text-gray-900") { "Syllabus" }
-                  p(class: "text-xs text-gray-500") { "Page #{@course.syllabus_page}" }
+                  p(class: "text-sm font-medium text-gray-900") { t("shared.references.syllabus") }
+                  p(class: "text-xs text-gray-500") { t("shared.page", page: @course.syllabus_page) }
                 end
               end
             end
@@ -211,8 +211,8 @@ module Views
               ) do
                 span(class: "text-lg") { "📝" }
                 div do
-                  p(class: "text-sm font-medium text-gray-900") { "Report Guide" }
-                  p(class: "text-xs text-gray-500") { "Page #{@course.report_page}" }
+                  p(class: "text-sm font-medium text-gray-900") { t("shared.references.report_guide") }
+                  p(class: "text-xs text-gray-500") { t("shared.page", page: @course.report_page) }
                 end
               end
             end
@@ -222,15 +222,15 @@ module Views
 
       def render_danger_zone
         div(class: "bg-white rounded-lg shadow p-6 border border-red-100") do
-          h2(class: "text-lg font-semibold text-gray-900 mb-2") { "Danger Zone" }
-          p(class: "text-sm text-gray-500 mb-4") { "Remove this course from your plan." }
+          h2(class: "text-lg font-semibold text-gray-900 mb-2") { t(".danger_zone") }
+          p(class: "text-sm text-gray-500 mb-4") { t(".danger_text") }
 
           form_with(url: enrollment_path(@enrollment), method: :delete) do
             button(
               type: "submit",
               class: "px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 cursor-pointer",
-              data: { turbo_confirm: "Remove #{@enrollment.name} from your plan? This cannot be undone." }
-            ) { "Remove Course" }
+              data: { turbo_confirm: t(".remove_confirm", course: @enrollment.localized_name) }
+            ) { t(".remove") }
           end
         end
       end
@@ -246,7 +246,7 @@ module Views
         }
 
         span(class: "px-3 py-1 rounded-full text-sm font-medium #{colors[status]}") do
-          status.titleize
+          t("shared.statuses.#{status}")
         end
       end
 

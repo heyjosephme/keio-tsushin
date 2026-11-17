@@ -3,7 +3,7 @@ class Enrollment < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  validates :course_key, presence: true, uniqueness: { scope: :user_id, message: "already enrolled" }
+  validates :course_key, presence: true, uniqueness: { scope: :user_id }
   validates :season_key, presence: true
   validates :status, presence: true, inclusion: { in: STATUSES }
 
@@ -56,9 +56,9 @@ class Enrollment < ApplicationRecord
   end
 
   def status_label
-    status.to_s.titleize.gsub("_", " ")
+    I18n.t("shared.statuses.#{status}", default: status.to_s)
   end
 
   # Delegate to course for convenience
-  delegate :name, :name_ja, :credits, :field, to: :course, allow_nil: true
+  delegate :name, :name_ja, :localized_name, :secondary_name, :credits, :field, to: :course, allow_nil: true
 end

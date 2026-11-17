@@ -83,14 +83,26 @@ class Course
     "#{name} (#{name_ja})"
   end
 
+  # The course name in the current locale: name_ja in Japanese, name otherwise
+  def localized_name
+    I18n.locale == :ja && name_ja.present? ? name_ja : name
+  end
+
+  # The name in the other language, shown as a subtitle
+  def secondary_name
+    localized_name == name ? name_ja : name
+  end
+
   def field_label
-    {
-      "humanities" => "人文科学",
-      "social" => "社会科学",
-      "natural" => "自然科学",
-      "foreign_language" => "外国語",
-      "economics" => "経済学"
-    }[field] || field
+    I18n.t("shared.fields.#{field}", default: field.to_s)
+  end
+
+  def type_label
+    I18n.t("shared.course_types.#{type}", default: type.to_s) if type
+  end
+
+  def major_labels
+    majors.map { |major| I18n.t("shared.majors.#{major}", default: major.to_s) }
   end
 
   def report_pdf

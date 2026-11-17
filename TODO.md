@@ -44,7 +44,7 @@ confirmation(mis-operation prevent)
 
 # Low
 ## i18n
-- [ ] support japanese
+- [x] support japanese
 
 ## AI
 report auto refined?

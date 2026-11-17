@@ -27,12 +27,12 @@ module Views
         div(class: "mb-8") do
           div(class: "mb-4") do
             link_to(
-              "← Back to Courses",
+              t(".back"),
               enrollments_path,
               class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
             )
           end
-          h1(class: "text-3xl font-bold text-gray-900") { "Add Course to Plan" }
+          h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
         end
       end
 
@@ -49,7 +49,7 @@ module Views
       def render_course_selector(form)
         div(data: { controller: "course-selector" }) do
           label(class: "block text-sm font-medium text-gray-700 mb-2") do
-            "Select Course"
+            t(".select_course")
           end
 
           # Hidden input for form submission
@@ -57,7 +57,7 @@ module Views
 
           # Selected course display
           div(class: "mb-4") do
-            span(class: "text-sm text-gray-500") { "Selected: " }
+            span(class: "text-sm text-gray-500") { t(".selected") }
             span(
               class: "text-sm font-medium text-indigo-600 hidden",
               data: { course_selector_target: "selectedDisplay" }
@@ -68,7 +68,7 @@ module Views
           div(class: "mb-4") do
             input(
               type: "text",
-              placeholder: "Search courses by name...",
+              placeholder: t(".search_placeholder"),
               class: "w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-3 px-4",
               data: {
                 course_selector_target: "search",
@@ -89,12 +89,8 @@ module Views
 
       def render_field_tabs
         div(class: "flex flex-wrap gap-2 mb-4") do
-          tab("All", "all", selected: true)
-          tab("人文科学", "humanities")
-          tab("社会科学", "social")
-          tab("自然科学", "natural")
-          tab("外国語", "foreign_language")
-          tab("経済学", "economics")
+          tab(t("shared.all"), "all", selected: true)
+          Course::FIELDS.each { |field| tab(t("shared.fields.#{field}"), field) }
         end
       end
 
@@ -127,7 +123,7 @@ module Views
           data: {
             course_selector_target: "card",
             course_key: course.key,
-            course_name: course.display_name,
+            course_name: course.localized_name,
             name: course.name,
             name_ja: course.name_ja,
             field: course.field,
@@ -135,13 +131,13 @@ module Views
           }
         ) do
           # Course name
-          div(class: "font-medium text-gray-900 text-sm") { course.name }
-          div(class: "text-gray-500 text-xs") { course.name_ja }
+          div(class: "font-medium text-gray-900 text-sm") { course.localized_name }
+          div(class: "text-gray-500 text-xs") { course.secondary_name }
 
           # Credits and field badges
           div(class: "mt-2 flex items-center gap-2") do
             span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700") do
-              "#{course.credits}単位"
+              t("shared.credits", count: course.credits)
             end
             span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{field_badge_classes(course.field)}") do
               course.field_label
@@ -170,12 +166,12 @@ module Views
       def render_season_select(form)
         div do
           label(for: "enrollment_season_key", class: "block text-sm font-medium text-gray-700") do
-            "Target Season"
+            t(".target_season")
           end
           form.select(
             :season_key,
             @seasons.map { |s| [ s.name, s.key ] },
-            { prompt: "Select season..." },
+            { prompt: t(".season_prompt") },
             class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           )
           render_errors(:season_key)
@@ -185,12 +181,12 @@ module Views
       def render_submit_buttons(form)
         div(class: "flex gap-4") do
           form.submit(
-            "Add to Plan",
+            t(".submit"),
             class: "flex-1 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
           )
 
           link_to(
-            "Cancel",
+            t("shared.cancel"),
             enrollments_path,
             class: "flex-1 inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           )
@@ -200,7 +196,7 @@ module Views
       def render_errors(field)
         return unless @enrollment.errors[field].any?
 
-        p(class: "mt-2 text-sm text-red-600") { @enrollment.errors[field].join(", ") }
+        p(class: "mt-2 text-sm text-red-600") { @enrollment.errors.full_messages_for(field).to_sentence }
       end
     end
   end

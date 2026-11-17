@@ -11,41 +11,38 @@ class Components::NextDeadlines < Components::Base
 
   def view_template
     div(class: "grid grid-cols-1 sm:grid-cols-2 gap-4") do
-      render_card("Next report deadline", "レポート提出締切", @report)
-      render_card("Next exam application deadline", "試験申込締切", @application)
+      render_card(t(".report"), @report)
+      render_card(t(".application"), @application)
     end
   end
 
   private
 
-  def render_card(label, label_ja, event)
+  def render_card(label, event)
     days = event&.days_left(@today)
 
     div(class: "bg-white rounded-lg shadow p-4 border-l-4 #{border_color(days)}") do
-      p(class: "text-xs font-medium text-gray-500 uppercase tracking-wide") do
-        plain label
-        span(class: "ml-2 normal-case text-gray-400") { label_ja }
-      end
+      p(class: "text-xs font-medium text-gray-500 uppercase tracking-wide") { label }
 
       if event
         div(class: "mt-2 flex items-end justify-between gap-4") do
           div do
-            p(class: "text-xl font-semibold text-gray-900") { event.date.strftime("%a, %b %-d, %Y") }
-            p(class: "text-sm text-gray-500") { "#{event.season.name} exams" }
+            p(class: "text-xl font-semibold text-gray-900") { l(event.date, format: :full_weekday) }
+            p(class: "text-sm text-gray-500") { t("shared.season_exams", season: event.season.name) }
           end
           span(class: "px-2 py-1 rounded text-sm font-medium whitespace-nowrap #{badge_color(days)}") { days_text(days) }
         end
       else
-        p(class: "mt-2 text-sm text-gray-500") { "Not announced yet" }
+        p(class: "mt-2 text-sm text-gray-500") { t(".not_announced") }
       end
     end
   end
 
   def days_text(days)
     case days
-    when 0 then "Today"
-    when 1 then "Tomorrow"
-    else "#{days} days left"
+    when 0 then t("shared.today")
+    when 1 then t(".tomorrow")
+    else t(".days_left", count: days)
     end
   end
 

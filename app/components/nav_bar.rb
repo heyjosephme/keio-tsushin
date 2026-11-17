@@ -30,17 +30,19 @@ class Components::NavBar < Components::Base
 
   def render_nav_links
     div(class: "hidden sm:flex sm:items-center sm:space-x-4") do
-      nav_link("Deadlines", deadlines_path)
-      nav_link("Catalog", catalog_path)
-      nav_link("My Plan", enrollments_path)
-      nav_link("Dashboard", dashboard_enrollments_path)
-      nav_link("Documents", documents_path)
-      nav_link("About", about_path)
+      nav_link(t(".deadlines"), deadlines_path)
+      nav_link(t(".catalog"), catalog_path)
+      nav_link(t(".my_plan"), enrollments_path)
+      nav_link(t(".dashboard"), dashboard_enrollments_path)
+      nav_link(t(".documents"), documents_path)
+      nav_link(t(".about"), about_path)
     end
   end
 
   def render_auth_section
     div(class: "flex items-center gap-4") do
+      render Components::LocaleSwitcher.new
+
       if authenticated?
         link_to(
           Current.user.name.presence || Current.user.email_address,
@@ -48,15 +50,15 @@ class Components::NavBar < Components::Base
           class: "hidden sm:block text-sm text-gray-600 hover:text-gray-900"
         )
         button_to(
-          "Sign out",
+          t(".sign_out"),
           session_path,
           method: :delete,
           class: "text-sm text-gray-600 hover:text-gray-900",
-          form: { data: { turbo_confirm: "Are you sure you want to sign out?" } }
+          form: { data: { turbo_confirm: t(".sign_out_confirm") } }
         )
       else
         link_to(
-          "Sign in",
+          t(".sign_in"),
           new_session_path,
           class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
         )

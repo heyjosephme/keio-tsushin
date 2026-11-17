@@ -32,7 +32,7 @@ module Views
 
       def render_header
         div(class: "mb-8") do
-          h1(class: "text-3xl font-bold text-gray-900") { "Credit Dashboard" }
+          h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
         end
       end
 
@@ -60,7 +60,7 @@ module Views
               span { completed.to_s }
               span(class: "text-2xl text-gray-500") { " / #{TOTAL_CREDITS_REQUIRED}" }
             end
-            p(class: "text-sm text-gray-600 mt-2") { "Completed Credits" }
+            p(class: "text-sm text-gray-600 mt-2") { t(".completed_credits") }
           end
 
           # Progress bar
@@ -72,16 +72,16 @@ module Views
           end
 
           p(class: "text-center text-sm text-gray-600") do
-            "#{percentage}% Complete"
+            t(".percent_complete", percent: percentage)
           end
 
           if completed >= TOTAL_CREDITS_REQUIRED
             p(class: "text-center text-sm text-green-600 font-semibold mt-4") do
-              "Graduation requirement met!"
+              t(".requirement_met")
             end
           else
             p(class: "text-center text-sm text-gray-600 mt-4") do
-              "#{TOTAL_CREDITS_REQUIRED - completed} credits remaining"
+              t(".remaining", count: TOTAL_CREDITS_REQUIRED - completed)
             end
           end
         end
@@ -90,21 +90,21 @@ module Views
       def render_status_cards
         div(class: "grid grid-cols-1 md:grid-cols-3 gap-6 mb-8") do
           render_status_card(
-            title: "Completed",
+            title: t(".completed"),
             credits: @credit_stats[:completed],
             color: "green",
             icon: "✓"
           )
 
           render_status_card(
-            title: "In Progress",
+            title: t(".in_progress"),
             credits: @credit_stats[:in_progress],
             color: "blue",
             icon: "→"
           )
 
           render_status_card(
-            title: "Planned",
+            title: t(".planned"),
             credits: @credit_stats[:planned],
             color: "gray",
             icon: "○"
@@ -139,7 +139,7 @@ module Views
 
           p(class: "text-3xl font-bold #{text_color}") do
             span { credits.to_s }
-            span(class: "text-lg text-gray-600") { " credits" }
+            span(class: "text-lg text-gray-600") { t(".credits_unit") }
           end
         end
       end
@@ -147,7 +147,7 @@ module Views
       def render_field_breakdown
         div(class: "bg-white rounded-lg shadow mb-8") do
           div(class: "px-6 py-4 border-b border-gray-200") do
-            h2(class: "text-xl font-semibold text-gray-900") { "Credits by Field" }
+            h2(class: "text-xl font-semibold text-gray-900") { t(".by_field") }
           end
 
           div(class: "overflow-x-auto") do
@@ -155,29 +155,25 @@ module Views
               thead(class: "bg-gray-50") do
                 tr do
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
-                    "Field"
+                    t(".field")
                   end
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
-                    "Completed"
+                    t(".completed")
                   end
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
-                    "In Progress"
+                    t(".in_progress")
                   end
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
-                    "Planned"
+                    t(".planned")
                   end
                   th(class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") do
-                    "Total"
+                    t(".total")
                   end
                 end
               end
 
               tbody(class: "bg-white divide-y divide-gray-200") do
-                render_field_row("人文科学", "humanities")
-                render_field_row("社会科学", "social")
-                render_field_row("自然科学", "natural")
-                render_field_row("外国語", "foreign_language")
-                render_field_row("経済学", "economics")
+                Course::FIELDS.each { |field| render_field_row(t("shared.fields.#{field}"), field) }
               end
             end
           end
@@ -185,7 +181,7 @@ module Views
           if @credits_by_field.values.all? { |stats| stats[:total] == 0 }
             div(class: "px-6 py-8 text-center") do
               p(class: "text-gray-500 text-sm") do
-                "No courses enrolled yet. Add courses to see breakdown."
+                t(".empty")
               end
             end
           end
@@ -217,17 +213,17 @@ module Views
 
       def render_quick_actions
         div(class: "bg-white rounded-lg shadow p-6") do
-          h2(class: "text-xl font-semibold text-gray-900 mb-4") { "Quick Actions" }
+          h2(class: "text-xl font-semibold text-gray-900 mb-4") { t(".quick_actions") }
 
           div(class: "flex flex-col sm:flex-row gap-4") do
             link_to(
-              "View Course Planner",
+              t(".view_planner"),
               enrollments_path,
               class: "inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
             )
 
             link_to(
-              "Add Course",
+              t(".add_course"),
               new_enrollment_path,
               class: "inline-flex justify-center items-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50"
             )

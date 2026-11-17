@@ -16,7 +16,8 @@ export default class extends Controller {
     page: { type: Number, default: 1 },
     storageMode: { type: String, default: "browser" },
     uploadUrl: String,
-    checkUrl: String
+    checkUrl: String,
+    messages: Object // translated text from Components::PdfViewer
   }
 
   pdfDoc = null
@@ -58,7 +59,7 @@ export default class extends Controller {
   async upload(event) {
     const file = event.target.files[0]
     if (!file || file.type !== "application/pdf") {
-      alert("Please select a PDF file")
+      alert(this.messagesValue.select_pdf)
       return
     }
 
@@ -71,7 +72,7 @@ export default class extends Controller {
       this.showUploadedState()
     } catch (error) {
       console.error("Failed to save PDF:", error)
-      alert("Failed to save PDF")
+      alert(this.messagesValue.save_failed)
     }
   }
 
@@ -119,7 +120,7 @@ export default class extends Controller {
         : await this.loadFromBrowser()
 
       if (!pdfData) {
-        alert("PDF not found. Please upload first.")
+        alert(this.messagesValue.not_found)
         return
       }
 
@@ -135,7 +136,7 @@ export default class extends Controller {
       await this.renderPage(this.currentPage)
     } catch (error) {
       console.error("Failed to load PDF:", error)
-      alert("Failed to load PDF")
+      alert(this.messagesValue.load_failed)
     }
   }
 
@@ -174,7 +175,9 @@ export default class extends Controller {
     }).promise
 
     if (this.hasPageInfoTarget) {
-      this.pageInfoTarget.textContent = `Page ${pageNum} of ${this.pdfDoc.numPages}`
+      this.pageInfoTarget.textContent = this.messagesValue.page_info
+        .replace("{page}", pageNum)
+        .replace("{total}", this.pdfDoc.numPages)
     }
   }
 
@@ -205,8 +208,8 @@ export default class extends Controller {
 
   async remove() {
     const message = this.isServerMode
-      ? "Remove this PDF from the server?"
-      : "Remove this PDF from local storage?"
+      ? this.messagesValue.confirm_remove_server
+      : this.messagesValue.confirm_remove_browser
 
     if (!confirm(message)) return
 
@@ -232,7 +235,7 @@ export default class extends Controller {
       }
     } catch (error) {
       console.error("Failed to remove PDF:", error)
-      alert("Failed to remove PDF")
+      alert(this.messagesValue.remove_failed)
     }
   }
 }

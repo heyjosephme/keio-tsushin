@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Components::Calendar < Components::Base
-  DAYS_OF_WEEK = %w[Mon Tue Wed Thu Fri Sat Sun].freeze
-
   PILL_COLORS = {
     "report" => "bg-blue-100 text-blue-700",
     "application" => "bg-yellow-100 text-yellow-700",
@@ -38,7 +36,7 @@ class Components::Calendar < Components::Base
       ) { "←" }
 
       h2(class: "text-xl font-semibold text-gray-900") do
-        @current_date.strftime("%B %Y")
+        l(@current_date, format: :month_year)
       end
 
       a(
@@ -50,7 +48,8 @@ class Components::Calendar < Components::Base
 
   def render_days_of_week
     div(class: "grid grid-cols-7 gap-1 mb-2") do
-      DAYS_OF_WEEK.each do |day|
+      # Monday first
+      t("date.abbr_day_names").rotate(1).each do |day|
         div(class: "text-center text-sm font-medium text-gray-500 py-2") { day }
       end
     end
@@ -100,12 +99,12 @@ class Components::Calendar < Components::Base
       class: "hidden absolute z-10 left-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-3",
       data: { calendar_cell_target: "details" }
     ) do
-      h4(class: "font-medium text-gray-900 mb-2") { date.strftime("%B %d, %Y") }
+      h4(class: "font-medium text-gray-900 mb-2") { l(date, format: :full_weekday) }
       div(class: "space-y-2") do
         events.each do |event|
           div(class: "border-l-2 pl-2 py-1 #{DETAIL_COLORS.fetch(event.type)}") do
             p(class: "text-sm font-medium text-gray-900") { event.title }
-            p(class: "text-xs text-gray-600") { "#{event.season.name} exams" }
+            p(class: "text-xs text-gray-600") { t("shared.season_exams", season: event.season.name) }
           end
         end
       end

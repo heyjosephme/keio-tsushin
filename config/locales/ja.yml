@@ -1,0 +1,361 @@
+# Japanese UI text. Keep the keys in sync with en.yml (test/i18n_test.rb checks this).
+# Rails' own messages (validation errors, month and day names) come from the rails-i18n gem.
+
+ja:
+  date:
+    formats:
+      month_day: "%-m月%-d日"
+      full: "%Y年%-m月%-d日"
+      full_weekday: "%Y年%-m月%-d日(%a)"
+      month_year: "%Y年%-m月"
+      season_short: "%Y年%-m月"
+
+  activerecord:
+    attributes:
+      enrollment:
+        course_key: "科目"
+        season_key: "試験期"
+        status: "ステータス"
+    errors:
+      models:
+        enrollment:
+          attributes:
+            course_key:
+              taken: "はすでに履修計画に入っています"
+
+  shared:
+    cancel: "キャンセル"
+    all: "すべて"
+    today: "今日"
+    not_set: "未設定"
+    credits:
+      other: "%{count}単位"
+    exam_group: "%{group}群"
+    page: "%{page}ページ"
+    season_exams: "%{season}試験"
+    date_range: "%{from}〜%{to}"
+    statuses:
+      planned: "計画中"
+      report_submitted: "レポート提出済み"
+      exam_applied: "試験申込済み"
+      completed: "単位修得"
+    fields:
+      humanities: "人文科学"
+      social: "社会科学"
+      natural: "自然科学"
+      foreign_language: "外国語"
+      economics: "経済学"
+    course_types:
+      distance: "通信授業"
+      on_campus: "スクーリング"
+      both: "通信授業・スクーリング"
+    majors:
+      all: "全学部共通"
+      economics: "経済学部"
+      law: "法学部"
+      literature: "文学部"
+    semesters:
+      spring: "春期(4月)"
+      autumn: "秋期(10月)"
+    references:
+      title: "学習資料"
+      syllabus: "履修案内"
+      report_guide: "レポート課題集"
+
+  season_events:
+    report:
+      title: "レポート提出締切"
+      short: "レポート"
+    application:
+      title: "試験申込締切"
+      short: "申込"
+    exam:
+      title: "試験日"
+      short: "試験"
+
+  enrollments:
+    create:
+      success: "科目を履修計画に追加しました。"
+    update:
+      success: "科目を更新しました。"
+      failure: "更新できませんでした。"
+    destroy:
+      success: "科目を履修計画から削除しました。"
+  courses:
+    show:
+      not_found: "科目が見つかりません。"
+  profiles:
+    update:
+      success: "プロフィールを更新しました。"
+  sessions:
+    create:
+      invalid: "メールアドレスまたはパスワードが正しくありません。"
+      rate_limited: "しばらくしてからもう一度お試しください。"
+  passwords:
+    create:
+      sent: "パスワード再設定の案内を送信しました(該当するメールアドレスのユーザーが存在する場合)。"
+      rate_limited: "しばらくしてからもう一度お試しください。"
+    update:
+      success: "パスワードを再設定しました。"
+      mismatch: "パスワードが一致しません。"
+    invalid_token: "パスワード再設定リンクが無効か、有効期限が切れています。"
+
+  passwords_mailer:
+    reset:
+      subject: "パスワードの再設定"
+      intro: "次のページでパスワードを再設定できます:"
+      link_text: "パスワード再設定ページ"
+      expires: "このリンクの有効期限は%{time}です。"
+
+  components:
+    nav_bar:
+      deadlines: "締切"
+      catalog: "科目一覧"
+      my_plan: "履修計画"
+      dashboard: "単位状況"
+      documents: "資料"
+      about: "このサイトについて"
+      sign_in: "ログイン"
+      sign_out: "ログアウト"
+      sign_out_confirm: "ログアウトしますか?"
+    footer:
+      tagline: "慶應義塾大学 通信教育課程の学生のための個人用単位管理システムです。"
+      navigation: "ナビゲーション"
+      home: "ホーム"
+      deadlines: "締切"
+      courses: "履修計画"
+      dashboard: "単位状況"
+      resources: "リンク"
+      about: "このサイトについて"
+      official_site: "慶應通信 公式サイト"
+      built_for: "慶應義塾大学 通信教育課程の学生のために"
+    next_deadlines:
+      report: "次のレポート提出締切"
+      application: "次の試験申込締切"
+      tomorrow: "明日"
+      days_left: "あと%{count}日"
+      not_announced: "未発表"
+    pdf_viewer:
+      upload: "アップロード"
+      view: "PDFを表示"
+      replace: "PDFを差し替え"
+      remove: "PDFを削除"
+      prev: "← 前へ"
+      next: "次へ →"
+      close: "✕ 閉じる"
+      messages:
+        select_pdf: "PDFファイルを選択してください"
+        save_failed: "PDFを保存できませんでした"
+        not_found: "PDFが見つかりません。先にアップロードしてください。"
+        load_failed: "PDFを読み込めませんでした"
+        remove_failed: "PDFを削除できませんでした"
+        confirm_remove_server: "このPDFをサーバーから削除しますか?"
+        confirm_remove_browser: "このPDFをブラウザの保存領域から削除しますか?"
+        page_info: "%{page} / %{total}ページ"
+
+  views:
+    pages:
+      home:
+        subtitle: "通信教育課程 単位管理システム"
+        deadlines: "締切カレンダー"
+        dashboard: "単位ダッシュボード"
+        planner: "履修プランナー"
+        feature_deadlines_title: "締切の管理"
+        feature_deadlines_text: "すべての科目のレポート提出締切と試験日をまとめて確認できます。"
+        feature_reports_title: "レポートの管理"
+        feature_reports_text: "試験申込の前に提出が必要なレポートを把握できます。"
+        feature_credits_title: "単位の計画"
+        feature_credits_text: "科目の単位と要件を管理して、卒業までの道のりを計画できます。"
+      about:
+        title: "Keio Tsushinについて"
+        subtitle: "慶應義塾大学 通信教育課程の学生のための個人用単位管理システム"
+        what_title: "このサイトは?"
+        what_p1: "Keio Tsushinは、慶應義塾大学 通信教育課程での単位・締切・履修状況を管理するために作った個人プロジェクトです。"
+        what_p2: "通信教育課程では、レポート・試験・スクーリングを組み合わせて124単位を修得する必要があります。このツールはその道のりの管理を助けます。"
+        features_title: "機能"
+        planner_title: "履修プランナー"
+        planner_text: "試験期ごとのカンバンボードで科目を整理し、計画中から単位修得までの状況を管理できます。"
+        dashboard_title: "単位ダッシュボード"
+        dashboard_text: "卒業に必要な124単位への進み具合を、分野別・ステータス別に確認できます。"
+        calendar_title: "締切カレンダー"
+        calendar_text: "月間カレンダーで、レポート提出締切や試験申込締切を見逃しません。"
+        seasons_title: "試験期の確認"
+        seasons_text: "今後の試験期のレポート締切・申込期間・試験日を確認できます。"
+        contact_title: "お問い合わせ"
+        contact_intro: "これは個人プロジェクトです。利用を希望される方やご質問のある方はこちらへ:"
+        registration_note: "一般公開の登録は行っていません。アカウントをご希望の方はご連絡ください。"
+        built_with: "使用技術"
+      documents:
+        title: "学習資料"
+        intro: "科目の資料をここにアップロードできます。ファイルはサーバーではなく、お使いのブラウザ内に保存されます。"
+        syllabus_title: "履修案内"
+        syllabus_text: "科目一覧と履修要件をまとめた冊子"
+        reports_title: "レポート課題集"
+        reports_text: "分野ごとのレポート課題集をアップロードしてください。"
+        handbook_title: "学習のしおり"
+        handbook_text: "通信教育課程の手続きガイド"
+        info_title: "ブラウザ内の保存について"
+        info_text: "PDFはブラウザのIndexedDBに保存され、端末の外には送信されません。ブラウザのデータを消去した場合は、再度アップロードが必要です。"
+    sessions:
+      new:
+        title: "ログイン"
+        subtitle: "Keio Tsushin 単位管理"
+        email: "メールアドレス"
+        email_placeholder: "メールアドレスを入力"
+        password: "パスワード"
+        password_placeholder: "パスワードを入力"
+        submit: "ログイン"
+        forgot: "パスワードをお忘れですか?"
+        registration_title: "新規登録は受け付けていません"
+        registration_text: "これは個人プロジェクトのため、現在は一般公開の登録を行っていません。"
+        demo_label: "デモ・テスト用: "
+        account_label: "アカウントが必要ですか? "
+        account_text: "管理者にご連絡ください。"
+    passwords:
+      new:
+        title: "パスワードをお忘れですか?"
+        subtitle: "メールアドレスを入力すると、再設定の案内を送信します"
+        email: "メールアドレス"
+        email_placeholder: "メールアドレスを入力"
+        submit: "再設定の案内を送信"
+        back: "ログインに戻る"
+      edit:
+        title: "パスワードの変更"
+        subtitle: "新しいパスワードを入力してください"
+        password: "新しいパスワード"
+        password_placeholder: "新しいパスワードを入力"
+        confirmation: "パスワード(確認)"
+        confirmation_placeholder: "新しいパスワードを再入力"
+        submit: "保存"
+    profiles:
+      show:
+        title: "プロフィール"
+        edit: "プロフィールを編集"
+        account: "アカウント情報"
+        name: "名前"
+        email: "メールアドレス"
+        study_plan: "学習計画"
+        major: "学部"
+        enrolled: "入学"
+        graduation: "卒業予定"
+        credit_goal: "年間の目標単位数"
+        enrolled_value: "%{year}年 %{semester}"
+        incomplete: "学習計画を入力すると、あなたに合わせた進捗の目安が表示されます。"
+        setup: "学習計画を設定する"
+        insight_title: "進捗の目安"
+        insight: "%{year}年に卒業するには、年間およそ%{per_year}単位が必要です(残り%{remaining}単位・あと%{years}年)。"
+        goal_warning: "年間%{goal}単位の目標は見直しが必要かもしれません。"
+        remaining: "卒業要件まで残り%{remaining}単位です。"
+      edit:
+        back: "← プロフィールに戻る"
+        title: "プロフィールを編集"
+        account: "アカウント情報"
+        name: "表示名"
+        name_placeholder: "お名前(任意)"
+        email: "メールアドレス"
+        email_note: "メールアドレスは変更できません"
+        study_plan: "学習計画"
+        study_plan_intro: "入学時期と卒業目標を設定すると、進捗を確認できます。"
+        major: "学部"
+        major_blank: "学部を選択"
+        major_hint: "学部によって表示される科目が変わります"
+        enrolled: "入学"
+        year: "年"
+        semester: "学期"
+        enrolled_hint: "いつ入学しましたか?"
+        graduation: "卒業予定年"
+        graduation_blank: "年を選択"
+        graduation_hint: "いつ卒業する予定ですか?"
+        credit_goal: "年間の目標単位数"
+        credit_goal_hint: "1年間に何単位の修得を目指しますか?(卒業には合計124単位が必要です)"
+        submit: "変更を保存"
+    deadlines:
+      index:
+        title: "締切カレンダー"
+    enrollments:
+      index:
+        title: "履修プランナー"
+        browse: "科目一覧を見る"
+        no_courses: "科目がありません"
+        add: "+ 追加"
+        report: "レポート: "
+        apply: "申込: "
+        exam: "試験: "
+        days_short: "あと%{count}日"
+        syllabus_link: "📄 履修案内 p.%{page}"
+        report_link: "📝 課題集 p.%{page}"
+        remove: "削除"
+        remove_confirm: "この科目を削除しますか?"
+        exam_schedule: "試験時間割"
+        conflict_label: "重複: "
+        conflict: "%{courses}はどちらも%{group}です"
+      show:
+        back: "← 履修プランナーに戻る"
+        status: "ステータス"
+        update_status: "ステータスを更新"
+        exam_season: "試験期"
+        report_deadline: "レポート提出締切"
+        application_deadline: "試験申込締切"
+        exam_period: "試験期間"
+        move_to: "移動先:"
+        move: "移動"
+        today: "今日まで"
+        days_left: "あと%{count}日"
+        danger_zone: "科目の削除"
+        danger_text: "この科目を履修計画から削除します。"
+        remove: "科目を削除"
+        remove_confirm: "%{course}を履修計画から削除しますか?この操作は取り消せません。"
+      new:
+        back: "← 履修計画に戻る"
+        title: "科目を履修計画に追加"
+        select_course: "科目を選択"
+        selected: "選択中: "
+        search_placeholder: "科目名で検索..."
+        target_season: "受験する試験期"
+        season_prompt: "試験期を選択..."
+        submit: "履修計画に追加"
+      dashboard:
+        title: "単位ダッシュボード"
+        completed_credits: "修得済み単位"
+        percent_complete: "%{percent}% 達成"
+        requirement_met: "卒業要件を満たしました!"
+        remaining: "残り%{count}単位"
+        completed: "修得済み"
+        in_progress: "進行中"
+        planned: "計画中"
+        credits_unit: "単位"
+        by_field: "分野別の単位"
+        field: "分野"
+        total: "合計"
+        empty: "まだ科目が登録されていません。科目を追加すると内訳が表示されます。"
+        quick_actions: "クイックアクション"
+        view_planner: "履修プランナーを見る"
+        add_course: "科目を追加"
+    catalog:
+      index:
+        title: "科目一覧"
+        intro: "あなたの学部で履修できる科目の一覧です。科目をクリックすると詳細を確認し、履修計画に追加できます。"
+        hide_enrolled: "履修計画に入っている科目を隠す"
+        no_match: "条件に合う科目がありません。"
+        in_plan: "計画済み"
+      show:
+        back: "← 科目一覧に戻る"
+        details: "詳細"
+        course_key: "科目コード"
+        credits: "単位数"
+        field: "分野"
+        type: "授業形態"
+        available_to: "対象学部"
+        exam_group: "試験群"
+        not_assigned: "未設定"
+        exam_schedule: "試験時間割"
+        exam_schedule_intro: "この科目は%{group}です。試験の曜日・時間は試験期によって変わります:"
+        already_title: "すでに履修計画に入っています"
+        already_text: "この科目は%{season}に予定されています。"
+        a_season: "いずれかの試験期"
+        view_in_planner: "プランナーで見る →"
+        add_to_plan: "履修計画に追加"
+        target_season: "受験する試験期"
+        exam_dates: "試験: %{dates}"
+        report_due: "レポート締切:"
+        days_left_short: "あと%{count}日"

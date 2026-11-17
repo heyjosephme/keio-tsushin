@@ -26,6 +26,16 @@ class SeasonTest < ActiveSupport::TestCase
     assert_nil Season.next_event("report", from: Date.new(2030, 1, 1))
   end
 
+  test "names follow the current locale" do
+    season = Season.find("202701")
+
+    assert_equal [ "January 2027", "Jan '27" ], [ season.name, season.short_name ]
+    I18n.with_locale(:ja) do
+      assert_equal "2027年1月", season.name
+      assert_equal "レポート提出締切", season.events.first.title
+    end
+  end
+
   test "days_left counts from the given day" do
     event = Season.next_event("report", from: Date.new(2027, 1, 1))
     assert_equal 9, event.days_left(Date.new(2027, 1, 1))

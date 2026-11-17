@@ -18,23 +18,23 @@ module Views
                 end
 
                 p(class: "text-xl text-gray-600 mb-8") do
-                  plain "Distance Learning Credit Management System"
+                  plain t(".subtitle")
                 end
 
                 # CTA Buttons
                 div(class: "mb-16 flex flex-col sm:flex-row gap-4 justify-center") do
                   link_to(
-                    "Deadlines Calendar",
+                    t(".deadlines"),
                     deadlines_path,
                     class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-lg transition-colors"
                   )
                   link_to(
-                    "Credit Dashboard",
+                    t(".dashboard"),
                     dashboard_enrollments_path,
                     class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-lg transition-colors"
                   )
                   link_to(
-                    "Course Planner",
+                    t(".planner"),
                     enrollments_path,
                     class: "inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-indigo-600 bg-white hover:bg-indigo-50 rounded-lg shadow-lg transition-colors border-2 border-indigo-600"
                   )
@@ -45,18 +45,18 @@ module Views
               div(class: "grid md:grid-cols-3 gap-8 mt-16") do
                 render_feature_card(
                   icon: "📅",
-                  title: "Deadline Tracking",
-                  description: "Track report submissions and exam dates for all your courses in one place."
+                  title: t(".feature_deadlines_title"),
+                  description: t(".feature_deadlines_text")
                 )
                 render_feature_card(
                   icon: "📝",
-                  title: "Report Management",
-                  description: "Keep track of which reports you need to submit before applying for exams."
+                  title: t(".feature_reports_title"),
+                  description: t(".feature_reports_text")
                 )
                 render_feature_card(
                   icon: "🎓",
-                  title: "Credit Planning",
-                  description: "Plan your path to graduation by managing course credits and requirements."
+                  title: t(".feature_credits_title"),
+                  description: t(".feature_credits_text")
                 )
               end
             end

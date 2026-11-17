@@ -27,9 +27,9 @@ module Views
 
       def render_header
         div(class: "mb-8 flex justify-between items-center") do
-          h1(class: "text-3xl font-bold text-gray-900") { "Profile" }
+          h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
           link_to(
-            "Edit Profile",
+            t(".edit"),
             edit_profile_path,
             class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
           )
@@ -52,24 +52,24 @@ module Views
 
       def render_profile_card
         div(class: "bg-white rounded-lg shadow-md p-6 mb-6") do
-          h2(class: "text-xl font-semibold text-gray-900 mb-4") { "Account Information" }
+          h2(class: "text-xl font-semibold text-gray-900 mb-4") { t(".account") }
 
           dl(class: "space-y-4") do
-            render_field("Name", @user.name.presence || "Not set")
-            render_field("Email", @user.email_address)
+            render_field(t(".name"), @user.name.presence || t("shared.not_set"))
+            render_field(t(".email"), @user.email_address)
           end
         end
       end
 
       def render_study_plan
         div(class: "bg-white rounded-lg shadow-md p-6") do
-          h2(class: "text-xl font-semibold text-gray-900 mb-4") { "Study Plan" }
+          h2(class: "text-xl font-semibold text-gray-900 mb-4") { t(".study_plan") }
 
           dl(class: "space-y-4") do
-            render_field("Major", format_major(@user.major))
-            render_field("Enrolled", format_enrollment(@user.enrolled_year, @user.enrolled_semester))
-            render_field("Expected Graduation", format_year(@user.expected_graduation_year))
-            render_field("Credit Goal per Year", format_credits(@user.credits_goal_per_year))
+            render_field(t(".major"), format_major(@user.major))
+            render_field(t(".enrolled"), format_enrollment(@user.enrolled_year, @user.enrolled_semester))
+            render_field(t(".graduation"), format_year(@user.expected_graduation_year))
+            render_field(t(".credit_goal"), format_credits(@user.credits_goal_per_year))
           end
 
           if study_plan_complete?
@@ -77,10 +77,10 @@ module Views
           else
             div(class: "mt-6 p-4 bg-amber-50 rounded-lg") do
               p(class: "text-sm text-amber-700") do
-                "Complete your study plan to see personalized progress insights."
+                t(".incomplete")
               end
               link_to(
-                "Set up study plan",
+                t(".setup"),
                 edit_profile_path,
                 class: "mt-2 inline-block text-sm font-medium text-amber-800 underline"
               )
@@ -102,49 +102,44 @@ module Views
         credits_per_year_needed = years_remaining > 0 ? (credits_needed.to_f / years_remaining).ceil : credits_needed
 
         div(class: "mt-6 p-4 bg-indigo-50 rounded-lg") do
-          h3(class: "text-sm font-semibold text-indigo-900 mb-2") { "Progress Insight" }
+          h3(class: "text-sm font-semibold text-indigo-900 mb-2") { t(".insight_title") }
 
           if years_remaining > 0
             p(class: "text-sm text-indigo-700") do
-              "To graduate by #{@user.expected_graduation_year}, you need ~#{credits_per_year_needed} credits/year (#{credits_needed} credits remaining over #{years_remaining} years)."
+              t(".insight", year: @user.expected_graduation_year, per_year: credits_per_year_needed, remaining: credits_needed, years: years_remaining)
             end
 
             if @user.credits_goal_per_year && credits_per_year_needed > @user.credits_goal_per_year
               p(class: "text-sm text-amber-700 mt-2") do
-                "Your goal of #{@user.credits_goal_per_year} credits/year may need adjustment."
+                t(".goal_warning", goal: @user.credits_goal_per_year)
               end
             end
           else
             p(class: "text-sm text-indigo-700") do
-              "#{credits_needed} credits remaining to reach graduation requirement."
+              t(".remaining", remaining: credits_needed)
             end
           end
         end
       end
 
       def format_major(major)
-        return "Not set" unless major.present?
+        return t("shared.not_set") unless major.present?
 
-        {
-          "economics" => "Economics (経済学部)",
-          "law" => "Law (法学部)",
-          "literature" => "Literature (文学部)"
-        }[major] || major
+        t("shared.majors.#{major}", default: major)
       end
 
       def format_enrollment(year, semester)
-        return "Not set" unless year && semester
+        return t("shared.not_set") unless year && semester
 
-        semester_label = semester == "spring" ? "Spring (April)" : "Autumn (October)"
-        "#{year} #{semester_label}"
+        t(".enrolled_value", year: year, semester: t("shared.semesters.#{semester}", default: semester))
       end
 
       def format_year(year)
-        year ? year.to_s : "Not set"
+        year ? year.to_s : t("shared.not_set")
       end
 
       def format_credits(credits)
-        credits ? "#{credits} credits" : "Not set"
+        credits ? t("shared.credits", count: credits) : t("shared.not_set")
       end
 
       def study_plan_complete?

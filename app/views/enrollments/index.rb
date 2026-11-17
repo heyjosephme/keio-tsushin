@@ -37,9 +37,9 @@ module Views
 
       def render_header
         div(class: "mb-8 flex justify-between items-center") do
-          h1(class: "text-3xl font-bold text-gray-900") { "Course Planner" }
+          h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
           link_to(
-            "Browse Catalog",
+            t(".browse"),
             catalog_path,
             class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
           )
@@ -75,12 +75,12 @@ module Views
             if enrollments.any?
               enrollments.each { |enrollment| render_enrollment_card(enrollment) }
             else
-              p(class: "text-gray-400 text-sm text-center py-8") { "No courses" }
+              p(class: "text-gray-400 text-sm text-center py-8") { t(".no_courses") }
             end
 
             # Add course to this season
             link_to(
-              "+ Add",
+              t(".add"),
               catalog_path,
               class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
             )
@@ -94,17 +94,17 @@ module Views
       def render_season_dates(season)
         div(class: "mt-2 text-xs text-gray-500 space-y-1") do
           div do
-            span(class: "font-medium") { "Report: " }
-            span { season.report_deadline.strftime("%b %d") }
+            span(class: "font-medium") { t(".report") }
+            span { l(season.report_deadline, format: :month_day) }
             render_days_badge(season.days_until_report_deadline)
           end
           div do
-            span(class: "font-medium") { "Apply: " }
-            span { season.application_deadline.strftime("%b %d") }
+            span(class: "font-medium") { t(".apply") }
+            span { l(season.application_deadline, format: :month_day) }
           end
           div do
-            span(class: "font-medium") { "Exam: " }
-            span { "#{season.exam_start.strftime('%b %d')}-#{season.exam_end.strftime('%d')}" }
+            span(class: "font-medium") { t(".exam") }
+            span { t("shared.date_range", from: l(season.exam_start, format: :month_day), to: l(season.exam_end, format: :month_day)) }
           end
         end
       end
@@ -119,7 +119,7 @@ module Views
         end
 
         span(class: "ml-2 px-1.5 py-0.5 rounded text-xs #{color}") do
-          days == 0 ? "Today" : "#{days}d"
+          days == 0 ? t("shared.today") : t(".days_short", count: days)
         end
       end
 
@@ -133,11 +133,11 @@ module Views
           ) do
             div(class: "flex justify-between items-start") do
               div do
-                p(class: "font-medium text-gray-900 text-sm hover:text-indigo-600") { enrollment.name }
-                p(class: "text-xs text-gray-500") { enrollment.name_ja } if enrollment.name_ja
+                p(class: "font-medium text-gray-900 text-sm hover:text-indigo-600") { enrollment.localized_name }
+                p(class: "text-xs text-gray-500") { enrollment.secondary_name } if enrollment.secondary_name
                 p(class: "text-xs text-gray-500 mt-1") do
                   render_status_badge(enrollment.status)
-                  span(class: "ml-2") { "#{enrollment.credits}単位" } if enrollment.credits
+                  span(class: "ml-2") { t("shared.credits", count: enrollment.credits) } if enrollment.credits
                 end
               end
             end
@@ -158,7 +158,7 @@ module Views
         div(class: "mt-2 flex gap-2 text-xs") do
           if course.syllabus_page
             link_to(
-              "📄 Syllabus p.#{course.syllabus_page}",
+              t(".syllabus_link", page: course.syllabus_page),
               documents_path(pdf: "syllabus", page: course.syllabus_page),
               class: "text-indigo-600 hover:text-indigo-800"
             )
@@ -166,7 +166,7 @@ module Views
 
           if course.report_page
             link_to(
-              "📝 Report p.#{course.report_page}",
+              t(".report_link", page: course.report_page),
               documents_path(pdf: course.report_pdf, page: course.report_page),
               class: "text-indigo-600 hover:text-indigo-800"
             )
@@ -183,7 +183,7 @@ module Views
         }
 
         span(class: "px-1.5 py-0.5 rounded text-xs #{colors[status]}") do
-          status.titleize
+          t("shared.statuses.#{status}")
         end
       end
 
@@ -204,8 +204,8 @@ module Views
           button(
             type: "submit",
             class: "text-xs text-red-600 hover:text-red-800",
-            data: { turbo_confirm: "Remove this course?" }
-          ) { "Remove" }
+            data: { turbo_confirm: t(".remove_confirm") }
+          ) { t(".remove") }
         end
       end
 
@@ -217,7 +217,7 @@ module Views
         return if schedule.empty? && conflicts.empty?
 
         div(class: "px-4 pb-4 border-t border-gray-200") do
-          h3(class: "text-xs font-semibold text-gray-500 uppercase tracking-wide pt-3 pb-2") { "Exam Schedule" }
+          h3(class: "text-xs font-semibold text-gray-500 uppercase tracking-wide pt-3 pb-2") { t(".exam_schedule") }
 
           # Conflict warnings
           render_exam_conflicts(conflicts, season) if conflicts.any?
@@ -249,8 +249,8 @@ module Views
                   div(class: "text-xs") do
                     entry[:courses].each_with_index do |course, i|
                       span(class: "text-gray-400") { ", " } if i > 0
-                      span(class: "text-gray-800") { course.name }
-                      span(class: "text-gray-400 ml-0.5") { "(#{slot.group}群)" }
+                      span(class: "text-gray-800") { course.localized_name }
+                      span(class: "text-gray-400 ml-0.5") { "(#{t('shared.exam_group', group: slot.group)})" }
                     end
                   end
                 end
@@ -263,12 +263,12 @@ module Views
       def render_exam_conflicts(conflicts, season)
         conflicts.each do |group, group_enrollments|
           slot = ExamTimetable.slot_for(group: group, season: season)
-          course_names = group_enrollments.map { |e| e.course&.name }.compact.join(", ")
+          course_names = group_enrollments.map { |e| e.course&.localized_name }.compact.to_sentence
 
           div(class: "mb-2 rounded-md bg-amber-50 border border-amber-200 p-2") do
             p(class: "text-xs text-amber-800") do
-              strong { "Conflict: " }
-              plain "#{course_names} are both in #{group}群"
+              strong { t(".conflict_label") }
+              plain t(".conflict", courses: course_names, group: t("shared.exam_group", group: group))
               if slot
                 plain " (#{slot.day_label} #{slot.time})"
               end

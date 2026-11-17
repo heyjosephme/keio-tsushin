@@ -48,7 +48,7 @@ class EnrollmentsController < ApplicationController
     @enrollment.status ||= "planned"
 
     if @enrollment.save
-      redirect_to enrollments_path, notice: "Course added to your plan!"
+      redirect_to enrollments_path, notice: t(".success")
     else
       @seasons = Season.upcoming(4)
       @courses = courses_for_current_user
@@ -64,16 +64,16 @@ class EnrollmentsController < ApplicationController
     @enrollment = current_user_enrollments.find(params[:id])
 
     if @enrollment.update(enrollment_params)
-      redirect_back(fallback_location: enrollment_path(@enrollment), notice: "Course updated!")
+      redirect_back(fallback_location: enrollment_path(@enrollment), notice: t(".success"))
     else
-      redirect_back(fallback_location: enrollment_path(@enrollment), alert: "Failed to update.")
+      redirect_back(fallback_location: enrollment_path(@enrollment), alert: t(".failure"))
     end
   end
 
   def destroy
     @enrollment = current_user_enrollments.find(params[:id])
     @enrollment.destroy
-    redirect_to enrollments_path, notice: "Course removed from plan."
+    redirect_to enrollments_path, notice: t(".success")
   end
 
   private

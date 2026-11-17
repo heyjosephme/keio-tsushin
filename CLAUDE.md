@@ -108,6 +108,16 @@ pdf.js is **not** in the importmap. `app/views/layouts/application.html.erb` loa
 - In development, `Components::Base` adds a `<!-- Before ClassName -->` HTML comment that shows which class rendered each fragment.
 - Tailwind v4 is configured in CSS (`app/assets/tailwind/application.css`; there's no `tailwind.config.js`) and finds class names in the `.rb` view files automatically.
 
+## Internationalization (English and Japanese)
+
+- All UI text lives in `config/locales/en.yml` and `ja.yml`; never hardcode user-facing strings. `test/i18n_test.rb` fails if the two files' keys differ, and missing keys raise in development and test.
+- In Phlex classes, `t(".key")` resolves from the class name: `Views::Enrollments::Index` → `views.enrollments.index.key`, `Components::NavBar` → `components.nav_bar.key`. Controller flash messages use Rails' lazy lookup (`t(".success")` → `enrollments.create.success`). Text used in several places is under `shared.*`.
+- Format dates with `l(date, format: :month_day | :full | :full_weekday | :month_year)`, not `strftime`.
+- Locale choice is in `ApplicationController#switch_locale`: `?locale=` param (saved to a cookie), then the cookie, then `Accept-Language`, then English. `Components::LocaleSwitcher` renders the link.
+- Catalog data is localized in the models: `Course#localized_name` / `#secondary_name` (from `name` and `name_ja`), `#field_label`, `#type_label`, `Season#name` / `#short_name` (derived from `exam_start`), `ExamTimetable::Slot#day_label`, and `Season::Event#title`. Use these in views instead of `name`.
+- Text shown by JavaScript is passed from the component as a Stimulus value (see `Components::PdfViewer#messages`).
+- `rails-i18n` supplies Rails' own Japanese messages. Show validation errors with `errors.full_messages_for(field)`, because Japanese messages only read correctly after the attribute name.
+
 ## Tests
 
 - Integration tests sign in with `sign_in_as(users(:one))` from `test/test_helpers/session_test_helper.rb`. The fixture users' password is `password`.

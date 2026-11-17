@@ -9,7 +9,7 @@ class ProfilesController < ApplicationController
 
   def update
     if Current.user.update(profile_params)
-      redirect_to profile_path, notice: "Profile updated successfully!"
+      redirect_to profile_path, notice: t(".success")
     else
       render Views::Profiles::Edit.new(user: Current.user), status: :unprocessable_entity
     end

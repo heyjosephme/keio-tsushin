@@ -22,6 +22,10 @@ module KeioTsushin
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
+
+    # The app is available in English and Japanese (see ApplicationController#switch_locale)
+    config.i18n.available_locales = %i[en ja]
+    config.i18n.default_locale = :en
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

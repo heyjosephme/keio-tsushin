@@ -1,31 +1,366 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
+# English UI text. Keep the keys in sync with ja.yml (test/i18n_test.rb checks this).
 #
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
+# - views.* and components.* keys mirror the Phlex class names, so `t(".title")` inside
+#   Views::Enrollments::Index looks up views.enrollments.index.title.
+# - Top-level keys named after controllers (enrollments, sessions, ...) hold flash messages.
+# - shared.* holds text used in more than one place.
 
 en:
-  hello: "Hello world"
+  date:
+    formats:
+      month_day: "%b %-d"
+      full: "%b %-d, %Y"
+      full_weekday: "%a, %b %-d, %Y"
+      month_year: "%B %Y"
+      season_short: "%b '%y"
+
+  activerecord:
+    attributes:
+      enrollment:
+        course_key: "Course"
+        season_key: "Season"
+        status: "Status"
+    errors:
+      models:
+        enrollment:
+          attributes:
+            course_key:
+              taken: "is already in your plan"
+
+  shared:
+    cancel: "Cancel"
+    all: "All"
+    today: "Today"
+    not_set: "Not set"
+    credits:
+      one: "%{count} credit"
+      other: "%{count} credits"
+    exam_group: "Group %{group}"
+    page: "Page %{page}"
+    season_exams: "%{season} exams"
+    date_range: "%{from} – %{to}"
+    statuses:
+      planned: "Planned"
+      report_submitted: "Report Submitted"
+      exam_applied: "Exam Applied"
+      completed: "Completed"
+    fields:
+      humanities: "Humanities"
+      social: "Social Sciences"
+      natural: "Natural Sciences"
+      foreign_language: "Foreign Languages"
+      economics: "Economics"
+    course_types:
+      distance: "Distance"
+      on_campus: "On Campus"
+      both: "Distance & On Campus"
+    majors:
+      all: "All majors"
+      economics: "Economics (経済学部)"
+      law: "Law (法学部)"
+      literature: "Literature (文学部)"
+    semesters:
+      spring: "Spring (April)"
+      autumn: "Autumn (October)"
+    references:
+      title: "Study References"
+      syllabus: "Syllabus"
+      report_guide: "Report Guide"
+
+  season_events:
+    report:
+      title: "Report submission deadline"
+      short: "Report"
+    application:
+      title: "Exam application deadline"
+      short: "Apply"
+    exam:
+      title: "Exam day"
+      short: "Exam"
+
+  enrollments:
+    create:
+      success: "Course added to your plan!"
+    update:
+      success: "Course updated!"
+      failure: "Failed to update."
+    destroy:
+      success: "Course removed from plan."
+  courses:
+    show:
+      not_found: "Course not found."
+  profiles:
+    update:
+      success: "Profile updated successfully!"
+  sessions:
+    create:
+      invalid: "Try another email address or password."
+      rate_limited: "Try again later."
+  passwords:
+    create:
+      sent: "Password reset instructions sent (if user with that email address exists)."
+      rate_limited: "Try again later."
+    update:
+      success: "Password has been reset."
+      mismatch: "Passwords did not match."
+    invalid_token: "Password reset link is invalid or has expired."
+
+  passwords_mailer:
+    reset:
+      subject: "Reset your password"
+      intro: "You can reset your password on"
+      link_text: "this password reset page"
+      expires: "This link will expire in %{time}."
+
+  components:
+    nav_bar:
+      deadlines: "Deadlines"
+      catalog: "Catalog"
+      my_plan: "My Plan"
+      dashboard: "Dashboard"
+      documents: "Documents"
+      about: "About"
+      sign_in: "Sign in"
+      sign_out: "Sign out"
+      sign_out_confirm: "Are you sure you want to sign out?"
+    footer:
+      tagline: "A personal credit management system for Keio University distance learning students."
+      navigation: "Navigation"
+      home: "Home"
+      deadlines: "Deadlines"
+      courses: "Courses"
+      dashboard: "Dashboard"
+      resources: "Resources"
+      about: "About"
+      official_site: "Keio Tsushin"
+      built_for: "Built for Keio University Distance Learning Students"
+    next_deadlines:
+      report: "Next report deadline"
+      application: "Next exam application deadline"
+      tomorrow: "Tomorrow"
+      days_left: "%{count} days left"
+      not_announced: "Not announced yet"
+    pdf_viewer:
+      upload: "Upload"
+      view: "View PDF"
+      replace: "Replace PDF"
+      remove: "Remove PDF"
+      prev: "← Prev"
+      next: "Next →"
+      close: "✕ Close"
+      messages:
+        select_pdf: "Please select a PDF file"
+        save_failed: "Failed to save PDF"
+        not_found: "PDF not found. Please upload first."
+        load_failed: "Failed to load PDF"
+        remove_failed: "Failed to remove PDF"
+        confirm_remove_server: "Remove this PDF from the server?"
+        confirm_remove_browser: "Remove this PDF from local storage?"
+        page_info: "Page %{page} of %{total}"
+
+  views:
+    pages:
+      home:
+        subtitle: "Distance Learning Credit Management System"
+        deadlines: "Deadlines Calendar"
+        dashboard: "Credit Dashboard"
+        planner: "Course Planner"
+        feature_deadlines_title: "Deadline Tracking"
+        feature_deadlines_text: "Track report submissions and exam dates for all your courses in one place."
+        feature_reports_title: "Report Management"
+        feature_reports_text: "Keep track of which reports you need to submit before applying for exams."
+        feature_credits_title: "Credit Planning"
+        feature_credits_text: "Plan your path to graduation by managing course credits and requirements."
+      about:
+        title: "About Keio Tsushin"
+        subtitle: "A personal credit management system for Keio University distance learning students"
+        what_title: "What is this?"
+        what_p1: "Keio Tsushin is a personal project built to help track credits, deadlines, and course progress for Keio University's correspondence education program (通信教育課程)."
+        what_p2: "The correspondence program requires students to complete 124 credits through a combination of reports, exams, and schooling sessions. This tool helps manage that journey."
+        features_title: "Features"
+        planner_title: "Course Planner"
+        planner_text: "Organize courses by exam season with a kanban-style board. Track status from planned to completed."
+        dashboard_title: "Credit Dashboard"
+        dashboard_text: "Monitor progress toward the 124 credit graduation requirement. See credits by field and status."
+        calendar_title: "Deadline Calendar"
+        calendar_text: "Never miss a report submission or exam application deadline with the monthly calendar view."
+        seasons_title: "Season Tracking"
+        seasons_text: "View upcoming exam seasons with report deadlines, application periods, and exam dates."
+        contact_title: "Contact"
+        contact_intro: "This is a personal project. If you're interested in using it or have questions:"
+        registration_note: "Public registration is not available. Please contact me if you'd like an account."
+        built_with: "Built With"
+      documents:
+        title: "Study Documents"
+        intro: "Upload your course documents here. Files are stored locally in your browser, not on our servers."
+        syllabus_title: "履修案内 (Course Syllabus)"
+        syllabus_text: "The main course catalog and requirements guide"
+        reports_title: "レポート課題集 (Report Topics)"
+        reports_text: "Upload each report collection by subject category."
+        handbook_title: "学習のしおり (Study Handbook)"
+        handbook_text: "Guide for distance learning procedures"
+        info_title: "About local storage"
+        info_text: "Your PDFs are stored in your browser's IndexedDB. They never leave your device. If you clear browser data, you'll need to re-upload."
+    sessions:
+      new:
+        title: "Sign in"
+        subtitle: "Keio Tsushin Credit Management"
+        email: "Email address"
+        email_placeholder: "Enter your email address"
+        password: "Password"
+        password_placeholder: "Enter your password"
+        submit: "Sign in"
+        forgot: "Forgot password?"
+        registration_title: "Registration Not Available"
+        registration_text: "This is a personal project. Public registration is not currently available."
+        demo_label: "For demo/testing: "
+        account_label: "Need an account? "
+        account_text: "Please contact the administrator."
+    passwords:
+      new:
+        title: "Forgot your password?"
+        subtitle: "Enter your email to receive reset instructions"
+        email: "Email address"
+        email_placeholder: "Enter your email address"
+        submit: "Email reset instructions"
+        back: "Back to sign in"
+      edit:
+        title: "Update your password"
+        subtitle: "Enter your new password below"
+        password: "New password"
+        password_placeholder: "Enter new password"
+        confirmation: "Confirm password"
+        confirmation_placeholder: "Repeat new password"
+        submit: "Save"
+    profiles:
+      show:
+        title: "Profile"
+        edit: "Edit Profile"
+        account: "Account Information"
+        name: "Name"
+        email: "Email"
+        study_plan: "Study Plan"
+        major: "Major"
+        enrolled: "Enrolled"
+        graduation: "Expected Graduation"
+        credit_goal: "Credit Goal per Year"
+        enrolled_value: "%{year} %{semester}"
+        incomplete: "Complete your study plan to see personalized progress insights."
+        setup: "Set up study plan"
+        insight_title: "Progress Insight"
+        insight: "To graduate by %{year}, you need ~%{per_year} credits/year (%{remaining} credits remaining over %{years} years)."
+        goal_warning: "Your goal of %{goal} credits/year may need adjustment."
+        remaining: "%{remaining} credits remaining to reach graduation requirement."
+      edit:
+        back: "← Back to Profile"
+        title: "Edit Profile"
+        account: "Account Information"
+        name: "Display Name"
+        name_placeholder: "Your name (optional)"
+        email: "Email"
+        email_note: "Email cannot be changed"
+        study_plan: "Study Plan"
+        study_plan_intro: "Set your enrollment date and graduation goals to track your progress."
+        major: "Major"
+        major_blank: "Select your major"
+        major_hint: "Your major determines which courses are shown"
+        enrolled: "Enrolled"
+        year: "Year"
+        semester: "Semester"
+        enrolled_hint: "When did you start the program?"
+        graduation: "Expected Graduation Year"
+        graduation_blank: "Select year"
+        graduation_hint: "When do you plan to graduate?"
+        credit_goal: "Credit Goal per Year"
+        credit_goal_hint: "How many credits do you aim to earn each year? (124 total needed)"
+        submit: "Save Changes"
+    deadlines:
+      index:
+        title: "Deadlines Calendar"
+    enrollments:
+      index:
+        title: "Course Planner"
+        browse: "Browse Catalog"
+        no_courses: "No courses"
+        add: "+ Add"
+        report: "Report: "
+        apply: "Apply: "
+        exam: "Exam: "
+        days_short: "%{count}d"
+        syllabus_link: "📄 Syllabus p.%{page}"
+        report_link: "📝 Report p.%{page}"
+        remove: "Remove"
+        remove_confirm: "Remove this course?"
+        exam_schedule: "Exam Schedule"
+        conflict_label: "Conflict: "
+        conflict: "%{courses} are both in %{group}"
+      show:
+        back: "← Back to Course Planner"
+        status: "Status"
+        update_status: "Update Status"
+        exam_season: "Exam Season"
+        report_deadline: "Report Deadline"
+        application_deadline: "Application Deadline"
+        exam_period: "Exam Period"
+        move_to: "Move to:"
+        move: "Move"
+        today: "Today!"
+        days_left: "%{count} days left"
+        danger_zone: "Danger Zone"
+        danger_text: "Remove this course from your plan."
+        remove: "Remove Course"
+        remove_confirm: "Remove %{course} from your plan? This cannot be undone."
+      new:
+        back: "← Back to Courses"
+        title: "Add Course to Plan"
+        select_course: "Select Course"
+        selected: "Selected: "
+        search_placeholder: "Search courses by name..."
+        target_season: "Target Season"
+        season_prompt: "Select season..."
+        submit: "Add to Plan"
+      dashboard:
+        title: "Credit Dashboard"
+        completed_credits: "Completed Credits"
+        percent_complete: "%{percent}% Complete"
+        requirement_met: "Graduation requirement met!"
+        remaining: "%{count} credits remaining"
+        completed: "Completed"
+        in_progress: "In Progress"
+        planned: "Planned"
+        credits_unit: " credits"
+        by_field: "Credits by Field"
+        field: "Field"
+        total: "Total"
+        empty: "No courses enrolled yet. Add courses to see breakdown."
+        quick_actions: "Quick Actions"
+        view_planner: "View Course Planner"
+        add_course: "Add Course"
+    catalog:
+      index:
+        title: "Course Catalog"
+        intro: "Browse all courses available for your major. Click a course for details and to add it to your plan."
+        hide_enrolled: "Hide courses already in my plan"
+        no_match: "No courses match your filters."
+        in_plan: "In plan"
+      show:
+        back: "← Back to Catalog"
+        details: "Details"
+        course_key: "Course Key"
+        credits: "Credits"
+        field: "Field"
+        type: "Type"
+        available_to: "Available to"
+        exam_group: "Exam Group"
+        not_assigned: "Not assigned"
+        exam_schedule: "Exam Schedule"
+        exam_schedule_intro: "This course is in %{group}. Exam day/time depends on the season:"
+        already_title: "Already in your plan"
+        already_text: "This course is scheduled for %{season}."
+        a_season: "a season"
+        view_in_planner: "View in Planner →"
+        add_to_plan: "Add to Plan"
+        target_season: "Target Season"
+        exam_dates: "Exam: %{dates}"
+        report_due: "Report due:"
+        days_left_short: "%{count}d left"

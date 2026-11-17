@@ -16,7 +16,7 @@ class CoursesController < ApplicationController
 
   def show
     @course = Course.find(params[:key])
-    return redirect_to catalog_path, alert: "Course not found." unless @course
+    return redirect_to catalog_path, alert: t(".not_found") unless @course
 
     @seasons = Season.upcoming(4)
     @existing_enrollment = Current.user.enrollments.find_by(course_key: @course.key)

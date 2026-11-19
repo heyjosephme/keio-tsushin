@@ -49,6 +49,7 @@ Controller names don't match the URLs. Check this table before editing a page:
 |---|---|---|
 | `/courses`, `/courses/:id`, `/courses/new`, `/courses/dashboard` | `EnrollmentsController` → `Views::Enrollments::*` (`resources :enrollments, path: "courses"`) | The user's plan: kanban board by season, enrollment detail (`:id` is an Enrollment id), credit dashboard |
 | `/catalog`, `/catalog/:key` | `CoursesController` → `Views::Catalog::*` | Browse the YAML course catalog; `:key` is a course key like `phil101` |
+| `/` | `PagesController#home` | Landing page (`Views::Pages::Home`) for visitors; for signed-in users, `Views::Pages::Overview`: each course's next step (`Enrollment#next_step`), next deadlines, credit progress |
 | `/deadlines` | `DeadlinesController` (index only) | Read-only monthly calendar (`Components::Calendar`) of season dates |
 | `/documents` | `PagesController#documents` | PDF upload/viewer page |
 | `/documents/check/:key`, `/documents/file/:key` | `DocumentsController` | JSON/file API the PDF viewer uses in server mode |
@@ -125,7 +126,8 @@ pdf.js is **not** in the importmap. `app/views/layouts/application.html.erb` loa
 ## Tests
 
 - Integration tests sign in with `sign_in_as(users(:one))` from `test/test_helpers/session_test_helper.rb`. The fixture users' password is `password`.
-- `parallelize(workers: :number_of_processors)` only takes effect at 50+ tests (Rails' threshold). Below that, tests run serially in `storage/test.sqlite3`, the same DB that `RAILS_ENV=test` scripts and the CI seed step write to. If every test suddenly errors after running such a script, reset it with `bin/rails db:test:prepare`.
+- Tests run in parallel (the suite is past Rails' 50-test threshold), each worker with its own copy of the test DB. `RAILS_ENV=test` scripts and the CI seed step write to `storage/test.sqlite3`; if tests error after running one, reset with `bin/rails db:test:prepare`.
+- Anything that depends on today's date (deadlines, next steps) should use `travel_to` with dates from `config/seasons.yml`.
 - In tests and params, use real catalog keys from `config/courses.yml` (e.g. `phil101`, `eng101`) and `"YYYYMM"` season keys. Invalid keys still pass validation, so a test with bad keys can pass without testing real behavior.
 
 ## Seeds

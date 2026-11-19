@@ -6,7 +6,7 @@ module Views
       include Phlex::Rails::Helpers::Flash
       include Phlex::Rails::Helpers::LinkTo
 
-      TOTAL_CREDITS_REQUIRED = 124
+      TOTAL_CREDITS_REQUIRED = Enrollment::CREDITS_REQUIRED
 
       def initialize(credit_stats:, credits_by_field:)
         @credit_stats = credit_stats

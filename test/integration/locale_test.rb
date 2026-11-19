@@ -2,7 +2,7 @@ require "test_helper"
 
 class LocaleTest < ActionDispatch::IntegrationTest
   PUBLIC_PAGES = %w[/ /about /documents /session/new /passwords/new].freeze
-  SIGNED_IN_PAGES = %w[/courses /courses/new /courses/dashboard /catalog /catalog/phil101 /deadlines /profile /profile/edit].freeze
+  SIGNED_IN_PAGES = %w[/ /courses /courses/new /courses/dashboard /catalog /catalog/phil101 /deadlines /profile /profile/edit].freeze
 
   # Missing translations raise in the test environment, so rendering every page in
   # both languages catches keys that exist in only one locale file.

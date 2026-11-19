@@ -1,5 +1,14 @@
 class Enrollment < ApplicationRecord
   STATUSES = %w[planned report_submitted exam_applied completed].freeze
+  CREDITS_REQUIRED = 124 # credits needed to graduate
+
+  # What a course needs next. action is :submit_report, :apply_exam, :take_exam,
+  # :record_result (the exam day has passed) or :reschedule (a deadline was missed).
+  NextStep = Data.define(:enrollment, :action, :date, :next_status) do
+    def days_left(today = Date.today)
+      (date - today).to_i
+    end
+  end
 
   belongs_to :user, optional: true
 
@@ -49,6 +58,26 @@ class Enrollment < ApplicationRecord
 
   def season
     Season.find(season_key)
+  end
+
+  # nil when the course is completed or its season is unknown
+  def next_step(today = Date.today)
+    return if status == "completed" || season.nil?
+
+    action, date = case status
+    when "planned" then [ :submit_report, season.report_deadline ]
+    when "report_submitted" then [ :apply_exam, season.application_deadline ]
+    else [ :take_exam, exam_date ]
+    end
+    action = (action == :take_exam ? :record_result : :reschedule) if date < today
+
+    NextStep.new(enrollment: self, action: action, date: date, next_status: STATUSES[STATUSES.index(status) + 1])
+  end
+
+  # The day of this course's exam slot; the first exam day if it has no exam group
+  def exam_date
+    slot = ExamTimetable.slot_for(group: course&.exam_group, season: season)
+    slot&.day == "sunday" ? season.exam_end : season.exam_start
   end
 
   def move_to_season!(new_season_key)

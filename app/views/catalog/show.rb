@@ -118,7 +118,7 @@ module Views
         return unless slot
 
         div(class: "bg-gray-50 rounded-lg p-4") do
-          p(class: "text-xs font-medium text-gray-500 uppercase tracking-wide") { season.short_name }
+          p(class: "text-xs font-medium text-gray-500 uppercase tracking-wide") { season.label }
           p(class: "text-base font-semibold text-gray-900 mt-1") do
             "#{slot.day_label} #{slot.time}"
           end
@@ -243,7 +243,7 @@ module Views
 
           # Header: name + checkmark on select
           div(class: "flex items-center justify-between") do
-            span(class: "font-semibold text-gray-900") { season.name }
+            span(class: "font-semibold text-gray-900") { season.label }
             span(class: "text-indigo-600 hidden peer-checked:inline", aria_hidden: true) { "✓" }
           end
 

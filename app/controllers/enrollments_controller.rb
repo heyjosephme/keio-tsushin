@@ -8,7 +8,9 @@ class EnrollmentsController < ApplicationController
       seasons: @seasons,
       enrollments_by_season: @enrollments_by_season,
       courses: @courses,
-      undecided_courses: undecided_required_courses
+      undecided_courses: undecided_required_courses,
+      past_seasons: Season.past.select { |season| @enrollments_by_season.key?(season.key) },
+      major_set: Current.user.major.present?
     )
   end
 

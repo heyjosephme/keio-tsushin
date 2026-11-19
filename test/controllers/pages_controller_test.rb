@@ -15,9 +15,9 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "signed-in users see their next steps instead of the landing page" do
     travel_to Date.new(2026, 11, 1) do
       user = users(:two)
-      report = user.enrollments.create!(course_key: "phil101", season_key: "202701", status: "planned")
-      user.enrollments.create!(course_key: "eng101", season_key: "202701", status: "completed")
-      user.enrollments.create!(course_key: "logic101", season_key: "202701", status: "planned")
+      report = user.enrollments.create!(course_key: "phil101", season_key: "202610", status: "planned")
+      user.enrollments.create!(course_key: "eng101", season_key: "202610", status: "completed")
+      user.enrollments.create!(course_key: "logic101", season_key: "202610", status: "planned")
       sign_in_as(user)
 
       get root_url

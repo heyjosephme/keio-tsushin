@@ -170,7 +170,7 @@ module Views
           end
           form.select(
             :season_key,
-            @seasons.map { |s| [ s.name, s.key ] },
+            @seasons.map { |s| [ s.label, s.key ] },
             { prompt: t(".season_prompt") },
             class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           )

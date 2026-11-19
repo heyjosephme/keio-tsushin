@@ -29,7 +29,7 @@ class Components::NextDeadlines < Components::Base
           div do
             p(class: "text-xl font-semibold text-gray-900") { l(event.date, format: :full_weekday) }
             p(class: "text-sm text-gray-500") do
-              plain t("shared.season_exams", season: event.season.name)
+              plain t("shared.season_exams", season: event.season.exam_name)
               span(class: "ml-2 px-1.5 py-0.5 rounded text-xs font-normal bg-amber-100 text-amber-800") { t("shared.estimated") } if event.estimated?
             end
           end

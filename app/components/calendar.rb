@@ -104,7 +104,7 @@ class Components::Calendar < Components::Base
         events.each do |event|
           div(class: "border-l-2 pl-2 py-1 #{DETAIL_COLORS.fetch(event.type)}") do
             p(class: "text-sm font-medium text-gray-900") { event.title }
-            p(class: "text-xs text-gray-600") { t("shared.season_exams", season: event.season.name) }
+            p(class: "text-xs text-gray-600") { t("shared.season_exams", season: event.season.exam_name) }
           end
         end
       end

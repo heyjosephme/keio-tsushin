@@ -39,6 +39,7 @@ en:
     exam_group: "Group %{group}"
     page: "Page %{page}"
     season_exams: "%{season} exams"
+    season_label: "%{season} (%{exams} exams)"
     date_range: "%{from} – %{to}"
     statuses:
       planned: "Planned"
@@ -331,6 +332,12 @@ en:
         undecided_hint: "Required courses for your major that aren't scheduled yet. Choose a season to add one to your plan."
         required: "Required"
         choose_season: "Choose a season…"
+        major_hint: "Set your major to see the required courses you still have to schedule."
+        set_major: "Set up profile"
+        past_seasons:
+          one: "Past seasons (1)"
+          other: "Past seasons (%{count})"
+        move_to: "Move to…"
       show:
         back: "← Back to Course Planner"
         status: "Status"

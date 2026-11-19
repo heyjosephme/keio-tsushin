@@ -76,15 +76,15 @@ class LocaleTest < ActionDispatch::IntegrationTest
       assert_select "p", "科目が見つかりません。"
 
       get enrollments_url
-      assert_select "h2", "2027年1月"
-      assert_select "h2", /2027年4月\s*予定/
+      assert_select "h2", "2026年10月"
+      assert_select "h2", /2027年1月\s*予定/
     end
   end
 
   test "validation errors are localized" do
     sign_in_as(users(:one))
 
-    post enrollments_url, params: { locale: "ja", enrollment: { course_key: "phil101", season_key: "202701" } }
+    post enrollments_url, params: { locale: "ja", enrollment: { course_key: "phil101", season_key: "202610" } }
     assert_response :unprocessable_entity
     assert_select "p", "科目はすでに履修計画に入っています"
   end

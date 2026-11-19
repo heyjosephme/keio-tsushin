@@ -25,7 +25,7 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Enrollment.count") do
       post enrollments_url, params: { enrollment: {
         course_key: "eng101",
-        season_key: "202604",
+        season_key: "202601",
         status: "planned"
       } }
     end
@@ -35,9 +35,9 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update enrollment" do
     enrollment = enrollments(:one)
-    patch enrollment_url(enrollment), params: { enrollment: { season_key: "202607" } }
+    patch enrollment_url(enrollment), params: { enrollment: { season_key: "202604" } }
     assert_redirected_to enrollment_url(enrollment)
-    assert_equal "202607", enrollment.reload.season_key
+    assert_equal "202604", enrollment.reload.season_key
   end
 
   test "should destroy enrollment" do
@@ -61,7 +61,7 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
 
   test "index drops a required course from undecided once it has a season" do
     @user.update!(major: "economics")
-    @user.enrollments.create!(course_key: "stat101", season_key: "202604", status: "planned")
+    @user.enrollments.create!(course_key: "stat101", season_key: "202601", status: "planned")
 
     get enrollments_url
 
@@ -72,7 +72,7 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
   test "index has no undecided section once every required course has a season" do
     @user.update!(major: "economics")
     Course.required_for_major("economics").each do |course|
-      @user.enrollments.create!(course_key: course.key, season_key: "202604", status: "planned")
+      @user.enrollments.create!(course_key: course.key, season_key: "202601", status: "planned")
     end
 
     get enrollments_url
@@ -89,7 +89,7 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "dashboard shows progress for each part of the graduation requirement" do
-    @user.enrollments.create!(course_key: "econ204", season_key: "202701", status: "completed")
+    @user.enrollments.create!(course_key: "econ204", season_key: "202610", status: "completed")
 
     get dashboard_enrollments_url
 
@@ -102,5 +102,28 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3", "Graduation Thesis"
     assert_select "p", "0 / 8 credits"
     assert_select "p", "120 credits remaining"
+  end
+
+  test "index keeps a season on the board after its report deadline and lists past seasons" do
+    travel_to Date.new(2026, 11, 19) do
+      sign_in_as(@user)
+      get enrollments_url
+
+      assert_select "h2", /Oct '26/
+      assert_select "h2", /Jan '27/
+      # The fixture enrollments are in the season with the April 2026 exams, which are over
+      assert_select "details summary", "Past seasons (1)"
+      assert_select "details h2", /Jan '26/
+      assert_select "details form[action=?] select option", enrollment_path(enrollments(:one)), text: "Move to…"
+    end
+  end
+
+  test "index asks a user without a major to set one" do
+    get enrollments_url
+    assert_select "a[href=?]", edit_profile_path, text: "Set up profile"
+
+    @user.update!(major: "economics")
+    get enrollments_url
+    assert_select "a[href=?]", edit_profile_path, text: "Set up profile", count: 0
   end
 end

@@ -34,6 +34,7 @@ ja:
     exam_group: "%{group}群"
     page: "%{page}ページ"
     season_exams: "%{season}試験"
+    season_label: "%{season}期（%{exams}試験）"
     date_range: "%{from}〜%{to}"
     statuses:
       planned: "計画中"
@@ -326,6 +327,11 @@ ja:
         undecided_hint: "あなたの学部の必修科目のうち、まだ時期を決めていない科目です。試験期を選ぶとプランに追加されます。"
         required: "必修"
         choose_season: "試験期を選択…"
+        major_hint: "学部を設定すると、まだ時期を決めていない必修科目が表示されます。"
+        set_major: "プロフィールを設定"
+        past_seasons:
+          other: "過去の試験期（%{count}）"
+        move_to: "移動先…"
       show:
         back: "← 履修プランナーに戻る"
         status: "ステータス"

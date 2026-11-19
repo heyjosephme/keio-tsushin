@@ -7,11 +7,13 @@ module Views
       include Phlex::Rails::Helpers::LinkTo
       include Phlex::Rails::Helpers::FormWith
 
-      def initialize(seasons:, enrollments_by_season:, courses:, undecided_courses: [])
+      def initialize(seasons:, enrollments_by_season:, courses:, undecided_courses: [], past_seasons: [], major_set: true)
         @seasons = seasons
         @enrollments_by_season = enrollments_by_season
         @courses = courses
         @undecided_courses = undecided_courses
+        @past_seasons = past_seasons
+        @major_set = major_set
       end
 
       def view_template
@@ -23,6 +25,7 @@ module Views
 
               div(class: "mb-6") { render Components::NextDeadlines.new }
 
+              render_major_hint unless @major_set
               render_undecided_courses if @undecided_courses.any?
 
               # Kanban board
@@ -31,6 +34,8 @@ module Views
                   render_season_column(season)
                 end
               end
+
+              render_past_seasons if @past_seasons.any?
             end
           end
         end
@@ -76,6 +81,27 @@ module Views
         end
       end
 
+      # Required courses depend on the major, so without one the undecided box stays empty
+      def render_major_hint
+        div(class: "mb-6 rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 flex flex-wrap items-center justify-between gap-3") do
+          p(class: "text-sm text-gray-600") { t(".major_hint") }
+          link_to(t(".set_major"), edit_profile_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800")
+        end
+      end
+
+      # Seasons whose exams are over, collapsed below the board
+      def render_past_seasons
+        details(class: "mt-8") do
+          summary(class: "cursor-pointer text-sm font-semibold text-gray-700") do
+            t(".past_seasons", count: @past_seasons.size)
+          end
+
+          div(class: "mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
+            @past_seasons.each { |season| render_season_column(season, past: true) }
+          end
+        end
+      end
+
       def render_undecided_card(course)
         div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200") do
           link_to(catalog_course_path(course.key), class: "block") do
@@ -92,7 +118,7 @@ module Views
             f.hidden_field(:status, value: "planned", id: nil)
             f.select(
               :season_key,
-              @seasons.map { |s| [ s.short_name, s.key ] },
+              @seasons.map { |s| [ s.label, s.key ] },
               { prompt: t(".choose_season") },
               id: nil,
               aria: { label: t(".choose_season") },
@@ -103,10 +129,10 @@ module Views
         end
       end
 
-      def render_season_column(season)
+      def render_season_column(season, past: false)
         enrollments = @enrollments_by_season[season.key] || []
 
-        div(class: "bg-white rounded-lg shadow") do
+        div(class: "#{past ? "bg-gray-50" : "bg-white"} rounded-lg shadow") do
           # Season header
           div(class: "p-4 border-b border-gray-200") do
             h2(class: "font-semibold text-gray-900") do
@@ -125,11 +151,13 @@ module Views
             end
 
             # Add course to this season
-            link_to(
-              t(".add"),
-              catalog_path,
-              class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
-            )
+            unless past
+              link_to(
+                t(".add"),
+                catalog_path,
+                class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
+              )
+            end
           end
 
           # Exam schedule preview
@@ -233,12 +261,15 @@ module Views
         end
       end
 
+      # A course in a past season isn't in the list, so it gets a "Move to…" prompt instead
       def render_move_dropdown(enrollment)
+        in_list = @seasons.any? { |s| s.key == enrollment.season_key }
+
         form_with(model: enrollment, method: :patch, class: "inline") do |f|
           f.select(
             :season_key,
-            @seasons.map { |s| [ s.short_name, s.key ] },
-            { selected: enrollment.season_key },
+            @seasons.map { |s| [ s.label, s.key ] },
+            in_list ? { selected: enrollment.season_key } : { include_blank: t(".move_to"), selected: "" },
             class: "text-xs border-gray-300 rounded py-1 pr-8",
             onchange: "this.form.submit()"
           )

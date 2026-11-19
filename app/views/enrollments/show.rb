@@ -151,7 +151,7 @@ module Views
               label(class: "text-sm text-gray-600") { t(".move_to") }
               f.select(
                 :season_key,
-                @seasons.map { |s| [ s.short_name, s.key ] },
+                @seasons.map { |s| [ s.label, s.key ] },
                 { selected: @enrollment.season_key },
                 class: "border-gray-300 rounded-md shadow-sm text-sm"
               )

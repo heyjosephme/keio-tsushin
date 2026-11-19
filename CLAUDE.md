@@ -62,9 +62,10 @@ Route helpers follow the resource names, not the URLs. For example, `enrollments
 - `Enrollment` stores `course_key`, `season_key`, and `status` (`planned → report_submitted → exam_applied → completed`). It finds its course and season (`#course`, `#season`) by YAML lookup and delegates `name`, `credits`, and `field` to the course.
   - The keys aren't validated against the catalogs. An unknown key saves fine, and then `enrollment.course` and the delegated methods return `nil`, so use `&.`.
   - Credit totals (`Enrollment.credit_stats`, `.credits_by_field`) are computed in Ruby because credits and field live in YAML. They can't be done in SQL, and the `by_field` scope does nothing.
+- **A season key is the month the season starts, and its exams come three months later**: `2026_10` is October–December 2026 with exams in January 2027. `Season#name` / `#short_name` give the start month, `#exam_name` the exam month, and `#label` both (for pickers).
 - **Season keys are `"YYYYMM"` strings (`"202604"`), not `"2026_04"`.** YAML reads the unquoted key `2026_04` as the integer `202604`, and `Season` converts it to a string. So `Season.find("2026_04")` returns `nil`. Fixtures that say `season_key: 2026_04` are parsed the same way and end up as `"202604"`.
 - `Course.all`, `Season.all`, and `ExamTimetable.config` are cached on the class, and the dev reloader doesn't watch `config/*.yml`. Restart the server after editing those files. In a console, `Course.reload!` also works.
-- `Season.upcoming(n)` returns seasons whose report deadline hasn't passed. It drives the planner columns and every season picker. `seasons.yml` has to be extended as time passes, or the board goes empty.
+- `Season.upcoming(n)` returns seasons whose exams aren't over yet (`Season.past` is the rest, shown collapsed under the planner board). It drives the planner columns and every season picker. `seasons.yml` has to be extended as time passes, or the board goes empty.
 - The catalog and planner show only courses for the user's major (`Course.for_major(Current.user.major)`). `majors: [all]` marks a course common to all majors, and a blank major shows everything.
 - The subject-area term is **field** (分野, `Course::FIELDS`). `#field_label` gives the Japanese name. It was renamed from "category"; use "field" in new code.
 
@@ -119,7 +120,7 @@ pdf.js is **not** in the importmap. `app/views/layouts/application.html.erb` loa
 - In Phlex classes, `t(".key")` resolves from the class name: `Views::Enrollments::Index` → `views.enrollments.index.key`, `Components::NavBar` → `components.nav_bar.key`. Controller flash messages use Rails' lazy lookup (`t(".success")` → `enrollments.create.success`). Text used in several places is under `shared.*`.
 - Format dates with `l(date, format: :month_day | :full | :full_weekday | :month_year)`, not `strftime`.
 - Locale choice is in `ApplicationController#switch_locale`: `?locale=` param (saved to a cookie), then the cookie, then `Accept-Language`, then English. `Components::LocaleSwitcher` renders the link.
-- Catalog data is localized in the models: `Course#localized_name` / `#secondary_name` (from `name` and `name_ja`), `#field_label`, `#type_label`, `Season#name` / `#short_name` (derived from `exam_start`), `ExamTimetable::Slot#day_label`, and `Season::Event#title`. Use these in views instead of `name`.
+- Catalog data is localized in the models: `Course#localized_name` / `#secondary_name` (from `name` and `name_ja`), `#field_label`, `#type_label`, `Season#name` / `#short_name` (the start month, from the key) and `#exam_name` / `#label`, `ExamTimetable::Slot#day_label`, and `Season::Event#title`. Use these in views instead of `name`.
 - Text shown by JavaScript is passed from the component as a Stimulus value (see `Components::PdfViewer#messages`).
 - `rails-i18n` supplies Rails' own Japanese messages. Show validation errors with `errors.full_messages_for(field)`, because Japanese messages only read correctly after the attribute name.
 

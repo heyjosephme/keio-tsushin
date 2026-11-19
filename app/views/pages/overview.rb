@@ -85,7 +85,7 @@ module Views
 
         div(class: "border-l-4 #{URGENCY.fetch(urgency(step))} pl-4 py-1") do
           p(class: "text-sm font-medium text-gray-900") { step_text(step) }
-          p(class: "text-xs text-gray-400 mb-2") { t("shared.season_exams", season: step.enrollment.season.name) }
+          p(class: "text-xs text-gray-400 mb-2") { t("shared.season_exams", season: step.enrollment.season.exam_name) }
 
           div(class: "divide-y divide-gray-100") do
             steps.each { |course_step| render_course_row(course_step) }

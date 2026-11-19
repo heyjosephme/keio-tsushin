@@ -1,5 +1,9 @@
-# Keio Tsushin Exam Seasons
-# Each season has (its display name is derived from exam_start, per language):
+# Keio Tsushin Seasons
+# A season is the three months of study that end with an exam weekend. Its key is
+# the month the season starts, and its exams are held at the start of the next
+# quarter: 2026_10 covers October-December 2026 and has its exams in January 2027.
+#
+# Each season has:
 #   - report_deadline: Last day to submit reports
 #   - application_deadline: Last day to apply for exams
 #   - exam_start / exam_end: Exam period dates
@@ -7,46 +11,44 @@
 #     ones here are only a guess. The UI marks them as estimated; remove the
 #     flag once the real dates are in.
 #
-# Deadlines come well before the exams: reports are due about two months
-# ahead (e.g. November for the January exams).
+# Deadlines fall inside the season, about two months before the exams
+# (e.g. November for the January exams).
 #
 # These dates are the same for all students.
 # Update yearly based on official Keio calendar.
 
 seasons:
-  # 2026
-  2026_01:
+  2025_10:
     report_deadline: "2026-02-26"
     application_deadline: "2026-03-05"
     exam_start: "2026-01-25"
     exam_end: "2026-01-26"
 
-  2026_04:
+  2026_01:
     report_deadline: "2026-04-10"
     application_deadline: "2026-04-15"
     exam_start: "2026-04-19"
     exam_end: "2026-04-20"
 
-  2026_07:
+  2026_04:
     report_deadline: "2026-07-10"
     application_deadline: "2026-07-15"
     exam_start: "2026-07-18"
     exam_end: "2026-07-19"
 
-  2026_10:
+  2026_07:
     report_deadline: "2026-10-10"
     application_deadline: "2026-10-15"
     exam_start: "2026-10-17"
     exam_end: "2026-10-18"
 
-  # 2027
-  2027_01:
+  2026_10:
     report_deadline: "2026-11-18"
     application_deadline: "2026-11-25"
     exam_start: "2027-01-23"
     exam_end: "2027-01-24"
 
-  2027_04:
+  2027_01:
     estimated: true
     report_deadline: "2027-02-18"
     application_deadline: "2027-03-10"

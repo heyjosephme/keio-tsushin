@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Season represents a Keio Tsushin exam period.
+# Season represents three months of study ending with an exam weekend. Its key is
+# the month it starts ("202610"); the exams come at the start of the next quarter.
 # Data is loaded from config/seasons.yml (not database).
 class Season
   attr_reader :key, :report_deadline,
@@ -54,13 +55,19 @@ class Season
       all.find { |s| s.exam_end >= today } || all.last
     end
 
+    # Seasons whose exams aren't over yet. A season stays here after its report
+    # deadline, because courses in it still have an application and an exam ahead.
     def upcoming(limit = 4)
-      today = Date.today
-      all.select { |s| s.report_deadline >= today }.first(limit)
+      all.reject(&:past?).first(limit)
+    end
+
+    # Seasons whose exams are over, most recent first
+    def past
+      all.select(&:past?).reverse
     end
 
     def for_select
-      all.map { |s| [ s.name, s.key ] }
+      all.map { |s| [ s.label, s.key ] }
     end
 
     # All events of all seasons, in date order
@@ -87,14 +94,29 @@ class Season
     end
   end
 
-  # "January 2027" / "2027年1月", in the current locale
+  # The first day of the season, from its key ("202610" → October 1, 2026)
+  def start_date
+    Date.strptime(key, "%Y%m")
+  end
+
+  # The season's start month: "October 2026" / "2026年10月", in the current locale
   def name
+    I18n.l(start_date, format: :month_year)
+  end
+
+  # "Oct '26" / "2026年10月"
+  def short_name
+    I18n.l(start_date, format: :season_short)
+  end
+
+  # The month of the exams that end the season: "January 2027" / "2027年1月"
+  def exam_name
     I18n.l(exam_start, format: :month_year)
   end
 
-  # "Jan '27" / "2027年1月"
-  def short_name
-    I18n.l(exam_start, format: :season_short)
+  # For season pickers, where the exam month matters: "Oct '26 (Jan '27 exams)"
+  def label
+    I18n.t("shared.season_label", season: short_name, exams: I18n.l(exam_start, format: :season_short))
   end
 
   # Report deadline, application deadline, and one event per exam day

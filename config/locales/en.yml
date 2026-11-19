@@ -27,6 +27,50 @@ en:
             course_key:
               taken: "is already in your plan"
 
+  graduation:
+    title: "Graduation Requirements"
+    intro: "Regular course, economics major. Each line shows completed credits against the minimum."
+    legend_met: "Done"
+    legend_on_track: "Covered by your plan"
+    legend_open: "Not covered yet"
+    units:
+      credits: "%{completed} / %{required} credits"
+      courses: "%{completed} / %{required} courses"
+      done: "Done"
+      not_done: "Not yet"
+    planned: "plan: %{planned}"
+    language: "Counting %{language}"
+    languages:
+      english: "English"
+      german: "German"
+      french: "French"
+    requirements:
+      total: "Total"
+      general: "General Education"
+      three_fields: "Three fields (humanities, social, natural)"
+      humanities_credits: "Humanities credits"
+      humanities_courses: "Humanities courses"
+      social_credits: "Social sciences credits"
+      social_courses: "Social sciences courses"
+      natural_credits: "Natural sciences credits"
+      natural_courses: "Natural sciences courses"
+      three_fields_distance: "Three fields by distance learning"
+      statistics: "Statistics by distance learning"
+      required_language: "Required foreign language"
+      specialized: "Specialized Education"
+      required_courses: "Required courses (distance learning)"
+      electives: "Elective courses"
+      electives_distance: "Electives by distance learning"
+      specialized_distance: "Specialized courses by distance learning"
+      thesis: "Graduation Thesis"
+      schooling: "Schooling"
+    notes:
+      general: "Schooling counts for at most 12 credits in the three fields. The required language counts for 8 credits; other languages count for at most 2 credits each, 4 in total."
+      specialized: "Schooling counts for at most 28 elective credits."
+      thesis: "Mark the thesis as completed on your profile."
+      schooling: "Needed across the whole course. Media and broadcast courses count for at most 10 of the 30 credits. The catalog has no schooling courses yet."
+    not_checked: "Not checked: the graduation exam, health and physical education, and the detailed make-up of the 8 required language credits."
+
   shared:
     cancel: "Cancel"
     all: "All"
@@ -52,13 +96,10 @@ en:
       natural: "Natural Sciences"
       foreign_language: "Foreign Languages"
       economics: "Economics"
-    areas:
-      general: "General Education"
-      specialized: "Specialized Education"
-      thesis: "Graduation Thesis"
     course_types:
       distance: "Distance"
       on_campus: "On Campus"
+      media: "Media"
       both: "Distance & On Campus"
     majors:
       all: "All majors"
@@ -283,6 +324,9 @@ en:
         enrolled: "Enrolled"
         graduation: "Expected Graduation"
         credit_goal: "Credit Goal per Year"
+        thesis: "Graduation Thesis"
+        thesis_done: "Completed"
+        thesis_open: "Not yet"
         enrolled_value: "%{year} %{semester}"
         incomplete: "Complete your study plan to see personalized progress insights."
         setup: "Set up study plan"
@@ -312,6 +356,8 @@ en:
         graduation_hint: "When do you plan to graduate?"
         credit_goal: "Credit Goal per Year"
         credit_goal_hint: "How many credits do you aim to earn each year? (124 total needed)"
+        thesis_completed: "Graduation thesis completed"
+        thesis_hint: "Counts as 8 credits toward graduation."
         submit: "Save Changes"
     deadlines:
       index:
@@ -379,10 +425,6 @@ en:
         in_progress: "In Progress"
         planned: "Planned"
         credits_unit: " credits"
-        by_area: "Graduation Requirements"
-        area_progress: "%{completed} / %{required} credits"
-        area_breakdown: "In progress %{in_progress} · Planned %{planned}"
-        thesis_note: "Thesis credits can't be recorded yet."
         by_field: "Credits by Field"
         field: "Field"
         total: "Total"

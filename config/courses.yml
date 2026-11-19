@@ -11,7 +11,8 @@
 # Types:
 #   - distance: 通信授業 (correspondence/distance)
 #   - on_campus: スクーリング (on-campus)
-#   - both: 両方
+#   - media: メディア授業・放送授業 (E-schooling and broadcast)
+#   - both: 両方 (legacy; counted as distance)
 #   Only distance courses are handled so far. A schooling course should get its
 #   own entry with `type: on_campus` rather than sharing one with the distance
 #   version, because graduation rules count credits by how they were earned
@@ -26,6 +27,11 @@
 #   - economics: 経済学部
 #   - law: 法学部
 #   - literature: 文学部
+#
+# Language (foreign language courses only):
+#   language is english, german, french or any other name. The graduation check
+#   needs it: 8 credits must come from one of english/german/french, and other
+#   languages count for at most 2 credits each.
 #
 # Required for (必修, optional):
 #   required_for lists the majors for which the course is compulsory,
@@ -180,6 +186,7 @@ courses:
     name_ja: "英語I"
     credits: 2
     field: foreign_language
+    language: english
     type: distance
     exam_group: D
     majors: [all]
@@ -189,6 +196,7 @@ courses:
     name_ja: "英語II"
     credits: 2
     field: foreign_language
+    language: english
     type: distance
     exam_group: B
     majors: [all]
@@ -198,6 +206,7 @@ courses:
     name_ja: "英語III"
     credits: 2
     field: foreign_language
+    language: english
     type: distance
     exam_group: F
     majors: [all]
@@ -207,6 +216,7 @@ courses:
     name_ja: "英語VII"
     credits: 2
     field: foreign_language
+    language: english
     type: distance
     exam_group: E
     majors: [all]
@@ -216,6 +226,7 @@ courses:
     name_ja: "ドイツ語I"
     credits: 2
     field: foreign_language
+    language: german
     type: distance
     exam_group: B
     majors: [all]
@@ -225,6 +236,7 @@ courses:
     name_ja: "フランス語I"
     credits: 2
     field: foreign_language
+    language: french
     type: distance
     exam_group: B
     majors: [all]

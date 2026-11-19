@@ -70,6 +70,7 @@ module Views
             render_field(t(".enrolled"), format_enrollment(@user.enrolled_year, @user.enrolled_semester))
             render_field(t(".graduation"), format_year(@user.expected_graduation_year))
             render_field(t(".credit_goal"), format_credits(@user.credits_goal_per_year))
+            render_field(t(".thesis"), t(@user.thesis_completed? ? ".thesis_done" : ".thesis_open"))
           end
 
           if study_plan_complete?

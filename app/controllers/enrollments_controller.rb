@@ -31,7 +31,7 @@ class EnrollmentsController < ApplicationController
     render Views::Enrollments::Dashboard.new(
       credit_stats: @credit_stats,
       credits_by_field: @credits_by_field,
-      credits_by_area: current_user_enrollments.credits_by_area
+      graduation: GraduationCheck.new(user: Current.user, enrollments: current_user_enrollments)
     )
   end
 

@@ -21,6 +21,7 @@ bin/rubocop                # lint; add -a to autocorrect
 bin/brakeman               # security scan
 bin/ci                     # full local pipeline, defined in config/ci.rb
 bin/rails db:seed:replant  # reset DB and reseed (wipes all user data, see Seeds)
+bin/rails db:backup        # snapshot the SQLite DB into storage/backups/ (BACKUP_DIR=, KEEP=); db:backups lists them
 bin/kamal deploy           # deploy; aliases: bin/kamal console | shell | logs | dbc
 ```
 
@@ -68,6 +69,10 @@ Route helpers follow the resource names, not the URLs. For example, `enrollments
 - `Season.upcoming(n)` returns seasons whose exams aren't over yet (`Season.past` is the rest, shown collapsed under the planner board). It drives the planner columns and every season picker. `seasons.yml` has to be extended as time passes, or the board goes empty.
 - The catalog and planner show only courses for the user's major (`Course.for_major(Current.user.major)`). `majors: [all]` marks a course common to all majors, and a blank major shows everything.
 - The subject-area term is **field** (分野, `Course::FIELDS`). `#field_label` gives the Japanese name. It was renamed from "category"; use "field" in new code.
+
+### Graduation check
+
+`GraduationCheck` (`app/models/graduation_check.rb`) holds every graduation rule as a tree of `Requirement`s (general education, specialized education, thesis, schooling) and drives the checklist on the credit dashboard. Only the economics major's rules exist; they apply whatever major the user has. Each requirement has `completed` (completed courses only) and `planned` (every course in the plan). The rules depend on catalog data: `type` (`on_campus` and `media` count as schooling, anything else as distance), `language` on foreign-language courses, and `required_for`. The thesis is not a course: it is `User#thesis_completed`, set on the profile. The class comment lists what is not checked.
 
 ### Exam timetable and conflicts
 

@@ -23,6 +23,50 @@ ja:
             course_key:
               taken: "はすでに履修計画に入っています"
 
+  graduation:
+    title: "卒業要件"
+    intro: "普通課程・経済学部。各行は修得済み単位と必要単位です。"
+    legend_met: "達成"
+    legend_on_track: "現在の計画で充足"
+    legend_open: "未充足"
+    units:
+      credits: "%{completed} / %{required}単位"
+      courses: "%{completed} / %{required}科目"
+      done: "達成"
+      not_done: "未達成"
+    planned: "計画: %{planned}"
+    language: "%{language}で計算"
+    languages:
+      english: "英語"
+      german: "ドイツ語"
+      french: "フランス語"
+    requirements:
+      total: "合計"
+      general: "総合教育科目"
+      three_fields: "3分野科目（人文・社会・自然）"
+      humanities_credits: "人文科学分野の単位"
+      humanities_courses: "人文科学分野の科目数"
+      social_credits: "社会科学分野の単位"
+      social_courses: "社会科学分野の科目数"
+      natural_credits: "自然科学分野の単位"
+      natural_courses: "自然科学分野の科目数"
+      three_fields_distance: "3分野科目のテキスト単位"
+      statistics: "統計学（テキスト）"
+      required_language: "必修外国語"
+      specialized: "専門教育科目"
+      required_courses: "必修科目（テキスト）"
+      electives: "選択科目"
+      electives_distance: "選択科目のテキスト単位"
+      specialized_distance: "専門教育科目のテキスト単位"
+      thesis: "卒業論文"
+      schooling: "スクーリング"
+    notes:
+      general: "3分野科目のスクーリングは12単位まで算入されます。必修外国語は8単位、それ以外の外国語は1言語2単位・合計4単位まで算入されます。"
+      specialized: "選択科目のスクーリングは28単位まで算入されます。"
+      thesis: "卒業論文の完了はプロフィールで記録します。"
+      schooling: "課程全体で必要です。メディア授業・放送授業は30単位のうち10単位まで算入されます。科目一覧にスクーリング科目はまだありません。"
+    not_checked: "未対応: 卒業試験、保健体育、必修外国語8単位の詳細な内訳。"
+
   shared:
     cancel: "キャンセル"
     all: "すべて"
@@ -47,13 +91,10 @@ ja:
       natural: "自然科学"
       foreign_language: "外国語"
       economics: "経済学"
-    areas:
-      general: "総合教育科目"
-      specialized: "専門教育科目"
-      thesis: "卒業論文"
     course_types:
       distance: "通信授業"
       on_campus: "スクーリング"
+      media: "メディア授業"
       both: "通信授業・スクーリング"
     majors:
       all: "全学部共通"
@@ -278,6 +319,9 @@ ja:
         enrolled: "入学"
         graduation: "卒業予定"
         credit_goal: "年間の目標単位数"
+        thesis: "卒業論文"
+        thesis_done: "完了"
+        thesis_open: "未完了"
         enrolled_value: "%{year}年 %{semester}"
         incomplete: "学習計画を入力すると、あなたに合わせた進捗の目安が表示されます。"
         setup: "学習計画を設定する"
@@ -307,6 +351,8 @@ ja:
         graduation_hint: "いつ卒業する予定ですか?"
         credit_goal: "年間の目標単位数"
         credit_goal_hint: "1年間に何単位の修得を目指しますか?(卒業には合計124単位が必要です)"
+        thesis_completed: "卒業論文を完了した"
+        thesis_hint: "卒業に必要な8単位として数えます。"
         submit: "変更を保存"
     deadlines:
       index:
@@ -373,10 +419,6 @@ ja:
         in_progress: "進行中"
         planned: "計画中"
         credits_unit: "単位"
-        by_area: "卒業要件"
-        area_progress: "%{completed} / %{required}単位"
-        area_breakdown: "進行中 %{in_progress} · 計画中 %{planned}"
-        thesis_note: "卒業論文の単位はまだ記録できません。"
         by_field: "分野別の単位"
         field: "分野"
         total: "合計"

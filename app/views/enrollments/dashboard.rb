@@ -8,10 +8,10 @@ module Views
 
       TOTAL_CREDITS_REQUIRED = Enrollment::CREDITS_REQUIRED
 
-      def initialize(credit_stats:, credits_by_field:, credits_by_area:)
+      def initialize(credit_stats:, credits_by_field:, graduation:)
         @credit_stats = credit_stats
         @credits_by_field = credits_by_field
-        @credits_by_area = credits_by_area
+        @graduation = graduation
       end
 
       def view_template
@@ -21,7 +21,7 @@ module Views
               render_flash_messages
               render_header
               render_overall_progress
-              render_area_requirements
+              render_graduation_check
               render_status_cards
               render_field_breakdown
               render_quick_actions
@@ -78,9 +78,9 @@ module Views
           end
 
           # Credits beyond an area's minimum don't make up for a shortfall in another area
-          remaining = @credits_by_area.values.sum { |stats| [ stats[:required] - stats[:completed], 0 ].max }
+          remaining = @graduation.remaining
 
-          if remaining.zero?
+          if @graduation.met?
             p(class: "text-center text-sm text-success-600 font-semibold mt-4") do
               t(".requirement_met")
             end
@@ -92,46 +92,118 @@ module Views
         end
       end
 
-      # The three parts of the graduation requirement, each with its own minimum
-      def render_area_requirements
+      # Every graduation rule as a checklist: one card per section, with its sub-rules
+      def render_graduation_check
         div(class: "bg-white rounded-lg shadow mb-8") do
           div(class: "px-6 py-4 border-b border-gray-200") do
-            h2(class: "text-xl font-semibold text-gray-900") { t(".by_area") }
+            h2(class: "text-xl font-semibold text-gray-900") { t("graduation.title") }
+            p(class: "mt-1 text-sm text-gray-500") { t("graduation.intro") }
+            div(class: "mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-gray-600") do
+              render_legend(:met)
+              render_legend(:on_track)
+              render_legend(:open)
+            end
           end
 
-          div(class: "p-6 space-y-6") do
-            @credits_by_area.each { |area, stats| render_area_row(area, stats) }
+          div(class: "divide-y divide-gray-100") do
+            @graduation.sections.each { |section| render_section(section) }
+          end
+
+          p(class: "px-6 py-3 border-t border-gray-100 text-xs text-gray-500") { t("graduation.not_checked") }
+        end
+      end
+
+      REQUIREMENT_ICONS = {
+        met: [ :completed, "text-success-600" ],
+        on_track: [ :clock, "text-primary-500" ],
+        open: [ :planned, "text-gray-300" ]
+      }.freeze
+
+      def requirement_state(requirement)
+        return :met if requirement.met?
+
+        requirement.on_track? ? :on_track : :open
+      end
+
+      def render_requirement_icon(state, size: "size-4")
+        name, color = REQUIREMENT_ICONS.fetch(state)
+        render Components::Icon.new(name, label: t("graduation.legend_#{state}"), class: "#{size} shrink-0 #{color}")
+      end
+
+      def render_legend(state)
+        name, color = REQUIREMENT_ICONS.fetch(state)
+
+        span(class: "inline-flex items-center gap-1.5") do
+          render Components::Icon.new(name, class: "size-4 shrink-0 #{color}")
+          plain t("graduation.legend_#{state}")
+        end
+      end
+
+      def render_section(section)
+        div(class: "p-6") do
+          div(class: "flex items-center justify-between gap-4 mb-2") do
+            h3(class: "flex items-center gap-2 text-base font-semibold text-primary-900") do
+              render_requirement_icon(section.all_met? ? :met : (section.all_on_track? ? :on_track : :open), size: "size-5")
+              plain section.label
+            end
+            render_requirement_numbers(section, strong: true)
+          end
+
+          div(class: "w-full bg-gray-200 rounded-full h-2.5 flex overflow-hidden") do
+            done = requirement_percent(section.completed, section)
+            div(class: "bg-primary-800 h-2.5", style: "width: #{done}%")
+            div(class: "bg-primary-200 h-2.5", style: "width: #{[ requirement_percent(section.planned, section) - done, 0 ].max}%")
+          end
+
+          if section.children.any?
+            ul(class: "mt-4 space-y-2") do
+              section.children.each { |child| render_requirement(child) }
+            end
+          end
+
+          p(class: "mt-3 text-xs text-gray-500") { t("graduation.notes.#{section.key}") }
+        end
+      end
+
+      def render_requirement(requirement, depth: 0)
+        li do
+          div(class: "flex items-center justify-between gap-4 text-sm #{depth.zero? ? "text-gray-900" : "text-gray-600"}") do
+            span(class: "flex items-center gap-2") do
+              render_requirement_icon(requirement_state(requirement))
+              span(class: depth.zero? ? "font-medium" : nil) { requirement.label }
+              if requirement.key == :required_language && @graduation.required_language
+                span(class: "text-xs text-gray-500") do
+                  "(#{t("graduation.language", language: t("graduation.languages.#{@graduation.required_language}", default: @graduation.required_language))})"
+                end
+              end
+            end
+            render_requirement_numbers(requirement)
+          end
+
+          if requirement.children.any?
+            ul(class: "mt-2 ml-6 space-y-2 border-l border-gray-100 pl-4") do
+              requirement.children.each { |child| render_requirement(child, depth: depth + 1) }
+            end
           end
         end
       end
 
-      def render_area_row(area, stats)
-        div do
-          div(class: "flex items-baseline justify-between mb-2") do
-            h3(class: "text-sm font-medium text-gray-900") { t("shared.areas.#{area}") }
-            p(class: "text-sm text-gray-700") do
-              t(".area_progress", completed: stats[:completed], required: stats[:required])
-            end
-          end
-
-          div(class: "w-full bg-gray-200 rounded-full h-3 flex overflow-hidden") do
-            div(class: "bg-primary-800 h-3", style: "width: #{area_percent(stats, :completed)}%")
-            div(class: "bg-primary-300 h-3", style: "width: #{area_percent(stats, :in_progress)}%")
-            div(class: "bg-primary-100 h-3", style: "width: #{area_percent(stats, :planned)}%")
-          end
-
-          p(class: "mt-1 text-xs text-gray-500") do
-            if area == "thesis"
-              t(".thesis_note")
-            else
-              t(".area_breakdown", in_progress: stats[:in_progress], planned: stats[:planned])
+      # "4 / 32 credits · plan: 20"; the plan figure only when it adds something
+      def render_requirement_numbers(requirement, strong: false)
+        span(class: "shrink-0 text-right text-sm #{strong ? "font-semibold text-gray-900" : "text-gray-700"}") do
+          if requirement.unit == :done
+            plain t(requirement.met? ? "graduation.units.done" : "graduation.units.not_done")
+          else
+            plain t("graduation.units.#{requirement.unit}", completed: requirement.completed, required: requirement.required)
+            if requirement.planned > requirement.completed
+              span(class: "ml-2 text-xs font-normal text-gray-500") { t("graduation.planned", planned: requirement.planned) }
             end
           end
         end
       end
 
-      def area_percent(stats, status)
-        [ stats[status] * 100.0 / stats[:required], 100 ].min.round(1)
+      def requirement_percent(credits, requirement)
+        [ credits * 100.0 / requirement.required, 100 ].min.round(1)
       end
 
       def render_status_cards

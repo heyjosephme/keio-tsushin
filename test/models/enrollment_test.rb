@@ -31,23 +31,4 @@ class EnrollmentTest < ActiveSupport::TestCase
   test "no next step for an unknown season" do
     assert_nil step("planned", season_key: "209901")
   end
-
-  test "graduation areas add up to the credits needed to graduate" do
-    assert_equal Enrollment::CREDITS_REQUIRED, Enrollment::GRADUATION_AREAS.values.sum { |area| area[:required] }
-    assert_equal Course::FIELDS.sort, Enrollment::GRADUATION_AREAS.values.flat_map { |area| area[:fields] }.sort
-  end
-
-  test "credits_by_area groups credits into general, specialized and thesis" do
-    user = users(:two)
-    user.enrollments.create!(course_key: "stat101", season_key: "202610", status: "completed")  # natural, 4
-    user.enrollments.create!(course_key: "eng101", season_key: "202610", status: "planned")     # foreign language, 2
-    user.enrollments.create!(course_key: "econ204", season_key: "202610", status: "completed")  # economics, 4
-    user.enrollments.create!(course_key: "econ206", season_key: "202610", status: "exam_applied") # economics, 3
-
-    areas = user.enrollments.credits_by_area
-
-    assert_equal({ completed: 4, in_progress: 0, planned: 2, total: 6, required: 48 }, areas["general"])
-    assert_equal({ completed: 4, in_progress: 3, planned: 0, total: 7, required: 68 }, areas["specialized"])
-    assert_equal({ completed: 0, in_progress: 0, planned: 0, total: 0, required: 8 }, areas["thesis"])
-  end
 end

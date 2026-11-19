@@ -3,10 +3,10 @@
 # Course represents a Keio Tsushin course from the catalog.
 # Data is loaded from config/courses.yml (not database).
 class Course
-  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references, :exam_group, :required_for
+  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references, :exam_group, :required_for, :language
 
   FIELDS = %w[humanities social natural foreign_language economics].freeze
-  TYPES = %w[distance on_campus both].freeze
+  TYPES = %w[distance on_campus media both].freeze
   MAJORS = %w[economics law literature].freeze
 
   # Report-topic PDF slots on the Documents page (Views::Pages::Documents). Not derived
@@ -30,6 +30,7 @@ class Course
     @references = data["references"] || {}
     @exam_group = data["exam_group"]
     @required_for = data["required_for"] || []
+    @language = data["language"]
   end
 
   class << self
@@ -83,6 +84,37 @@ class Course
 
   def distance?
     type == "distance"
+  end
+
+  # Schooling in a classroom (スクーリング)
+  def on_campus?
+    type == "on_campus"
+  end
+
+  # Media and broadcast courses (E-スクーリング, 放送授業)
+  def media?
+    type == "media"
+  end
+
+  # Graduation rules count classroom and media courses together as schooling
+  def schooling?
+    on_campus? || media?
+  end
+
+  # Everything that isn't schooling counts as distance learning, including the
+  # old `both` type and courses without a type
+  def by_distance?
+    !schooling?
+  end
+
+  # Two Course objects for the same catalog entry are the same course
+  def ==(other)
+    other.is_a?(Course) && key == other.key
+  end
+  alias eql? ==
+
+  def hash
+    key.hash
   end
 
   def display_name

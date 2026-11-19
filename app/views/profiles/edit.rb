@@ -131,6 +131,15 @@ module Views
                 class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               p(class: "text-xs text-gray-400 mt-1") { t(".credit_goal_hint") }
             end
+
+            # The thesis isn't a catalog course, so its 8 credits are recorded here
+            div do
+              label(class: "inline-flex items-center gap-2 text-sm font-medium text-gray-700") do
+                form.check_box :thesis_completed, class: "size-4 rounded border-gray-300 accent-primary-800"
+                plain t(".thesis_completed")
+              end
+              p(class: "text-xs text-gray-400 mt-1") { t(".thesis_hint") }
+            end
           end
         end
       end

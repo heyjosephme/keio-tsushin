@@ -88,20 +88,30 @@ class EnrollmentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: "Timing undecided", count: 0
   end
 
-  test "dashboard shows progress for each part of the graduation requirement" do
+  test "dashboard shows the graduation checklist" do
     @user.enrollments.create!(course_key: "econ204", season_key: "202610", status: "completed")
+    @user.enrollments.create!(course_key: "stat101", season_key: "202610", status: "planned")
 
     get dashboard_enrollments_url
 
     assert_response :success
     assert_select "h2", "Graduation Requirements"
-    assert_select "h3", "General Education"
-    assert_select "p", "0 / 48 credits"
-    assert_select "h3", "Specialized Education"
-    assert_select "p", "4 / 68 credits"
-    assert_select "h3", "Graduation Thesis"
-    assert_select "p", "0 / 8 credits"
+    assert_select "h3", /General Education/
+    assert_select "h3", /Specialized Education/
+    assert_select "h3", /Graduation Thesis/
+    assert_select "h3", /Schooling/
+    # econ204 is a completed required course; the fixture courses and stat101 are only planned
+    assert_select "li", /Required courses \(distance learning\)\s*4 \/ 17 credits/
+    assert_select "li", /Natural sciences credits\s*0 \/ 6 credits\s*plan: 4/
     assert_select "p", "120 credits remaining"
+  end
+
+  test "marking the thesis completed on the profile counts its 8 credits" do
+    patch profile_url, params: { user: { thesis_completed: "1" } }
+    assert @user.reload.thesis_completed?
+
+    get dashboard_enrollments_url
+    assert_select "p", "116 credits remaining"
   end
 
   test "index keeps a season on the board after its report deadline and lists past seasons" do

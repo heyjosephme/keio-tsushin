@@ -1,15 +1,6 @@
 class Enrollment < ApplicationRecord
   STATUSES = %w[planned report_submitted exam_applied completed].freeze
-  CREDITS_REQUIRED = 124 # credits needed to graduate
-
-  # The three parts of the graduation requirement and the catalog fields that count
-  # toward each. These are the economics major's numbers, the only major handled so far.
-  # The thesis has no catalog course yet, so its credits can't be earned in the app.
-  GRADUATION_AREAS = {
-    "general" => { fields: %w[humanities social natural foreign_language], required: 48 },
-    "specialized" => { fields: %w[economics], required: 68 },
-    "thesis" => { fields: [], required: 8 }
-  }.freeze
+  CREDITS_REQUIRED = GraduationCheck::TOTAL_CREDITS # credits needed to graduate
 
   # What a course needs next. action is :submit_report, :apply_exam, :take_exam,
   # :record_result (the exam day has passed) or :reschedule (a deadline was missed).
@@ -58,18 +49,6 @@ class Enrollment < ApplicationRecord
         planned: total_credits_by_status(enrollments_in_field.select { |e| e.status == "planned" }),
         total: total_credits_by_status(enrollments_in_field)
       }
-    end
-  end
-
-  # Credits per graduation area, with the area's required minimum
-  def self.credits_by_area
-    by_field = credits_by_field
-
-    GRADUATION_AREAS.transform_values do |area|
-      stats = %i[completed in_progress planned total].index_with do |status|
-        area[:fields].sum { |field| by_field[field][status] }
-      end
-      stats.merge(required: area[:required])
     end
   end
 

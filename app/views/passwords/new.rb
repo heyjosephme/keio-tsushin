@@ -8,7 +8,7 @@ module Views
       include Phlex::Rails::Helpers::FormWith
 
       def view_template
-        div(class: "min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8") do
+        div(class: "min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8") do
           div(class: "max-w-md w-full space-y-8") do
             div(class: "text-right") { render Components::LocaleSwitcher.new }
             render_header
@@ -29,8 +29,8 @@ module Views
 
       def render_flash_messages
         if flash[:alert]
-          div(class: "rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -45,16 +45,16 @@ module Views
                 autofocus: true,
                 autocomplete: "username",
                 placeholder: t(".email_placeholder"),
-                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             end
 
             div(class: "flex items-center justify-between") do
               form.submit t(".submit"),
-                class: "w-full sm:w-auto inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer"
+                class: "w-full sm:w-auto inline-flex justify-center rounded-md border border-transparent bg-primary-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 cursor-pointer"
 
               link_to t(".back"),
                 new_session_path,
-                class: "text-sm text-indigo-600 hover:text-indigo-500"
+                class: "text-sm text-primary-700 hover:text-primary-500"
             end
           end
         end

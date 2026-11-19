@@ -31,21 +31,21 @@ module Views
           link_to(
             t(".edit"),
             edit_profile_path,
-            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-800 hover:bg-primary-700"
           )
         end
       end
 
       def render_flash_messages
         if flash[:notice]
-          div(class: "mb-4 rounded-md bg-green-50 p-4") do
-            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          div(class: "mb-4 rounded-md bg-success-50 p-4") do
+            p(class: "text-sm font-medium text-success-800") { flash[:notice] }
           end
         end
 
         if flash[:alert]
-          div(class: "mb-4 rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "mb-4 rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -75,14 +75,14 @@ module Views
           if study_plan_complete?
             render_progress_summary
           else
-            div(class: "mt-6 p-4 bg-amber-50 rounded-lg") do
-              p(class: "text-sm text-amber-700") do
+            div(class: "mt-6 p-4 bg-warning-50 rounded-lg") do
+              p(class: "text-sm text-warning-700") do
                 t(".incomplete")
               end
               link_to(
                 t(".setup"),
                 edit_profile_path,
-                class: "mt-2 inline-block text-sm font-medium text-amber-800 underline"
+                class: "mt-2 inline-block text-sm font-medium text-warning-800 underline"
               )
             end
           end
@@ -101,21 +101,21 @@ module Views
         credits_needed = 124 - Enrollment.where(user: @user, status: "completed").sum { |e| e.credits || 0 }
         credits_per_year_needed = years_remaining > 0 ? (credits_needed.to_f / years_remaining).ceil : credits_needed
 
-        div(class: "mt-6 p-4 bg-indigo-50 rounded-lg") do
-          h3(class: "text-sm font-semibold text-indigo-900 mb-2") { t(".insight_title") }
+        div(class: "mt-6 p-4 bg-primary-50 rounded-lg") do
+          h3(class: "text-sm font-semibold text-primary-900 mb-2") { t(".insight_title") }
 
           if years_remaining > 0
-            p(class: "text-sm text-indigo-700") do
+            p(class: "text-sm text-primary-700") do
               t(".insight", year: @user.expected_graduation_year, per_year: credits_per_year_needed, remaining: credits_needed, years: years_remaining)
             end
 
             if @user.credits_goal_per_year && credits_per_year_needed > @user.credits_goal_per_year
-              p(class: "text-sm text-amber-700 mt-2") do
+              p(class: "text-sm text-warning-700 mt-2") do
                 t(".goal_warning", goal: @user.credits_goal_per_year)
               end
             end
           else
-            p(class: "text-sm text-indigo-700") do
+            p(class: "text-sm text-primary-700") do
               t(".remaining", remaining: credits_needed)
             end
           end

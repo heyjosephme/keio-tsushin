@@ -29,11 +29,11 @@ export default class extends Controller {
 
     // Update visual selection
     this.cardTargets.forEach(c => {
-      c.classList.remove("ring-2", "ring-indigo-500", "bg-indigo-50")
+      c.classList.remove("ring-2", "ring-primary-500", "bg-primary-50")
       c.classList.add("bg-white")
     })
     card.classList.remove("bg-white")
-    card.classList.add("ring-2", "ring-indigo-500", "bg-indigo-50")
+    card.classList.add("ring-2", "ring-primary-500", "bg-primary-50")
 
     // Update selected display
     if (this.hasSelectedDisplayTarget) {
@@ -66,9 +66,9 @@ export default class extends Controller {
     this.tabTargets.forEach(tab => {
       if (tab.dataset.field === this.fieldValue) {
         tab.classList.remove("bg-white", "text-gray-600")
-        tab.classList.add("bg-indigo-600", "text-white")
+        tab.classList.add("bg-primary-800", "text-white")
       } else {
-        tab.classList.remove("bg-indigo-600", "text-white")
+        tab.classList.remove("bg-primary-800", "text-white")
         tab.classList.add("bg-white", "text-gray-600")
       }
     })

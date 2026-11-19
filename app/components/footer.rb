@@ -20,7 +20,7 @@ class Components::Footer < Components::Base
 
   def render_brand_section
     div(class: "mb-6 md:mb-0") do
-      span(class: "text-lg font-bold text-indigo-600") { "Keio Tsushin" }
+      span(class: "text-lg font-bold text-primary-700") { "Keio Tsushin" }
       p(class: "mt-2 text-sm text-gray-500 max-w-xs") do
         t(".tagline")
       end

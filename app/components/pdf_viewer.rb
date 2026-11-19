@@ -53,7 +53,7 @@ class Components::PdfViewer < Components::Base
     # Empty state
     button(
       type: "button",
-      class: "w-full flex flex-col items-center justify-center gap-1 py-3 rounded-lg border-2 border-dashed border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition cursor-pointer",
+      class: "w-full flex flex-col items-center justify-center gap-1 py-3 rounded-lg border-2 border-dashed border-gray-200 text-gray-400 hover:border-primary-300 hover:text-primary-500 transition cursor-pointer",
       data: {
         pdf_viewer_target: "emptyState",
         action: "click->pdf-viewer#triggerUpload"
@@ -79,7 +79,7 @@ class Components::PdfViewer < Components::Base
       # Replace PDF
       button(
         type: "button",
-        class: "text-sm text-gray-400 hover:text-indigo-500 transition cursor-pointer",
+        class: "text-sm text-gray-400 hover:text-primary-500 transition cursor-pointer",
         title: t(".replace"),
         data: { action: "click->pdf-viewer#triggerUpload" }
       ) { "📤" }
@@ -87,7 +87,7 @@ class Components::PdfViewer < Components::Base
       # Remove PDF
       button(
         type: "button",
-        class: "text-sm text-gray-400 hover:text-red-500 transition cursor-pointer",
+        class: "text-sm text-gray-400 hover:text-danger-500 transition cursor-pointer",
         title: t(".remove"),
         data: { action: "click->pdf-viewer#remove" }
       ) { "✕" }

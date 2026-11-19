@@ -16,6 +16,10 @@ module Views
         @major_set = major_set
       end
 
+      FIELD_STRIPES = Components::FieldTag::STRIPES
+
+      SELECT_CLASS = "text-xs text-gray-700 bg-white border border-gray-300 rounded-md py-1 pl-2 pr-7 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+
       def view_template
         render Components::Layout.new do
           div(class: "py-8") do
@@ -29,9 +33,9 @@ module Views
               render_undecided_courses if @undecided_courses.any?
 
               # Kanban board
-              div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
-                @seasons.each do |season|
-                  render_season_column(season)
+              div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start") do
+                @seasons.each_with_index do |season, index|
+                  render_season_column(season, current: index.zero?)
                 end
               end
 
@@ -43,27 +47,33 @@ module Views
 
       private
 
+      def icon(name, **)
+        render Components::Icon.new(name, **)
+      end
+
       def render_header
         div(class: "mb-8 flex justify-between items-center") do
-          h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
+          h1(class: "text-3xl font-bold tracking-tight text-primary-900") { t(".title") }
           link_to(
-            t(".browse"),
             catalog_path,
-            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-          )
+            class: "inline-flex items-center gap-2 px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-primary-800 hover:bg-primary-700"
+          ) do
+            icon(:search)
+            plain t(".browse")
+          end
         end
       end
 
       def render_flash_messages
         if flash[:notice]
-          div(class: "mb-4 rounded-md bg-green-50 p-4") do
-            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          div(class: "mb-4 rounded-md bg-success-50 p-4") do
+            p(class: "text-sm font-medium text-success-800") { flash[:notice] }
           end
         end
 
         if flash[:alert]
-          div(class: "mb-4 rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "mb-4 rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -71,8 +81,11 @@ module Views
       # Compulsory courses the user hasn't scheduled yet. Picking a season adds the
       # course to the plan; removing it from the plan brings it back here.
       def render_undecided_courses
-        div(class: "mb-6 rounded-lg border-2 border-dashed border-gray-300 bg-white p-4") do
-          h2(class: "font-semibold text-gray-900") { t(".undecided_title") }
+        div(class: "mb-6 rounded-xl border-2 border-dashed border-primary-200 bg-white/70 p-4") do
+          h2(class: "flex items-center gap-2 font-semibold text-primary-900") do
+            icon(:clock, class: "size-5 shrink-0 text-primary-500")
+            plain t(".undecided_title")
+          end
           p(class: "mt-1 text-xs text-gray-500") { t(".undecided_hint") }
 
           div(class: "mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3") do
@@ -83,33 +96,34 @@ module Views
 
       # Required courses depend on the major, so without one the undecided box stays empty
       def render_major_hint
-        div(class: "mb-6 rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 flex flex-wrap items-center justify-between gap-3") do
+        div(class: "mb-6 rounded-xl border-2 border-dashed border-primary-200 bg-white/70 p-4 flex flex-wrap items-center justify-between gap-3") do
           p(class: "text-sm text-gray-600") { t(".major_hint") }
-          link_to(t(".set_major"), edit_profile_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800")
+          link_to(t(".set_major"), edit_profile_path, class: "text-sm font-medium text-primary-700 hover:text-primary-900")
         end
       end
 
       # Seasons whose exams are over, collapsed below the board
       def render_past_seasons
         details(class: "mt-8") do
-          summary(class: "cursor-pointer text-sm font-semibold text-gray-700") do
-            t(".past_seasons", count: @past_seasons.size)
+          summary(class: "cursor-pointer inline-flex items-center gap-2 text-sm font-semibold text-primary-800") do
+            icon(:archive)
+            plain t(".past_seasons", count: @past_seasons.size)
           end
 
-          div(class: "mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
+          div(class: "mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start") do
             @past_seasons.each { |season| render_season_column(season, past: true) }
           end
         end
       end
 
       def render_undecided_card(course)
-        div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200") do
-          link_to(catalog_course_path(course.key), class: "block") do
-            p(class: "font-medium text-gray-900 text-sm hover:text-indigo-600") { course.localized_name }
+        div(class: "bg-white rounded-lg p-3 ring-1 ring-gray-200 border-l-4 #{FIELD_STRIPES[course.field]}") do
+          link_to(catalog_course_path(course.key), class: "block group") do
+            p(class: "font-medium text-primary-950 text-sm group-hover:text-primary-600") { course.localized_name }
             p(class: "text-xs text-gray-500") { course.secondary_name } if course.secondary_name
-            p(class: "text-xs text-gray-500 mt-1") do
-              span(class: "px-1.5 py-0.5 rounded text-xs bg-red-50 text-red-700") { t(".required") }
-              span(class: "ml-2") { t("shared.credits", count: course.credits) } if course.credits
+            p(class: "text-xs text-gray-500 mt-2 flex items-center gap-2") do
+              span(class: "px-1.5 py-0.5 rounded bg-danger-50 text-danger-700") { t(".required") }
+              span { t("shared.credits", count: course.credits) } if course.credits
             end
           end
 
@@ -122,28 +136,32 @@ module Views
               { prompt: t(".choose_season") },
               id: nil,
               aria: { label: t(".choose_season") },
-              class: "w-full text-xs border-gray-300 rounded py-1 pr-8",
+              class: "w-full #{SELECT_CLASS}",
               onchange: "this.form.submit()"
             )
           end
         end
       end
 
-      def render_season_column(season, past: false)
+      # current: the season in progress, marked with the accent colour
+      def render_season_column(season, past: false, current: false)
         enrollments = @enrollments_by_season[season.key] || []
+        top = current ? "border-accent-400" : (past ? "border-gray-300" : "border-primary-800")
 
-        div(class: "#{past ? "bg-gray-50" : "bg-white"} rounded-lg shadow") do
+        div(class: "#{past ? "bg-white/60" : "bg-white"} rounded-xl shadow-sm ring-1 ring-primary-100 border-t-4 #{top}") do
           # Season header
-          div(class: "p-4 border-b border-gray-200") do
-            h2(class: "font-semibold text-gray-900") do
+          div(class: "p-4 border-b border-gray-100") do
+            h2(class: "text-lg font-bold tracking-tight text-primary-900") do
               plain season.short_name
-              span(class: "ml-2 px-1.5 py-0.5 rounded text-xs font-normal bg-amber-100 text-amber-800") { t("shared.estimated") } if season.estimated?
+              if season.estimated?
+                span(class: "ml-2 align-middle px-1.5 py-0.5 rounded text-xs font-normal border border-dashed border-gray-400 text-gray-600") { t("shared.estimated") }
+              end
             end
             render_season_dates(season)
           end
 
           # Enrollments list
-          div(class: "p-4 space-y-3 min-h-[200px]") do
+          div(class: "p-3 space-y-3 min-h-[160px]") do
             if enrollments.any?
               enrollments.each { |enrollment| render_enrollment_card(enrollment) }
             else
@@ -153,10 +171,12 @@ module Views
             # Add course to this season
             unless past
               link_to(
-                t(".add"),
                 catalog_path,
-                class: "block text-center text-sm text-indigo-600 hover:text-indigo-800 py-2"
-              )
+                class: "flex items-center justify-center gap-1 rounded-lg border border-dashed border-primary-200 text-sm text-primary-700 hover:bg-primary-50 hover:border-primary-400 py-2"
+              ) do
+                icon(:plus)
+                plain t(".add")
+              end
             end
           end
 
@@ -165,21 +185,31 @@ module Views
         end
       end
 
+      # One icon per date instead of a text label; the label stays as a tooltip
+      # and for screen readers. Dates that have passed are struck through.
       def render_season_dates(season)
-        div(class: "mt-2 text-xs text-gray-500 space-y-1") do
-          div do
-            span(class: "font-medium") { t(".report") }
-            span { l(season.report_deadline, format: :month_day) }
+        div(class: "mt-3 text-xs space-y-1.5") do
+          render_season_date(:report, t(".report"), season.report_deadline) do
+            plain l(season.report_deadline, format: :month_day)
             render_days_badge(season.days_until_report_deadline)
           end
-          div do
-            span(class: "font-medium") { t(".apply") }
-            span { l(season.application_deadline, format: :month_day) }
+          render_season_date(:apply, t(".apply"), season.application_deadline) do
+            plain l(season.application_deadline, format: :month_day)
+            render_days_badge(season.days_until_application_deadline)
           end
-          div do
-            span(class: "font-medium") { t(".exam") }
-            span { t("shared.date_range", from: l(season.exam_start, format: :month_day), to: l(season.exam_end, format: :month_day)) }
+          render_season_date(:calendar, t(".exam"), season.exam_end) do
+            plain t("shared.date_range", from: l(season.exam_start, format: :month_day), to: l(season.exam_end, format: :month_day))
           end
+        end
+      end
+
+      def render_season_date(icon_name, label, date, &)
+        passed = date < Date.today
+
+        div(class: "flex items-center gap-2 #{passed ? "text-gray-400" : "text-gray-700"}", title: label) do
+          icon(icon_name, class: "size-3.5 shrink-0 #{passed ? "text-gray-300" : "text-primary-500"}")
+          span(class: "sr-only") { label }
+          span(class: passed ? "line-through" : nil, &)
         end
       end
 
@@ -187,8 +217,8 @@ module Views
         return if days < 0 || days > 30
 
         color = case days
-        when 0..3 then "bg-red-100 text-red-700"
-        when 4..7 then "bg-yellow-100 text-yellow-700"
+        when 0..3 then "bg-danger-100 text-danger-700"
+        when 4..7 then "bg-warning-100 text-warning-700"
         else "bg-gray-100 text-gray-600"
         end
 
@@ -200,28 +230,21 @@ module Views
       def render_enrollment_card(enrollment)
         course = enrollment.course
 
-        div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200 hover:border-indigo-300 transition") do
-          link_to(
-            enrollment_path(enrollment),
-            class: "block"
-          ) do
-            div(class: "flex justify-between items-start") do
-              div do
-                p(class: "font-medium text-gray-900 text-sm hover:text-indigo-600") { enrollment.localized_name }
-                p(class: "text-xs text-gray-500") { enrollment.secondary_name } if enrollment.secondary_name
-                p(class: "text-xs text-gray-500 mt-1") do
-                  render_status_badge(enrollment.status)
-                  span(class: "ml-2") { t("shared.credits", count: enrollment.credits) } if enrollment.credits
-                end
-              end
+        div(class: "group/card bg-white rounded-lg p-3 ring-1 ring-gray-200 border-l-4 #{FIELD_STRIPES[course&.field] || "border-l-gray-300"} hover:ring-primary-300 transition") do
+          link_to(enrollment_path(enrollment), class: "block") do
+            p(class: "font-medium text-primary-950 text-sm group-hover/card:text-primary-600") { enrollment.localized_name }
+            p(class: "text-xs text-gray-500") { enrollment.secondary_name } if enrollment.secondary_name
+            p(class: "text-xs text-gray-500 mt-2 flex items-center gap-2") do
+              render_status_badge(enrollment.status)
+              span { t("shared.credits", count: enrollment.credits) } if enrollment.credits
             end
           end
 
           # Reference links
           render_reference_links(course) if course&.has_references?
 
-          # Move to another season dropdown
-          div(class: "mt-3 flex items-center justify-between") do
+          # Move to another season, or remove
+          div(class: "mt-3 flex items-center justify-between gap-2") do
             render_move_dropdown(enrollment)
             render_delete_button(enrollment)
           end
@@ -229,60 +252,55 @@ module Views
       end
 
       def render_reference_links(course)
-        div(class: "mt-2 flex gap-2 text-xs") do
+        div(class: "mt-2 flex gap-3 text-xs") do
           if course.syllabus_page
-            link_to(
-              t(".syllabus_link", page: course.syllabus_page),
-              documents_path(pdf: "syllabus", page: course.syllabus_page),
-              class: "text-indigo-600 hover:text-indigo-800"
-            )
+            render_reference_link(:book, t(".syllabus_link", page: course.syllabus_page), course.syllabus_page,
+              documents_path(pdf: "syllabus", page: course.syllabus_page))
           end
 
           if course.report_page
-            link_to(
-              t(".report_link", page: course.report_page),
-              documents_path(pdf: course.report_pdf, page: course.report_page),
-              class: "text-indigo-600 hover:text-indigo-800"
-            )
+            render_reference_link(:report, t(".report_link", page: course.report_page), course.report_page,
+              documents_path(pdf: course.report_pdf, page: course.report_page))
           end
         end
       end
 
-      def render_status_badge(status)
-        colors = {
-          "planned" => "bg-gray-100 text-gray-600",
-          "report_submitted" => "bg-blue-100 text-blue-700",
-          "exam_applied" => "bg-yellow-100 text-yellow-700",
-          "completed" => "bg-green-100 text-green-700"
-        }
-
-        span(class: "px-1.5 py-0.5 rounded text-xs #{colors[status]}") do
-          t("shared.statuses.#{status}")
+      def render_reference_link(icon_name, label, page, path)
+        link_to(path, title: label, aria: { label: label }, class: "inline-flex items-center gap-1 text-primary-600 hover:text-primary-900") do
+          icon(icon_name, class: "size-3.5 shrink-0")
+          plain t(".page_short", page: page)
         end
+      end
+
+      def render_status_badge(status)
+        render Components::StatusBadge.new(status)
       end
 
       # A course in a past season isn't in the list, so it gets a "Move to…" prompt instead
       def render_move_dropdown(enrollment)
         in_list = @seasons.any? { |s| s.key == enrollment.season_key }
 
-        form_with(model: enrollment, method: :patch, class: "inline") do |f|
+        form_with(model: enrollment, method: :patch, class: "min-w-0") do |f|
           f.select(
             :season_key,
             @seasons.map { |s| [ s.label, s.key ] },
             in_list ? { selected: enrollment.season_key } : { include_blank: t(".move_to"), selected: "" },
-            class: "text-xs border-gray-300 rounded py-1 pr-8",
+            id: nil,
+            aria: { label: t(".move_to") },
+            class: "max-w-full #{SELECT_CLASS}",
             onchange: "this.form.submit()"
           )
         end
       end
 
       def render_delete_button(enrollment)
-        form_with(url: enrollment_path(enrollment), method: :delete, class: "inline") do
+        form_with(url: enrollment_path(enrollment), method: :delete, class: "inline-flex") do
           button(
             type: "submit",
-            class: "text-xs text-red-600 hover:text-red-800",
+            title: t(".remove"),
+            class: "p-1 rounded text-gray-400 hover:text-danger-600 hover:bg-danger-50 cursor-pointer",
             data: { turbo_confirm: t(".remove_confirm") }
-          ) { t(".remove") }
+          ) { icon(:trash, label: t(".remove")) }
         end
       end
 
@@ -293,8 +311,11 @@ module Views
         # Only show if at least one course has an exam group assigned
         return if schedule.empty? && conflicts.empty?
 
-        div(class: "px-4 pb-4 border-t border-gray-200") do
-          h3(class: "text-xs font-semibold text-gray-500 uppercase tracking-wide pt-3 pb-2") { t(".exam_schedule") }
+        div(class: "px-4 pb-4 border-t border-gray-100 bg-primary-50/40 rounded-b-xl") do
+          h3(class: "flex items-center gap-1.5 text-xs font-semibold text-primary-800 uppercase tracking-wide pt-3 pb-2") do
+            icon(:calendar, class: "size-3.5 shrink-0")
+            plain t(".exam_schedule")
+          end
 
           # Conflict warnings
           render_exam_conflicts(conflicts, season) if conflicts.any?
@@ -342,8 +363,9 @@ module Views
           slot = ExamTimetable.slot_for(group: group, season: season)
           course_names = group_enrollments.map { |e| e.course&.localized_name }.compact.to_sentence
 
-          div(class: "mb-2 rounded-md bg-amber-50 border border-amber-200 p-2") do
-            p(class: "text-xs text-amber-800") do
+          div(class: "mb-2 flex gap-2 rounded-md bg-warning-50 border border-warning-200 p-2") do
+            icon(:warning, class: "size-4 shrink-0 text-warning-600 mt-0.5")
+            p(class: "text-xs text-warning-800") do
               strong { t(".conflict_label") }
               plain t(".conflict", courses: course_names, group: t("shared.exam_group", group: group))
               if slot

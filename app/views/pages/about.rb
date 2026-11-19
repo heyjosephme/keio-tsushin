@@ -99,7 +99,7 @@ module Views
         a(
           href: href,
           target: href.start_with?("mailto") ? nil : "_blank",
-          class: "inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition"
+          class: "inline-flex items-center gap-2 text-gray-600 hover:text-primary-700 transition"
         ) do
           yield
           span(class: "text-sm") { text }

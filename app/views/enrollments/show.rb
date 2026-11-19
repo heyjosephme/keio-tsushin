@@ -34,14 +34,14 @@ module Views
 
       def render_flash_messages
         if flash[:notice]
-          div(class: "mb-4 rounded-md bg-green-50 p-4") do
-            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          div(class: "mb-4 rounded-md bg-success-50 p-4") do
+            p(class: "text-sm font-medium text-success-800") { flash[:notice] }
           end
         end
 
         if flash[:alert]
-          div(class: "mb-4 rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "mb-4 rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -51,7 +51,7 @@ module Views
           link_to(
             t(".back"),
             enrollments_path,
-            class: "text-sm text-indigo-600 hover:text-indigo-800"
+            class: "text-sm text-primary-700 hover:text-primary-900"
           )
         end
       end
@@ -63,13 +63,13 @@ module Views
               h1(class: "text-2xl font-bold text-gray-900") { @enrollment.localized_name }
               p(class: "text-lg text-gray-500 mt-1") { @enrollment.secondary_name } if @enrollment.secondary_name
             end
-            render_status_badge(@enrollment.status)
+            render Components::StatusBadge.new(@enrollment.status, size: :md)
           end
 
           div(class: "mt-4 flex flex-wrap gap-3") do
-            render_tag(t("shared.credits", count: @enrollment.credits), "bg-indigo-50 text-indigo-700")
-            render_tag(@course.field_label, field_color(@course.field))
-            render_tag(@course.type_label, "bg-gray-50 text-gray-700") if @course.type
+            render_tag(t("shared.credits", count: @enrollment.credits), "bg-gray-100 text-gray-700")
+            render Components::FieldTag.new(@course, size: :md)
+            render_tag(@course.type_label, "bg-gray-100 text-gray-700") if @course.type
           end
         end
       end
@@ -95,7 +95,7 @@ module Views
                 class: "border-gray-300 rounded-md shadow-sm text-sm"
               )
               f.submit(t(".update_status"),
-                class: "px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 cursor-pointer")
+                class: "px-4 py-2 bg-primary-800 text-white text-sm rounded-md hover:bg-primary-700 cursor-pointer")
             end
           end
         end
@@ -108,7 +108,7 @@ module Views
 
         # Connector line (between steps)
         if index > 0
-          div(class: "flex-1 h-0.5 #{is_done ? 'bg-indigo-600' : 'bg-gray-200'}")
+          div(class: "flex-1 h-0.5 #{is_done ? 'bg-primary-800' : 'bg-gray-200'}")
         end
 
         # Step circle
@@ -117,17 +117,17 @@ module Views
             class: [
               "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium",
               if is_current
-                "bg-indigo-600 text-white ring-2 ring-indigo-300"
+                "bg-primary-800 text-white ring-2 ring-primary-300"
               elsif is_done
-                "bg-indigo-600 text-white"
+                "bg-primary-800 text-white"
               else
                 "bg-gray-200 text-gray-500"
               end
             ].join(" ")
           ) do
-            is_done && !is_current ? plain("✓") : plain((index + 1).to_s)
+            is_done && !is_current ? render(Components::Icon.new(:check, class: "size-4 shrink-0", stroke_width: "2.5")) : plain((index + 1).to_s)
           end
-          p(class: "text-xs mt-1 #{is_current ? 'text-indigo-600 font-medium' : 'text-gray-500'} whitespace-nowrap") do
+          p(class: "text-xs mt-1 #{is_current ? 'text-primary-700 font-medium' : 'text-gray-500'} whitespace-nowrap") do
             t("shared.statuses.#{status}")
           end
         end
@@ -175,8 +175,8 @@ module Views
 
           if days_until && days_until >= 0 && days_until <= 30
             color = case days_until
-            when 0..3 then "text-red-600"
-            when 4..7 then "text-yellow-600"
+            when 0..3 then "text-danger-600"
+            when 4..7 then "text-warning-600"
             else "text-gray-500"
             end
             p(class: "text-xs mt-1 #{color}") do
@@ -196,7 +196,7 @@ module Views
                 documents_path(pdf: "syllabus", page: @course.syllabus_page),
                 class: "flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
               ) do
-                span(class: "text-lg") { "📄" }
+                render Components::Icon.new(:book, class: "size-5 shrink-0 text-primary-600")
                 div do
                   p(class: "text-sm font-medium text-gray-900") { t("shared.references.syllabus") }
                   p(class: "text-xs text-gray-500") { t("shared.page", page: @course.syllabus_page) }
@@ -209,7 +209,7 @@ module Views
                 documents_path(pdf: @course.report_pdf, page: @course.report_page),
                 class: "flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
               ) do
-                span(class: "text-lg") { "📝" }
+                render Components::Icon.new(:report, class: "size-5 shrink-0 text-primary-600")
                 div do
                   p(class: "text-sm font-medium text-gray-900") { t("shared.references.report_guide") }
                   p(class: "text-xs text-gray-500") { t("shared.page", page: @course.report_page) }
@@ -221,14 +221,14 @@ module Views
       end
 
       def render_danger_zone
-        div(class: "bg-white rounded-lg shadow p-6 border border-red-100") do
+        div(class: "bg-white rounded-lg shadow p-6 border border-danger-100") do
           h2(class: "text-lg font-semibold text-gray-900 mb-2") { t(".danger_zone") }
           p(class: "text-sm text-gray-500 mb-4") { t(".danger_text") }
 
           form_with(url: enrollment_path(@enrollment), method: :delete) do
             button(
               type: "submit",
-              class: "px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 cursor-pointer",
+              class: "px-4 py-2 bg-danger-600 text-white text-sm rounded-md hover:bg-danger-700 cursor-pointer",
               data: { turbo_confirm: t(".remove_confirm", course: @enrollment.localized_name) }
             ) { t(".remove") }
           end
@@ -237,31 +237,8 @@ module Views
 
       # Helpers
 
-      def render_status_badge(status)
-        colors = {
-          "planned" => "bg-gray-100 text-gray-700",
-          "report_submitted" => "bg-blue-100 text-blue-700",
-          "exam_applied" => "bg-yellow-100 text-yellow-700",
-          "completed" => "bg-green-100 text-green-700"
-        }
-
-        span(class: "px-3 py-1 rounded-full text-sm font-medium #{colors[status]}") do
-          t("shared.statuses.#{status}")
-        end
-      end
-
       def render_tag(text, color_class)
         span(class: "px-3 py-1 rounded-full text-sm font-medium #{color_class}") { text }
-      end
-
-      def field_color(field)
-        {
-          "humanities" => "bg-red-50 text-red-700",
-          "social" => "bg-purple-50 text-purple-700",
-          "natural" => "bg-teal-50 text-teal-700",
-          "foreign_language" => "bg-green-50 text-green-700",
-          "economics" => "bg-orange-50 text-orange-700"
-        }[field] || "bg-gray-50 text-gray-700"
       end
     end
   end

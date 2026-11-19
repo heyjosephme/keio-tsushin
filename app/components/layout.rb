@@ -7,7 +7,7 @@ class Components::Layout < Components::Base
   end
 
   def view_template(&)
-    div(class: "min-h-screen flex flex-col bg-gray-50") do
+    div(class: "min-h-screen flex flex-col bg-surface") do
       render Components::NavBar.new if @show_nav
 
       main(class: "flex-grow", &)

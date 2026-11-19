@@ -30,7 +30,7 @@ module Views
           link_to(
             t(".back"),
             profile_path,
-            class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+            class: "text-primary-700 hover:text-primary-900 text-sm font-medium"
           )
           h1(class: "mt-4 text-3xl font-bold text-gray-900") { t(".title") }
         end
@@ -38,8 +38,8 @@ module Views
 
       def render_flash_messages
         if flash[:alert]
-          div(class: "mb-4 rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "mb-4 rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -63,7 +63,7 @@ module Views
               form.label :name, t(".name"), class: "block text-sm font-medium text-gray-700"
               form.text_field :name,
                 placeholder: t(".name_placeholder"),
-                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             end
 
             div do
@@ -89,7 +89,7 @@ module Views
               form.select :major,
                 major_options,
                 { include_blank: t(".major_blank") },
-                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               p(class: "text-xs text-gray-400 mt-1") { t(".major_hint") }
             end
 
@@ -101,13 +101,13 @@ module Views
                   form.select :enrolled_year,
                     enrollment_year_options,
                     { include_blank: t(".year") },
-                    class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                    class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
                 end
                 div do
                   form.select :enrolled_semester,
                     %w[spring autumn].map { |semester| [ t("shared.semesters.#{semester}"), semester ] },
                     { include_blank: t(".semester") },
-                    class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                    class: "block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
                 end
               end
               p(class: "text-xs text-gray-400 mt-1") { t(".enrolled_hint") }
@@ -118,7 +118,7 @@ module Views
               form.select :expected_graduation_year,
                 graduation_year_options,
                 { include_blank: t(".graduation_blank") },
-                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               p(class: "text-xs text-gray-400 mt-1") { t(".graduation_hint") }
             end
 
@@ -128,7 +128,7 @@ module Views
                 min: 1,
                 max: 50,
                 placeholder: 30,
-                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                class: "mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               p(class: "text-xs text-gray-400 mt-1") { t(".credit_goal_hint") }
             end
           end
@@ -155,7 +155,7 @@ module Views
             class: "px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
           )
           form.submit t(".submit"),
-            class: "inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer"
+            class: "inline-flex justify-center rounded-md border border-transparent bg-primary-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 cursor-pointer"
         end
       end
     end

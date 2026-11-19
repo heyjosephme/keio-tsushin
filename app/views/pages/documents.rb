@@ -70,9 +70,9 @@ module Views
       end
 
       def render_info
-        div(class: "mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4") do
-          h3(class: "font-medium text-blue-900 mb-2") { t(".info_title") }
-          p(class: "text-sm text-blue-800") do
+        div(class: "mt-8 bg-primary-50 border border-primary-200 rounded-lg p-4") do
+          h3(class: "font-medium text-primary-900 mb-2") { t(".info_title") }
+          p(class: "text-sm text-primary-800") do
             t(".info_text")
           end
         end

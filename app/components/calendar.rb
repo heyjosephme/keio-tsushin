@@ -2,14 +2,14 @@
 
 class Components::Calendar < Components::Base
   PILL_COLORS = {
-    "report" => "bg-blue-100 text-blue-700",
-    "application" => "bg-yellow-100 text-yellow-700",
-    "exam" => "bg-red-100 text-red-700"
+    "report" => "bg-primary-100 text-primary-700",
+    "application" => "bg-warning-100 text-warning-700",
+    "exam" => "bg-danger-100 text-danger-700"
   }.freeze
   DETAIL_COLORS = {
-    "report" => "border-blue-300 bg-blue-50",
-    "application" => "border-yellow-300 bg-yellow-50",
-    "exam" => "border-red-300 bg-red-50"
+    "report" => "border-primary-300 bg-primary-50",
+    "application" => "border-warning-300 bg-warning-50",
+    "exam" => "border-danger-300 bg-danger-50"
   }.freeze
 
   # events: Season::Event objects for the displayed month
@@ -32,17 +32,19 @@ class Components::Calendar < Components::Base
     div(class: "flex items-center justify-between mb-6") do
       a(
         href: deadlines_path(month: prev_month.month, year: prev_month.year),
-        class: "p-2 hover:bg-gray-100 rounded-lg text-gray-600"
-      ) { "←" }
+        title: t(".previous_month"),
+        class: "p-2 hover:bg-primary-50 rounded-lg text-primary-700"
+      ) { render Components::Icon.new(:previous, label: t(".previous_month"), class: "size-5 shrink-0") }
 
-      h2(class: "text-xl font-semibold text-gray-900") do
+      h2(class: "text-xl font-semibold text-primary-900") do
         l(@current_date, format: :month_year)
       end
 
       a(
         href: deadlines_path(month: next_month.month, year: next_month.year),
-        class: "p-2 hover:bg-gray-100 rounded-lg text-gray-600"
-      ) { "→" }
+        title: t(".next_month"),
+        class: "p-2 hover:bg-primary-50 rounded-lg text-primary-700"
+      ) { render Components::Icon.new(:next, label: t(".next_month"), class: "size-5 shrink-0") }
     end
   end
 
@@ -75,12 +77,12 @@ class Components::Calendar < Components::Base
     has_events = day_events.any?
 
     div(
-      class: "relative h-24 border border-gray-100 rounded-lg p-1 #{is_today ? 'bg-indigo-50 border-indigo-300' : 'hover:bg-gray-50'} #{has_events ? 'cursor-pointer' : ''}",
+      class: "relative h-24 border border-gray-100 rounded-lg p-1 #{is_today ? 'bg-primary-50 border-primary-300' : 'hover:bg-gray-50'} #{has_events ? 'cursor-pointer' : ''}",
       data: has_events ? { controller: "calendar-cell", action: "click->calendar-cell#toggle" } : {}
     ) do
       # Day number
       span(
-        class: "text-sm font-medium #{is_today ? 'text-indigo-600' : 'text-gray-700'}"
+        class: "text-sm font-medium #{is_today ? 'text-primary-700' : 'text-gray-700'}"
       ) { day.to_s }
 
       if has_events

@@ -40,14 +40,14 @@ module Views
 
       def render_flash_messages
         if flash[:notice]
-          div(class: "mb-4 rounded-md bg-green-50 p-4") do
-            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          div(class: "mb-4 rounded-md bg-success-50 p-4") do
+            p(class: "text-sm font-medium text-success-800") { flash[:notice] }
           end
         end
 
         if flash[:alert]
-          div(class: "mb-4 rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "mb-4 rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -68,7 +68,7 @@ module Views
           # Progress bar
           div(class: "w-full bg-gray-200 rounded-full h-4 mb-2") do
             div(
-              class: "bg-indigo-600 h-4 rounded-full transition-all duration-300",
+              class: "bg-primary-800 h-4 rounded-full transition-all duration-300",
               style: "width: #{[ percentage, 100 ].min}%"
             )
           end
@@ -81,7 +81,7 @@ module Views
           remaining = @credits_by_area.values.sum { |stats| [ stats[:required] - stats[:completed], 0 ].max }
 
           if remaining.zero?
-            p(class: "text-center text-sm text-green-600 font-semibold mt-4") do
+            p(class: "text-center text-sm text-success-600 font-semibold mt-4") do
               t(".requirement_met")
             end
           else
@@ -115,9 +115,9 @@ module Views
           end
 
           div(class: "w-full bg-gray-200 rounded-full h-3 flex overflow-hidden") do
-            div(class: "bg-indigo-600 h-3", style: "width: #{area_percent(stats, :completed)}%")
-            div(class: "bg-indigo-300 h-3", style: "width: #{area_percent(stats, :in_progress)}%")
-            div(class: "bg-indigo-100 h-3", style: "width: #{area_percent(stats, :planned)}%")
+            div(class: "bg-primary-800 h-3", style: "width: #{area_percent(stats, :completed)}%")
+            div(class: "bg-primary-300 h-3", style: "width: #{area_percent(stats, :in_progress)}%")
+            div(class: "bg-primary-100 h-3", style: "width: #{area_percent(stats, :planned)}%")
           end
 
           p(class: "mt-1 text-xs text-gray-500") do
@@ -140,48 +140,48 @@ module Views
             title: t(".completed"),
             credits: @credit_stats[:completed],
             color: "green",
-            icon: "✓"
+            icon: :completed
           )
 
           render_status_card(
             title: t(".in_progress"),
             credits: @credit_stats[:in_progress],
             color: "blue",
-            icon: "→"
+            icon: :report_submitted
           )
 
           render_status_card(
             title: t(".planned"),
             credits: @credit_stats[:planned],
             color: "gray",
-            icon: "○"
+            icon: :planned
           )
         end
       end
 
       def render_status_card(title:, credits:, color:, icon:)
         bg_color = {
-          "green" => "bg-green-50",
-          "blue" => "bg-blue-50",
+          "green" => "bg-success-50",
+          "blue" => "bg-primary-50",
           "gray" => "bg-gray-50"
         }[color]
 
         text_color = {
-          "green" => "text-green-700",
-          "blue" => "text-blue-700",
+          "green" => "text-success-700",
+          "blue" => "text-primary-700",
           "gray" => "text-gray-700"
         }[color]
 
         border_color = {
-          "green" => "border-green-200",
-          "blue" => "border-blue-200",
+          "green" => "border-success-200",
+          "blue" => "border-primary-200",
           "gray" => "border-gray-200"
         }[color]
 
         div(class: "bg-white rounded-lg shadow border-l-4 #{border_color} p-6") do
           div(class: "flex items-center justify-between mb-2") do
             h3(class: "text-lg font-semibold text-gray-900") { title }
-            span(class: "text-2xl") { icon }
+            render Components::Icon.new(icon, class: "size-6 shrink-0 #{text_color}")
           end
 
           p(class: "text-3xl font-bold #{text_color}") do
@@ -243,10 +243,10 @@ module Views
           td(class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900") do
             label
           end
-          td(class: "px-6 py-4 whitespace-nowrap text-sm text-green-600") do
+          td(class: "px-6 py-4 whitespace-nowrap text-sm text-success-600") do
             stats[:completed]
           end
-          td(class: "px-6 py-4 whitespace-nowrap text-sm text-blue-600") do
+          td(class: "px-6 py-4 whitespace-nowrap text-sm text-primary-600") do
             stats[:in_progress]
           end
           td(class: "px-6 py-4 whitespace-nowrap text-sm text-gray-600") do
@@ -266,7 +266,7 @@ module Views
             link_to(
               t(".view_planner"),
               enrollments_path,
-              class: "inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+              class: "inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-800 hover:bg-primary-700"
             )
 
             link_to(

@@ -10,8 +10,8 @@ module Views
       include Phlex::Rails::Helpers::ButtonTo
 
       URGENCY = {
-        overdue: "border-red-500",
-        soon: "border-yellow-500",
+        overdue: "border-danger-500",
+        soon: "border-warning-500",
         later: "border-gray-200"
       }.freeze
 
@@ -48,14 +48,14 @@ module Views
 
       def render_flash_messages
         if flash[:notice]
-          div(class: "rounded-md bg-green-50 p-4") do
-            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          div(class: "rounded-md bg-success-50 p-4") do
+            p(class: "text-sm font-medium text-success-800") { flash[:notice] }
           end
         end
 
         if flash[:alert]
-          div(class: "rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -64,7 +64,7 @@ module Views
         section(class: "bg-white rounded-lg shadow p-6") do
           div(class: "flex items-center justify-between mb-4") do
             h2(class: "text-lg font-semibold text-gray-900") { t(".next_steps") }
-            link_to(t(".open_planner"), enrollments_path, class: "text-sm text-indigo-600 hover:text-indigo-800")
+            link_to(t(".open_planner"), enrollments_path, class: "text-sm text-primary-700 hover:text-primary-900")
           end
 
           if @steps.any?
@@ -97,10 +97,10 @@ module Views
         enrollment = step.enrollment
 
         div(class: "flex flex-wrap items-center justify-between gap-3 py-2") do
-          link_to(enrollment.localized_name, enrollment_path(enrollment), class: "text-sm text-gray-700 hover:text-indigo-600")
+          link_to(enrollment.localized_name, enrollment_path(enrollment), class: "text-sm text-gray-700 hover:text-primary-700")
 
           if step.action == :reschedule
-            link_to(t(".move"), enrollment_path(enrollment), class: "text-sm font-medium text-red-600 hover:text-red-800")
+            link_to(t(".move"), enrollment_path(enrollment), class: "text-sm font-medium text-danger-600 hover:text-danger-800")
           else
             button_to(
               t(".mark.#{step.next_status}"),
@@ -144,14 +144,14 @@ module Views
         section(class: "bg-white rounded-lg shadow p-6") do
           div(class: "flex items-center justify-between mb-4") do
             h2(class: "text-lg font-semibold text-gray-900") { t(".credits_title") }
-            link_to(t(".view_dashboard"), dashboard_enrollments_path, class: "text-sm text-indigo-600 hover:text-indigo-800")
+            link_to(t(".view_dashboard"), dashboard_enrollments_path, class: "text-sm text-primary-700 hover:text-primary-900")
           end
 
           p(class: "text-sm text-gray-700 mb-2") { t(".credits_summary", completed: completed, required: required) }
           div(class: "w-full bg-gray-200 rounded-full h-3 flex overflow-hidden") do
-            div(class: "bg-indigo-600 h-3", style: "width: #{percent(completed)}%")
-            div(class: "bg-indigo-300 h-3", style: "width: #{percent(@credit_stats[:in_progress])}%")
-            div(class: "bg-indigo-100 h-3", style: "width: #{percent(@credit_stats[:planned])}%")
+            div(class: "bg-primary-800 h-3", style: "width: #{percent(completed)}%")
+            div(class: "bg-primary-300 h-3", style: "width: #{percent(@credit_stats[:in_progress])}%")
+            div(class: "bg-primary-100 h-3", style: "width: #{percent(@credit_stats[:planned])}%")
           end
           p(class: "mt-2 text-xs text-gray-500") do
             t(".credits_breakdown", in_progress: @credit_stats[:in_progress], planned: @credit_stats[:planned])
@@ -169,7 +169,7 @@ module Views
           p(class: "text-sm text-gray-600 mb-5") { t(@user.major.present? ? ".empty_text" : ".empty_text_no_major") }
 
           div(class: "flex flex-wrap justify-center gap-3") do
-            link_to(t(".browse"), catalog_path, class: "px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700")
+            link_to(t(".browse"), catalog_path, class: "px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-800 hover:bg-primary-700")
             unless @user.major.present?
               link_to(t(".set_major"), edit_profile_path, class: "px-4 py-2 rounded-md text-sm font-medium border border-gray-300 text-gray-700 bg-white hover:bg-gray-50")
             end

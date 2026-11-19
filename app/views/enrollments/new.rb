@@ -29,7 +29,7 @@ module Views
             link_to(
               t(".back"),
               enrollments_path,
-              class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+              class: "text-primary-700 hover:text-primary-900 text-sm font-medium"
             )
           end
           h1(class: "text-3xl font-bold text-gray-900") { t(".title") }
@@ -59,7 +59,7 @@ module Views
           div(class: "mb-4") do
             span(class: "text-sm text-gray-500") { t(".selected") }
             span(
-              class: "text-sm font-medium text-indigo-600 hidden",
+              class: "text-sm font-medium text-primary-700 hidden",
               data: { course_selector_target: "selectedDisplay" }
             ) { "" }
           end
@@ -69,7 +69,7 @@ module Views
             input(
               type: "text",
               placeholder: t(".search_placeholder"),
-              class: "w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm py-3 px-4",
+              class: "w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm py-3 px-4",
               data: {
                 course_selector_target: "search",
                 action: "input->course-selector#search"
@@ -96,7 +96,7 @@ module Views
 
       def tab(label, field, selected: false)
         base_classes = "px-3 py-1.5 text-sm font-medium rounded-full cursor-pointer transition-colors border"
-        active_classes = selected ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+        active_classes = selected ? "bg-primary-800 text-white border-primary-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
 
         button(
           type: "button",
@@ -119,7 +119,7 @@ module Views
 
       def render_course_card(course)
         div(
-          class: "bg-white border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-indigo-300 hover:shadow-sm transition-all",
+          class: "bg-white border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-primary-300 hover:shadow-sm transition-all",
           data: {
             course_selector_target: "card",
             course_key: course.key,
@@ -139,27 +139,8 @@ module Views
             span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700") do
               t("shared.credits", count: course.credits)
             end
-            span(class: "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium #{field_badge_classes(course.field)}") do
-              course.field_label
-            end
+            render Components::FieldTag.new(course)
           end
-        end
-      end
-
-      def field_badge_classes(field)
-        case field
-        when "humanities"
-          "bg-red-100 text-red-700"
-        when "social"
-          "bg-purple-100 text-purple-700"
-        when "natural"
-          "bg-teal-100 text-teal-700"
-        when "foreign_language"
-          "bg-green-100 text-green-700"
-        when "economics"
-          "bg-orange-100 text-orange-700"
-        else
-          "bg-gray-100 text-gray-700"
         end
       end
 
@@ -172,7 +153,7 @@ module Views
             :season_key,
             @seasons.map { |s| [ s.label, s.key ] },
             { prompt: t(".season_prompt") },
-            class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
           )
           render_errors(:season_key)
         end
@@ -182,7 +163,7 @@ module Views
         div(class: "flex gap-4") do
           form.submit(
             t(".submit"),
-            class: "flex-1 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+            class: "flex-1 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-800 hover:bg-primary-700 cursor-pointer"
           )
 
           link_to(
@@ -196,7 +177,7 @@ module Views
       def render_errors(field)
         return unless @enrollment.errors[field].any?
 
-        p(class: "mt-2 text-sm text-red-600") { @enrollment.errors.full_messages_for(field).to_sentence }
+        p(class: "mt-2 text-sm text-danger-600") { @enrollment.errors.full_messages_for(field).to_sentence }
       end
     end
   end

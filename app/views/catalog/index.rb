@@ -30,14 +30,14 @@ module Views
 
       def render_flash_messages
         if flash[:notice]
-          div(class: "mb-4 rounded-md bg-green-50 p-4") do
-            p(class: "text-sm font-medium text-green-800") { flash[:notice] }
+          div(class: "mb-4 rounded-md bg-success-50 p-4") do
+            p(class: "text-sm font-medium text-success-800") { flash[:notice] }
           end
         end
 
         if flash[:alert]
-          div(class: "mb-4 rounded-md bg-red-50 p-4") do
-            p(class: "text-sm font-medium text-red-800") { flash[:alert] }
+          div(class: "mb-4 rounded-md bg-danger-50 p-4") do
+            p(class: "text-sm font-medium text-danger-800") { flash[:alert] }
           end
         end
       end
@@ -63,10 +63,10 @@ module Views
           div(class: "flex items-center gap-2 text-sm") do
             link_to(
               catalog_path(field: @field, exclude_enrolled: @exclude_enrolled ? nil : "1"),
-              class: "inline-flex items-center gap-2 text-gray-700 hover:text-indigo-600"
+              class: "inline-flex items-center gap-2 text-gray-700 hover:text-primary-700"
             ) do
-              span(class: "inline-flex items-center justify-center w-4 h-4 rounded border border-gray-300 #{@exclude_enrolled ? 'bg-indigo-600 border-indigo-600' : 'bg-white'}") do
-                span(class: "text-white text-xs") { "✓" } if @exclude_enrolled
+              span(class: "inline-flex items-center justify-center w-4 h-4 rounded border border-gray-300 #{@exclude_enrolled ? 'bg-primary-800 border-primary-600' : 'bg-white'}") do
+                render Components::Icon.new(:check, class: "size-3 shrink-0 text-white", stroke_width: "3") if @exclude_enrolled
               end
               plain t(".hide_enrolled")
             end
@@ -78,7 +78,7 @@ module Views
         active = @field == field
         classes = [
           "px-3 py-1.5 text-sm font-medium rounded-full border transition-colors",
-          active ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+          active ? "bg-primary-800 text-white border-primary-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
         ].join(" ")
 
         link_to(
@@ -105,7 +105,7 @@ module Views
 
         link_to(
           catalog_course_path(course.key),
-          class: "block bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-md transition"
+          class: "block bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:border-primary-300 hover:shadow-md transition"
         ) do
           div(class: "flex justify-between items-start mb-2") do
             div do
@@ -113,7 +113,7 @@ module Views
               p(class: "text-sm text-gray-500") { course.secondary_name } if course.secondary_name
             end
             if enrolled
-              span(class: "px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700 whitespace-nowrap") do
+              span(class: "px-2 py-0.5 text-xs font-medium rounded-full bg-success-100 text-success-700 whitespace-nowrap") do
                 t(".in_plan")
               end
             end
@@ -121,24 +121,14 @@ module Views
 
           div(class: "mt-3 flex flex-wrap gap-1.5") do
             badge(t("shared.credits", count: course.credits), "bg-gray-100 text-gray-700")
-            badge(course.field_label, field_color(course.field))
-            badge(t("shared.exam_group", group: course.exam_group), "bg-indigo-50 text-indigo-700") if course.exam_group
+            render Components::FieldTag.new(course)
+            badge(t("shared.exam_group", group: course.exam_group), "bg-primary-50 text-primary-700") if course.exam_group
           end
         end
       end
 
       def badge(text, classes)
         span(class: "inline-block px-2 py-0.5 rounded text-xs font-medium #{classes}") { text }
-      end
-
-      def field_color(field)
-        {
-          "humanities" => "bg-red-50 text-red-700",
-          "social" => "bg-purple-50 text-purple-700",
-          "natural" => "bg-teal-50 text-teal-700",
-          "foreign_language" => "bg-green-50 text-green-700",
-          "economics" => "bg-orange-50 text-orange-700"
-        }[field] || "bg-gray-50 text-gray-700"
       end
     end
   end

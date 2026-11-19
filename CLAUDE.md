@@ -108,6 +108,10 @@ pdf.js is **not** in the importmap. `app/views/layouts/application.html.erb` loa
 - In development, `Components::Base` adds a `<!-- Before ClassName -->` HTML comment that shows which class rendered each fragment.
 - Tailwind v4 is configured in CSS (`app/assets/tailwind/application.css`; there's no `tailwind.config.js`) and finds class names in the `.rb` view files automatically.
 
+## Knowledge base (distilled PDFs)
+
+`knowledge/` holds markdown distilled from Keio's PDFs, one topic per file with page references, for a planned question-answering feature. Files are created only through the user-invoked `/distill-knowledge` skill (`.claude/skills/distill-knowledge/`): the user picks the pages and confirms each file (`status: confirmed` in the front matter). Never commit `knowledge/` content or the PDFs in `db/seed_documents/`; the repository is public and both are git-ignored.
+
 ## Internationalization (English and Japanese)
 
 - All UI text lives in `config/locales/en.yml` and `ja.yml`; never hardcode user-facing strings. `test/i18n_test.rb` fails if the two files' keys differ, and missing keys raise in development and test.

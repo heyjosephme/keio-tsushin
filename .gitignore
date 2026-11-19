@@ -36,3 +36,8 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Keio's PDFs and the knowledge distilled from them are copyrighted: keep them out of this public repo.
+/db/seed_documents/*.pdf
+/knowledge/*
+!/knowledge/README.md

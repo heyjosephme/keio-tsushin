@@ -188,7 +188,7 @@ module Views
         div(class: "bg-white rounded-lg shadow p-6") do
           h2(class: "text-lg font-semibold text-gray-900 mb-4") { t(".add_to_plan") }
 
-          form_with(url: enrollments_path, method: :post, class: "space-y-5") do |f|
+          form_with(url: enrollments_path, scope: :enrollment, method: :post, class: "space-y-5") do |f|
             f.hidden_field(:course_key, value: @course.key)
             f.hidden_field(:status, value: "planned")
 

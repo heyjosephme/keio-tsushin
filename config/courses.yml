@@ -12,6 +12,10 @@
 #   - distance: 通信授業 (correspondence/distance)
 #   - on_campus: スクーリング (on-campus)
 #   - both: 両方
+#   Only distance courses are handled so far. A schooling course should get its
+#   own entry with `type: on_campus` rather than sharing one with the distance
+#   version, because graduation rules count credits by how they were earned
+#   (schooling needs 30+ credits in total and is capped within each area).
 #
 # Exam Groups (試験群):
 #   A-F groups determine exam day/time slot per season.
@@ -22,6 +26,10 @@
 #   - economics: 経済学部
 #   - law: 法学部
 #   - literature: 文学部
+#
+# Required for (必修, optional):
+#   required_for lists the majors for which the course is compulsory,
+#   e.g. `required_for: [economics]`. Omit it for elective courses.
 
 courses:
   # Humanities (人文科学分野)
@@ -103,7 +111,7 @@ courses:
     name: "Economics"
     name_ja: "経済学"
     credits: 4
-    field: economics
+    field: social
     type: distance
     exam_group: A
     majors: [economics]
@@ -114,7 +122,7 @@ courses:
   pol101:
     name: "Political Science"
     name_ja: "政治学"
-    credits: 2
+    credits: 4
     field: social
     type: distance
     exam_group: E
@@ -122,22 +130,41 @@ courses:
 
   # Natural Sciences (自然科学分野)
   math101:
-    name: "Mathematics"
-    name_ja: "数学"
+    name: "Mathematics (Basics)"
+    name_ja: "数学（基礎）"
     credits: 2
     field: natural
     type: distance
     exam_group: D
     majors: [all]
 
+  math102:
+    name: "Mathematics (Calculus)"
+    name_ja: "数学（微分・積分）"
+    credits: 2
+    field: natural
+    type: distance
+    exam_group: F
+    majors: [all]
+
+  math103:
+    name: "Mathematics (Linear Algebra)"
+    name_ja: "数学（線形数学）"
+    credits: 2
+    field: natural
+    type: distance
+    exam_group: E
+    majors: [all]
+
   stat101:
     name: "Statistics"
     name_ja: "統計学"
-    credits: 2
-    field: economics
+    credits: 4
+    field: natural
     type: distance
     exam_group: D
     majors: [economics]
+    required_for: [economics]
 
   sci101:
     name: "Science of Science"
@@ -201,3 +228,75 @@ courses:
     type: distance
     exam_group: B
     majors: [all]
+
+  # Economics major courses (経済学部専門教育科目)
+  # The seven compulsory (必修) courses, 17 credits in total by distance learning.
+  econ201:
+    name: "Economic Theory (Microeconomics)"
+    name_ja: "経済原論（ミクロ経済学）"
+    credits: 2
+    field: economics
+    type: distance
+    exam_group: A
+    majors: [economics]
+    required_for: [economics]
+
+  econ202:
+    name: "Economic Theory (Macroeconomics)"
+    name_ja: "経済原論（マクロ経済学）"
+    credits: 2
+    field: economics
+    type: distance
+    exam_group: B
+    majors: [economics]
+    required_for: [economics]
+
+  econ203:
+    name: "Economic Policy"
+    name_ja: "経済政策学"
+    credits: 2
+    field: economics
+    type: distance
+    exam_group: E
+    majors: [economics]
+    required_for: [economics]
+
+  econ204:
+    name: "Economic History"
+    name_ja: "経済史"
+    credits: 4
+    field: economics
+    type: distance
+    exam_group: C
+    majors: [economics]
+    required_for: [economics]
+
+  econ205:
+    name: "Public Finance"
+    name_ja: "財政論"
+    credits: 2
+    field: economics
+    type: distance
+    exam_group: B
+    majors: [economics]
+    required_for: [economics]
+
+  econ206:
+    name: "Business Administration"
+    name_ja: "経営学"
+    credits: 3
+    field: economics
+    type: distance
+    exam_group: F
+    majors: [economics]
+    required_for: [economics]
+
+  econ207:
+    name: "Monetary Economics"
+    name_ja: "金融論"
+    credits: 2
+    field: economics
+    type: distance
+    exam_group: F
+    majors: [economics]
+    required_for: [economics]

@@ -7,10 +7,11 @@ module Views
       include Phlex::Rails::Helpers::LinkTo
       include Phlex::Rails::Helpers::FormWith
 
-      def initialize(seasons:, enrollments_by_season:, courses:)
+      def initialize(seasons:, enrollments_by_season:, courses:, undecided_courses: [])
         @seasons = seasons
         @enrollments_by_season = enrollments_by_season
         @courses = courses
+        @undecided_courses = undecided_courses
       end
 
       def view_template
@@ -21,6 +22,8 @@ module Views
               render_header
 
               div(class: "mb-6") { render Components::NextDeadlines.new }
+
+              render_undecided_courses if @undecided_courses.any?
 
               # Kanban board
               div(class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4") do
@@ -60,13 +63,56 @@ module Views
         end
       end
 
+      # Compulsory courses the user hasn't scheduled yet. Picking a season adds the
+      # course to the plan; removing it from the plan brings it back here.
+      def render_undecided_courses
+        div(class: "mb-6 rounded-lg border-2 border-dashed border-gray-300 bg-white p-4") do
+          h2(class: "font-semibold text-gray-900") { t(".undecided_title") }
+          p(class: "mt-1 text-xs text-gray-500") { t(".undecided_hint") }
+
+          div(class: "mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3") do
+            @undecided_courses.each { |course| render_undecided_card(course) }
+          end
+        end
+      end
+
+      def render_undecided_card(course)
+        div(class: "bg-gray-50 rounded-lg p-3 border border-gray-200") do
+          link_to(catalog_course_path(course.key), class: "block") do
+            p(class: "font-medium text-gray-900 text-sm hover:text-indigo-600") { course.localized_name }
+            p(class: "text-xs text-gray-500") { course.secondary_name } if course.secondary_name
+            p(class: "text-xs text-gray-500 mt-1") do
+              span(class: "px-1.5 py-0.5 rounded text-xs bg-red-50 text-red-700") { t(".required") }
+              span(class: "ml-2") { t("shared.credits", count: course.credits) } if course.credits
+            end
+          end
+
+          form_with(url: enrollments_path, scope: :enrollment, class: "mt-3") do |f|
+            f.hidden_field(:course_key, value: course.key, id: nil)
+            f.hidden_field(:status, value: "planned", id: nil)
+            f.select(
+              :season_key,
+              @seasons.map { |s| [ s.short_name, s.key ] },
+              { prompt: t(".choose_season") },
+              id: nil,
+              aria: { label: t(".choose_season") },
+              class: "w-full text-xs border-gray-300 rounded py-1 pr-8",
+              onchange: "this.form.submit()"
+            )
+          end
+        end
+      end
+
       def render_season_column(season)
         enrollments = @enrollments_by_season[season.key] || []
 
         div(class: "bg-white rounded-lg shadow") do
           # Season header
           div(class: "p-4 border-b border-gray-200") do
-            h2(class: "font-semibold text-gray-900") { season.short_name }
+            h2(class: "font-semibold text-gray-900") do
+              plain season.short_name
+              span(class: "ml-2 px-1.5 py-0.5 rounded text-xs font-normal bg-amber-100 text-amber-800") { t("shared.estimated") } if season.estimated?
+            end
             render_season_dates(season)
           end
 

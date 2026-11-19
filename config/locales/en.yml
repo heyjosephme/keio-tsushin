@@ -31,6 +31,7 @@ en:
     cancel: "Cancel"
     all: "All"
     today: "Today"
+    estimated: "Estimated"
     not_set: "Not set"
     credits:
       one: "%{count} credit"
@@ -50,6 +51,10 @@ en:
       natural: "Natural Sciences"
       foreign_language: "Foreign Languages"
       economics: "Economics"
+    areas:
+      general: "General Education"
+      specialized: "Specialized Education"
+      thesis: "Graduation Thesis"
     course_types:
       distance: "Distance"
       on_campus: "On Campus"
@@ -322,6 +327,10 @@ en:
         exam_schedule: "Exam Schedule"
         conflict_label: "Conflict: "
         conflict: "%{courses} are both in %{group}"
+        undecided_title: "Timing undecided"
+        undecided_hint: "Required courses for your major that aren't scheduled yet. Choose a season to add one to your plan."
+        required: "Required"
+        choose_season: "Choose a season…"
       show:
         back: "← Back to Course Planner"
         status: "Status"
@@ -357,6 +366,10 @@ en:
         in_progress: "In Progress"
         planned: "Planned"
         credits_unit: " credits"
+        by_area: "Graduation Requirements"
+        area_progress: "%{completed} / %{required} credits"
+        area_breakdown: "In progress %{in_progress} · Planned %{planned}"
+        thesis_note: "Thesis credits can't be recorded yet."
         by_field: "Credits by Field"
         field: "Field"
         total: "Total"

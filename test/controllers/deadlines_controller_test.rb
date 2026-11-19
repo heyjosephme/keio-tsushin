@@ -11,13 +11,22 @@ class DeadlinesControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", /Next report deadline/
   end
 
-  test "shows report, application and both exam days from seasons.yml" do
+  test "shows the report and application deadlines from seasons.yml" do
+    get deadlines_url(year: 2026, month: 11)
+    assert_response :success
+
+    assert_select "h2", "November 2026"
+    assert_select "p", text: "Report submission deadline", count: 1
+    assert_select "p", text: "Exam application deadline", count: 1
+    assert_select "p", text: "Exam day", count: 0
+  end
+
+  test "shows both exam days from seasons.yml" do
     get deadlines_url(year: 2027, month: 1)
     assert_response :success
 
     assert_select "h2", "January 2027"
-    assert_select "p", text: "Report submission deadline", count: 1
-    assert_select "p", text: "Exam application deadline", count: 1
+    assert_select "p", text: "Report submission deadline", count: 0
     assert_select "p", text: "Exam day", count: 2
   end
 

@@ -64,17 +64,21 @@ class LocaleTest < ActionDispatch::IntegrationTest
   end
 
   test "courses, seasons and flash messages are localized" do
-    sign_in_as(users(:one))
+    # Before the January 2027 report deadline, so that season is still on the board
+    travel_to Date.new(2026, 11, 1) do
+      sign_in_as(users(:one))
 
-    get catalog_course_url("phil101", locale: "ja")
-    assert_select "h1", "哲学"
+      get catalog_course_url("phil101", locale: "ja")
+      assert_select "h1", "哲学"
 
-    get catalog_course_url("no_such_course")
-    follow_redirect!
-    assert_select "p", "科目が見つかりません。"
+      get catalog_course_url("no_such_course")
+      follow_redirect!
+      assert_select "p", "科目が見つかりません。"
 
-    get enrollments_url
-    assert_select "h2", "2027年1月"
+      get enrollments_url
+      assert_select "h2", "2027年1月"
+      assert_select "h2", /2027年4月\s*予定/
+    end
   end
 
   test "validation errors are localized" do

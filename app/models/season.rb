@@ -20,6 +20,10 @@ class Season
     def days_left(today = Date.today)
       (date - today).to_i
     end
+
+    def estimated?
+      season.estimated?
+    end
   end
 
   def initialize(key:, data:)
@@ -28,6 +32,12 @@ class Season
     @application_deadline = Date.parse(data["application_deadline"])
     @exam_start = Date.parse(data["exam_start"])
     @exam_end = Date.parse(data["exam_end"])
+    @estimated = data["estimated"] == true
+  end
+
+  # True while the official dates aren't announced and seasons.yml holds a guess
+  def estimated?
+    @estimated
   end
 
   class << self

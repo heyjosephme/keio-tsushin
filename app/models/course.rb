@@ -3,7 +3,7 @@
 # Course represents a Keio Tsushin course from the catalog.
 # Data is loaded from config/courses.yml (not database).
 class Course
-  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references, :exam_group
+  attr_reader :key, :name, :name_ja, :credits, :field, :type, :majors, :references, :exam_group, :required_for
 
   FIELDS = %w[humanities social natural foreign_language economics].freeze
   TYPES = %w[distance on_campus both].freeze
@@ -29,6 +29,7 @@ class Course
     @majors = data["majors"] || [ "all" ]
     @references = data["references"] || {}
     @exam_group = data["exam_group"]
+    @required_for = data["required_for"] || []
   end
 
   class << self
@@ -48,6 +49,11 @@ class Course
       return all if major.blank?
 
       all.select { |c| c.available_for_major?(major) }
+    end
+
+    # Courses that are compulsory (必修) for the given major
+    def required_for_major(major)
+      all.select { |c| c.required_for?(major) }
     end
 
     def for_select
@@ -111,6 +117,11 @@ class Course
 
   def available_for_major?(major)
     majors.include?("all") || majors.include?(major)
+  end
+
+  # Whether the course is compulsory (必修) for students of the given major
+  def required_for?(major)
+    major.present? && required_for.include?(major)
   end
 
   def common?

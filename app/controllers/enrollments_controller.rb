@@ -7,7 +7,8 @@ class EnrollmentsController < ApplicationController
     render Views::Enrollments::Index.new(
       seasons: @seasons,
       enrollments_by_season: @enrollments_by_season,
-      courses: @courses
+      courses: @courses,
+      undecided_courses: undecided_required_courses
     )
   end
 
@@ -27,7 +28,8 @@ class EnrollmentsController < ApplicationController
 
     render Views::Enrollments::Dashboard.new(
       credit_stats: @credit_stats,
-      credits_by_field: @credits_by_field
+      credits_by_field: @credits_by_field,
+      credits_by_area: current_user_enrollments.credits_by_area
     )
   end
 
@@ -84,6 +86,12 @@ class EnrollmentsController < ApplicationController
 
   def courses_for_current_user
     Course.for_major(Current.user.major)
+  end
+
+  # Compulsory courses for the user's major that aren't in the plan yet
+  def undecided_required_courses
+    planned_keys = current_user_enrollments.pluck(:course_key)
+    Course.required_for_major(Current.user.major).reject { |course| planned_keys.include?(course.key) }
   end
 
   def enrollment_params

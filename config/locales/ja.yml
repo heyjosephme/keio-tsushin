@@ -27,6 +27,7 @@ ja:
     cancel: "キャンセル"
     all: "すべて"
     today: "今日"
+    estimated: "予定"
     not_set: "未設定"
     credits:
       other: "%{count}単位"
@@ -45,6 +46,10 @@ ja:
       natural: "自然科学"
       foreign_language: "外国語"
       economics: "経済学"
+    areas:
+      general: "総合教育科目"
+      specialized: "専門教育科目"
+      thesis: "卒業論文"
     course_types:
       distance: "通信授業"
       on_campus: "スクーリング"
@@ -317,6 +322,10 @@ ja:
         exam_schedule: "試験時間割"
         conflict_label: "重複: "
         conflict: "%{courses}はどちらも%{group}です"
+        undecided_title: "時期未定"
+        undecided_hint: "あなたの学部の必修科目のうち、まだ時期を決めていない科目です。試験期を選ぶとプランに追加されます。"
+        required: "必修"
+        choose_season: "試験期を選択…"
       show:
         back: "← 履修プランナーに戻る"
         status: "ステータス"
@@ -352,6 +361,10 @@ ja:
         in_progress: "進行中"
         planned: "計画中"
         credits_unit: "単位"
+        by_area: "卒業要件"
+        area_progress: "%{completed} / %{required}単位"
+        area_breakdown: "進行中 %{in_progress} · 計画中 %{planned}"
+        thesis_note: "卒業論文の単位はまだ記録できません。"
         by_field: "分野別の単位"
         field: "分野"
         total: "合計"

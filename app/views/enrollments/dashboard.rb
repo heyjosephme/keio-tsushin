@@ -8,9 +8,10 @@ module Views
 
       TOTAL_CREDITS_REQUIRED = Enrollment::CREDITS_REQUIRED
 
-      def initialize(credit_stats:, credits_by_field:)
+      def initialize(credit_stats:, credits_by_field:, credits_by_area:)
         @credit_stats = credit_stats
         @credits_by_field = credits_by_field
+        @credits_by_area = credits_by_area
       end
 
       def view_template
@@ -20,6 +21,7 @@ module Views
               render_flash_messages
               render_header
               render_overall_progress
+              render_area_requirements
               render_status_cards
               render_field_breakdown
               render_quick_actions
@@ -75,16 +77,61 @@ module Views
             t(".percent_complete", percent: percentage)
           end
 
-          if completed >= TOTAL_CREDITS_REQUIRED
+          # Credits beyond an area's minimum don't make up for a shortfall in another area
+          remaining = @credits_by_area.values.sum { |stats| [ stats[:required] - stats[:completed], 0 ].max }
+
+          if remaining.zero?
             p(class: "text-center text-sm text-green-600 font-semibold mt-4") do
               t(".requirement_met")
             end
           else
             p(class: "text-center text-sm text-gray-600 mt-4") do
-              t(".remaining", count: TOTAL_CREDITS_REQUIRED - completed)
+              t(".remaining", count: remaining)
             end
           end
         end
+      end
+
+      # The three parts of the graduation requirement, each with its own minimum
+      def render_area_requirements
+        div(class: "bg-white rounded-lg shadow mb-8") do
+          div(class: "px-6 py-4 border-b border-gray-200") do
+            h2(class: "text-xl font-semibold text-gray-900") { t(".by_area") }
+          end
+
+          div(class: "p-6 space-y-6") do
+            @credits_by_area.each { |area, stats| render_area_row(area, stats) }
+          end
+        end
+      end
+
+      def render_area_row(area, stats)
+        div do
+          div(class: "flex items-baseline justify-between mb-2") do
+            h3(class: "text-sm font-medium text-gray-900") { t("shared.areas.#{area}") }
+            p(class: "text-sm text-gray-700") do
+              t(".area_progress", completed: stats[:completed], required: stats[:required])
+            end
+          end
+
+          div(class: "w-full bg-gray-200 rounded-full h-3 flex overflow-hidden") do
+            div(class: "bg-indigo-600 h-3", style: "width: #{area_percent(stats, :completed)}%")
+            div(class: "bg-indigo-300 h-3", style: "width: #{area_percent(stats, :in_progress)}%")
+            div(class: "bg-indigo-100 h-3", style: "width: #{area_percent(stats, :planned)}%")
+          end
+
+          p(class: "mt-1 text-xs text-gray-500") do
+            if area == "thesis"
+              t(".thesis_note")
+            else
+              t(".area_breakdown", in_progress: stats[:in_progress], planned: stats[:planned])
+            end
+          end
+        end
+      end
+
+      def area_percent(stats, status)
+        [ stats[status] * 100.0 / stats[:required], 100 ].min.round(1)
       end
 
       def render_status_cards
